@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Hub - HTML5 Games</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        #header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #header h1 {
+            font-size: 4em;
+            font-weight: 700;
+            background: linear-gradient(45deg, #fff, #f0f0f0, #fff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 20px rgba(255,255,255,0.3);
+            animation: shimmer 3s linear infinite;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        @keyframes shimmer {
+            to { background-position: 200% center; }
+        }
+
+        #header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        #search-container {
+            margin-bottom: 30px;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #search-bar {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            display: block;
+            padding: 18px 25px;
+            font-size: 1.2em;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            border-radius: 50px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        #search-bar::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        #search-bar:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.2);
+            transform: scale(1.02);
+        }
+
+        #game-count {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            opacity: 0.9;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        #game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: relative;
+            opacity: 0;
+            animation: fadeInScale 0.5s ease forwards;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .game-card:hover::before {
+            left: 100%;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-icon {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card:hover .game-icon {
+            background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.2));
+            transform: scale(1.1);
+        }
+
+        .game-icon::after {
+            content: '🎮';
+            position: absolute;
+            font-size: 2em;
+            opacity: 0.3;
+        }
+
+        .game-name {
+            padding: 20px 15px;
+            font-weight: 600;
+            font-size: 1.1em;
+            text-transform: capitalize;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 1;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .game-card:hover .game-name {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        #no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            font-size: 1.5em;
+            opacity: 0.7;
+            display: none;
+        }
+
+        #no-results.show {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            #header h1 {
+                font-size: 2.5em;
+            }
+            #game-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+            .game-icon {
+                height: 100px;
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="header">
+            <h1>🎮 Game Hub</h1>
+            <p>Your Ultimate HTML5 Games Collection</p>
+        </div>
+        
+        <div id="search-container">
+            <input type="text" id="search-bar" placeholder="🔍 Search for a game...">
+        </div>
+        
+        <div id="game-count"></div>
+        
+        <div id="game-grid"></div>
+        
+        <div id="no-results">
+            <p>😕 No games found matching your search</p>
+        </div>
+    </div>
+
+    <script>
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                const games = [
+                    '1v1lol', '2048', '8ball', 'adarkroom', 'amongus', 'asciispace', 'asteroids', 'astray', 'backcountry', 
+                    'basketballstars', 'blackholesquare', 'bloonstd4', 'bounceback', 'breaklock', 'breakout', 
+                    'captaincallisto', 'chess', 'chromaincident', 'chrome-dino', 'chromedino', 'connect3', 'cookieclicker', 
+                    'crossyroad', 'cubefield', 'cuttherope', 'cuttherope2', 'cuttheropeholiday', 'cuttheropetimetravel', 
+                    'dinosaur', 'doctor-acorn2', 'doctor-acorn3', 'doge2048', 'dogeminer', 'doodle-jump', 'driftboss', 
+                    'ducklife', 'ducklife2', 'ducklife3', 'ducklife4', 'ducklife5', 'edgenotfound', 'edge-surf', 
+                    'elasticmorty', 'evilglitch', 'factoryballsforever', 'fireboy-and-watergirl-1', 
+                    'fireboy-and-watergirl-2', 'fireboy-and-watergirl-3', 'fireboy-and-watergirl-4', 'firewater', 
+                    'flappy-2048', 'flappybird', 'fnaf', 'fnaf2', 'fnaf3', 'fnaf4', 'friendlyfire', 'geometry', 
+                    'geometrydash', 'gopher', 'hextris', 'icypurplehead2', 'icypurplehead3', 'konnekt', 'mc1.5.2', 
+                    'mcbeta0.30', 'mcbeta1.3', 'minecraft', 'motox3m', 'ninjavsevilcorp', 'packabunchas', 'pacman', 
+                    'paperio', 'particleclicker', 'physicsplayground', 'pushback', 'q1k3', 'rabbit-samurai', 
+                    'rabbit-samurai2', 'racer', 'radiusraid', 'retrobowl', 'retrohaunt', 'roadblocks', 'rooftopsniper', 
+                    'run3', 'shuttledeck', 'sleepingbeauty', 'slitherio', 'slope', 'sm63', 'sm64', 'snake', 
+                    'spacecompany', 'spacegarden', 'spacehuggers', 'spaceinvaders', 'stack', 'stacktower', 
+                    'subway-surfers', 'survivio', 'tetris', 'towermaster', 'underrun', 'vex3', 'vex4', 
+                    'vex5', 'vex6', 'webretro', 'xx142-b2exe'
+                ];
+
+                const gameGrid = document.getElementById('game-grid');
+                const searchBar = document.getElementById('search-bar');
+                const gameCount = document.getElementById('game-count');
+                const noResults = document.getElementById('no-results');
+
+                if (!gameGrid || !searchBar || !gameCount || !noResults) {
+                    console.error('Required DOM elements not found');
+                    return;
+                }
+
+                console.log('Games array loaded:', games.length, 'games');
+
+                // Emoji mapping for games (optional visual enhancement)
+                const gameEmojis = {
+                    'chess': '♟️', 'snake': '🐍', 'pacman': '👾', 'tetris': '🧩', 
+                    'minecraft': '⛏️', 'flappybird': '🐦', 'cookieclicker': '🍪',
+                    'doodle-jump': '👾', 'crossyroad': '🐸', 'amongus': '👽',
+                    'geometrydash': '💎', 'run3': '🏃', 'slitherio': '🐍',
+                    '2048': '🔢', 'asteroids': '☄️', 'breakout': '🎾',
+                    'spaceinvaders': '👾', 'driftboss': '🚗', 'motox3m': '🏍️'
+                };
+
+                const formatGameName = (game) => {
+                    return game
+                        .split('-')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+                };
+
+                const getGameEmoji = (game) => {
+                    return gameEmojis[game.toLowerCase()] || '🎮';
+                };
+
+                const createGameCard = (game, index) => {
+                    const card = document.createElement('a');
+                    card.href = `./${game}/index.html`;
+                    card.className = 'game-card';
+                    card.style.animationDelay = `${index * 0.02}s`;
+
+                    const icon = document.createElement('div');
+                    icon.className = 'game-icon';
+                    icon.textContent = getGameEmoji(game);
+
+                    const name = document.createElement('div');
+                    name.className = 'game-name';
+                    name.textContent = formatGameName(game);
+
+                    card.appendChild(icon);
+                    card.appendChild(name);
+                    return card;
+                };
+
+                const renderGames = (gamesToRender) => {
+                    if (!gameGrid) return;
+                    
+                    gameGrid.innerHTML = '';
+                    noResults.classList.remove('show');
+
+                    if (gamesToRender.length === 0) {
+                        noResults.classList.add('show');
+                        gameCount.textContent = '';
+                        return;
+                    }
+
+                    gameCount.textContent = `Found ${gamesToRender.length} game${gamesToRender.length !== 1 ? 's' : ''}`;
+
+                    gamesToRender.forEach((game, index) => {
+                        const card = createGameCard(game, index);
+                        gameGrid.appendChild(card);
+                    });
+
+                    console.log('Rendered', gamesToRender.length, 'game cards');
+                };
+
+                searchBar.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase().trim();
+                    const filteredGames = games.filter(game => 
+                        game.toLowerCase().includes(searchTerm) ||
+                        formatGameName(game).toLowerCase().includes(searchTerm)
+                    );
+                    renderGames(filteredGames);
+                });
+
+                // Initial render
+                renderGames(games);
+                console.log('Page initialized successfully');
+            } catch (error) {
+                console.error('Error initializing page:', error);
+                alert('Error loading games. Please check the console for details.');
+            }
+        });
+
+        // Fallback if DOMContentLoaded already fired
+        if (document.readyState === 'loading') {
+            // DOMContentLoaded has not fired yet, the listener above will handle it
+        } else {
+            // DOMContentLoaded has already fired, trigger manually
+            document.dispatchEvent(new Event('DOMContentLoaded'));
+        }
+    </script>
+</body>
+</html>
