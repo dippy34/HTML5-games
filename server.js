@@ -110,10 +110,11 @@ app.use(express.static(__dirname, {
     }
 })); // Serve static files
 
-// Initialize database
+// Initialize database (non-blocking - server will start even if DB fails)
 db.getDatabase().catch(err => {
     console.error('Failed to initialize database:', err);
-    process.exit(1);
+    console.warn('Server will continue without database. Analytics will not be saved.');
+    // Don't exit - let the server start anyway
 });
 
 // API Routes
@@ -181,7 +182,13 @@ app.get('/api/stats/:timeframe', async (req, res) => {
         res.json(stats);
     } catch (error) {
         console.error('Error getting stats:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        // Return empty stats if database is unavailable
+        res.json({
+            uniqueVisitors: 0,
+            averageDuration: 0,
+            totalGamePlays: 0,
+            activeSessions: 0
+        });
     }
 });
 
@@ -193,7 +200,8 @@ app.get('/api/top-games', async (req, res) => {
         res.json(topGames);
     } catch (error) {
         console.error('Error getting top games:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        // Return empty array if database is unavailable
+        res.json([]);
     }
 });
 
@@ -205,7 +213,8 @@ app.get('/api/chart/:timeframe', async (req, res) => {
         res.json(chartData);
     } catch (error) {
         console.error('Error getting chart data:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        // Return empty chart data if database is unavailable
+        res.json({ labels: [], data: [] });
     }
 });
 
@@ -216,7 +225,8 @@ app.get('/api/active-sessions', async (req, res) => {
         res.json({ activeSessions });
     } catch (error) {
         console.error('Error getting active sessions:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        // Return empty sessions if database is unavailable
+        res.json({ activeSessions: 0 });
     }
 });
 
