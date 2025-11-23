@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Hub</title>
+    <script>
+        // Apply theme immediately before CSS loads
+        (function() {
+            const savedTheme = localStorage.getItem('selectedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Dark Theme (Default) */
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-tertiary: #1a1a1a;
+            --bg-card: rgba(20, 20, 20, 0.9);
+            --bg-card-hover: rgba(30, 30, 30, 0.95);
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --accent-hover: #818cf8;
+            --border-color: rgba(99, 102, 241, 0.2);
+            --border-hover: rgba(99, 102, 241, 0.4);
+            --shadow: rgba(0, 0, 0, 0.5);
+            --shadow-hover: rgba(99, 102, 241, 0.15);
+            --gradient-start: #000000;
+            --gradient-end: #0a0a0a;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --bg-tertiary: #e2e8f0;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-card-hover: rgba(255, 255, 255, 1);
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --accent-primary: #2563eb;
+            --accent-secondary: #7c3aed;
+            --accent-hover: #3b82f6;
+            --border-color: rgba(37, 99, 235, 0.2);
+            --border-hover: rgba(37, 99, 235, 0.4);
+            --shadow: rgba(0, 0, 0, 0.1);
+            --shadow-hover: rgba(37, 99, 235, 0.15);
+            --gradient-start: #ffffff;
+            --gradient-end: #f1f5f9;
+        }
+
+        [data-theme="blue"] {
+            --bg-primary: #0a1628;
+            --bg-secondary: #0f1e3a;
+            --bg-tertiary: #152547;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #60a5fa;
+            --accent-hover: #93c5fd;
+            --gradient-start: #0f172a;
+            --gradient-end: #1e3a8a;
+        }
+
+        [data-theme="green"] {
+            --bg-primary: #0a1f0a;
+            --bg-secondary: #0f2e0f;
+            --bg-tertiary: #153d15;
+            --accent-primary: #10b981;
+            --accent-secondary: #34d399;
+            --accent-hover: #6ee7b7;
+            --gradient-start: #0f1f0f;
+            --gradient-end: #1e3a1e;
+        }
+
+        [data-theme="purple"] {
+            --bg-primary: #1a0a2e;
+            --bg-secondary: #2d0f4e;
+            --bg-tertiary: #3d156e;
+            --accent-primary: #8b5cf6;
+            --accent-secondary: #a78bfa;
+            --accent-hover: #c4b5fd;
+            --gradient-start: #1a0a2e;
+            --gradient-end: #4c1d95;
+        }
+
+        [data-theme="red"] {
+            --bg-primary: #2a0a0a;
+            --bg-secondary: #3d0f0f;
+            --bg-tertiary: #4d1515;
+            --accent-primary: #ef4444;
+            --accent-secondary: #f87171;
+            --accent-hover: #fca5a5;
+            --gradient-start: #2a0a0a;
+            --gradient-end: #7f1d1d;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--bg-primary) 50%, var(--gradient-end) 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            transition: background 0.5s ease, color 0.5s ease;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, var(--accent-primary) 0%, transparent 60%),
+                radial-gradient(circle at 80% 80%, var(--accent-secondary) 0%, transparent 60%),
+                radial-gradient(circle at 40% 20%, var(--accent-primary) 0%, transparent 60%);
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        #header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            animation: fadeInDown 0.8s ease;
+            position: relative;
+        }
+        
+        #settings-btn, #admin-btn {
+            position: absolute;
+            top: 20px;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.5em;
+            color: var(--text-primary);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        
+        #settings-btn {
+            right: 20px;
+        }
+        
+        #admin-btn {
+            right: 80px;
+        }
+        
+        #settings-btn:hover, #admin-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
+            transform: rotate(90deg);
+            box-shadow: 0 6px 20px var(--shadow-hover);
+        }
+        
+        #settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        #settings-modal.show {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .settings-content {
+            max-width: 900px;
+            margin: 30px auto;
+            background: var(--bg-secondary);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 20px 60px var(--shadow);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .settings-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .settings-content::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+        }
+        
+        .settings-content::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 10px;
+        }
+        
+        .settings-content::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-hover);
+        }
+        
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+            z-index: 10;
+            padding-top: 10px;
+        }
+        
+        .settings-header h2 {
+            font-size: 2.2em;
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+        }
+        
+        .close-settings {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.5em;
+            color: var(--text-primary);
+        }
+        
+        .close-settings:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
+            transform: rotate(90deg);
+        }
+        
+        .settings-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .settings-section:hover {
+            border-color: var(--border-hover);
+            box-shadow: 0 4px 12px var(--shadow-hover);
+        }
+        
+        .settings-section h3 {
+            font-size: 1.3em;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .settings-section p {
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .settings-section p {
+            opacity: 0.8;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        
+        .tab-cloak-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .tab-cloak-btn {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+        
+        .tab-cloak-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px var(--shadow-hover);
+        }
+        
+        .tab-cloak-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-hover);
+            color: #fff;
+        }
+        
+        .tab-cloak-btn img {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .tab-cloak-btn span {
+            display: block;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+        
+        .theme-btn {
+            transition: all 0.3s ease !important;
+        }
+        
+        .theme-btn:hover {
+            transform: translateY(-5px) scale(1.05) !important;
+            box-shadow: 0 8px 20px var(--shadow-hover) !important;
+        }
+        
+        .custom-cloak-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1em;
+        }
+        
+        .custom-cloak-input::placeholder {
+            color: var(--text-secondary);
+        }
+        
+        .custom-cloak-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: var(--bg-card-hover);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px var(--shadow-hover);
+            background: linear-gradient(135deg, var(--accent-hover) 0%, var(--accent-secondary) 100%);
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-tertiary);
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: var(--text-primary);
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--accent-primary);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #header h1 {
+            font-size: 4em;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary), var(--accent-primary));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 20px var(--shadow-hover);
+            animation: shimmer 3s linear infinite;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        @keyframes shimmer {
+            to { background-position: 200% center; }
+        }
+
+        #header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        #search-container {
+            margin-bottom: 30px;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #search-bar {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            display: block;
+            padding: 18px 25px;
+            font-size: 1.2em;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 50px;
+            box-shadow: 0 8px 32px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        #search-bar::placeholder {
+            color: var(--text-secondary);
+        }
+
+        #search-bar:focus {
+            outline: none;
+            background: var(--bg-card-hover);
+            border-color: var(--accent-primary);
+            box-shadow: 0 8px 32px var(--shadow-hover);
+            transform: scale(1.02);
+        }
+
+        #game-count {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            opacity: 0.9;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        #game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        .game-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid var(--border-color);
+            box-shadow: 0 8px 32px var(--shadow);
+            position: relative;
+            opacity: 0;
+            animation: fadeInScale 0.5s ease forwards;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+            opacity: 0.3;
+            transition: left 0.5s;
+        }
+
+        .game-card:hover::before {
+            left: 100%;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            background: var(--bg-card-hover);
+            border-color: var(--accent-primary);
+            box-shadow: 0 20px 40px var(--shadow-hover);
+        }
+
+        .game-icon {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .game-icon .emoji-fallback {
+            position: absolute;
+            z-index: 1;
+        }
+
+        .game-card:hover .game-icon {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            transform: scale(1.1);
+        }
+
+
+        .game-name {
+            padding: 20px 15px;
+            font-weight: 600;
+            font-size: 1.1em;
+            text-transform: capitalize;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 1;
+            background: var(--bg-tertiary);
+        }
+
+        .game-card:hover .game-name {
+            background: var(--bg-secondary);
+        }
+        
+        .progress-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            z-index: 10;
+            box-shadow: 0 2px 8px var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .progress-badge::before {
+            content: '💾';
+            font-size: 0.9em;
+        }
+
+        #no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            font-size: 1.5em;
+            opacity: 0.7;
+            display: none;
+        }
+
+        #no-results.show {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            #header h1 {
+                font-size: 2.5em;
+            }
+            #game-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+            .game-icon {
+                height: 100px;
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="header">
+            <div id="admin-btn" title="Admin Panel" onclick="window.location.href='/admin'">📊</div>
+            <div id="settings-btn" title="Settings">⚙️</div>
+            <h1>Nova Hub</h1>
+            <p>Your Ultimate Games Collection</p>
+        </div>
+        
+        <div id="search-container">
+            <input type="text" id="search-bar" placeholder="🔍 Search for a game...">
+        </div>
+        
+        <div id="game-count"></div>
+        
+        <div id="game-grid"></div>
+        
+        <div id="no-results">
+            <p>😕 No games found matching your search</p>
+        </div>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div id="settings-modal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h2>⚙️ Settings</h2>
+                <div class="close-settings" id="close-settings">✕</div>
+            </div>
+            
+            <!-- Theme Selection -->
+            <div class="settings-section">
+                <h3>🎨 Theme Selection</h3>
+                <p>Choose your preferred color theme for Nova Hub.</p>
+                <div class="theme-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-top: 20px;">
+                    <button class="theme-btn" data-theme="dark" style="background: linear-gradient(135deg, #000000 0%, #0a0a0a 100%); border: 2px solid var(--border-color); border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; color: var(--text-primary);">
+                        <div style="font-size: 2em; margin-bottom: 8px;">🌙</div>
+                        <div style="font-weight: 600;">Dark</div>
+                    </button>
+                    <button class="theme-btn" data-theme="light" style="background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%); border: 2px solid var(--border-color); border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; color: #1e293b;">
+                        <div style="font-size: 2em; margin-bottom: 8px;">☀️</div>
+                        <div style="font-weight: 600;">Light</div>
+                    </button>
+                    <button class="theme-btn" data-theme="blue" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); border: 2px solid var(--border-color); border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; color: var(--text-primary);">
+                        <div style="font-size: 2em; margin-bottom: 8px;">💙</div>
+                        <div style="font-weight: 600;">Blue</div>
+                    </button>
+                    <button class="theme-btn" data-theme="green" style="background: linear-gradient(135deg, #0f1f0f 0%, #1e3a1e 100%); border: 2px solid var(--border-color); border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; color: var(--text-primary);">
+                        <div style="font-size: 2em; margin-bottom: 8px;">💚</div>
+                        <div style="font-weight: 600;">Green</div>
+                    </button>
+                    <button class="theme-btn" data-theme="purple" style="background: linear-gradient(135deg, #1a0a2e 0%, #4c1d95 100%); border: 2px solid var(--border-color); border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; color: var(--text-primary);">
+                        <div style="font-size: 2em; margin-bottom: 8px;">💜</div>
+                        <div style="font-weight: 600;">Purple</div>
+                    </button>
+                    <button class="theme-btn" data-theme="red" style="background: linear-gradient(135deg, #2a0a0a 0%, #7f1d1d 100%); border: 2px solid var(--border-color); border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; color: var(--text-primary);">
+                        <div style="font-size: 2em; margin-bottom: 8px;">❤️</div>
+                        <div style="font-weight: 600;">Red</div>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Tab Cloaking Section -->
+            <div class="settings-section">
+                <h3>🔒 Tab Cloaking</h3>
+                <p>Change how your browser tab appears to others. Select a preset or create a custom cloak.</p>
+                
+                <div class="tab-cloak-grid" id="tab-cloak-presets" style="margin-top: 15px;">
+                    <!-- Presets will be added here -->
+                </div>
+                
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                    <h4 style="margin-bottom: 12px; font-size: 1.1em; color: var(--text-primary);">Custom Tab Cloak</h4>
+                    <input type="text" id="custom-title" class="custom-cloak-input" placeholder="Enter custom tab title (e.g., 'Google')" style="margin-bottom: 10px;">
+                    <input type="text" id="custom-icon" class="custom-cloak-input" placeholder="Enter favicon URL (e.g., 'https://www.google.com/favicon.ico')" style="margin-bottom: 15px;">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn-primary" id="apply-custom-cloak">Apply Custom Cloak</button>
+                        <button class="btn-primary" id="reset-cloak" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">Reset to Default</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Display & Search Options -->
+            <div class="settings-section">
+                <h3>⚙️ Display & Search</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0; padding: 12px; background: var(--bg-card); border-radius: 8px;">
+                    <div>
+                        <strong style="display: block; margin-bottom: 4px; color: var(--text-primary);">Show Game Count</strong>
+                        <span style="font-size: 0.85em; color: var(--text-secondary);">Display the number of games found</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="show-game-count" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 15px 0; padding: 12px; background: var(--bg-card); border-radius: 8px;">
+                    <div>
+                        <strong style="display: block; margin-bottom: 4px; color: var(--text-primary);">Case Sensitive Search</strong>
+                        <span style="font-size: 0.85em; color: var(--text-secondary);">Match exact case when searching</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="case-sensitive-search">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Progress Management -->
+            <div class="settings-section">
+                <h3>💾 Game Progress</h3>
+                <p style="margin-bottom: 15px;">Manage saved game progress. Progress is automatically saved in your browser's local storage.</p>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn-primary" id="clear-all-progress" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">Clear All Progress</button>
+                    <button class="btn-primary" id="refresh-progress" style="background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);">Refresh Progress Indicators</button>
+                </div>
+                <p id="progress-status" style="margin-top: 12px; font-size: 0.9em; color: var(--text-secondary);"></p>
+                <div id="progress-list" style="margin-top: 15px; max-height: 200px; overflow-y: auto; background: var(--bg-card); border-radius: 8px; padding: 10px; font-size: 0.9em;">
+                    <!-- Progress list will be populated here -->
+                </div>
+            </div>
+            
+            <!-- Cache Management -->
+            <div class="settings-section">
+                <h3>🗑️ Cache Management</h3>
+                <p style="margin-bottom: 15px;">Clear cached thumbnail paths to force reload all thumbnails.</p>
+                <button class="btn-primary" id="clear-thumbnail-cache" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">Clear Thumbnail Cache</button>
+                <p id="cache-status" style="margin-top: 12px; font-size: 0.9em; color: var(--text-secondary);"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                const games = [
+                    // Games from files directory
+                    '2048', 'adcap', 'adofai', 'basketrandom', 'cluster-rush', 
+                    'cookieclicker', 'couch2048', 'drive-mad', 'foodstars', 'funnyshooter2', 
+                    'highway-traffic', 'hypercars', 'keylimba',
+                    // Games from load directory
+                    'load/1', 'load/1on1soccer', 'load/2', 'load/2048', 'load/3', 
+                    'load/3dnoobdestroyer', 'load/4', 'load/8ball', 'load/age-of-war', 
+                    'load/alienhominid', 'load/amazing-rope-police', 'load/amongus', 
+                    'load/angrybirds', 'load/angry-sharks', 'load/asmallworldcup', 'load/astray', 
+                    'load/awesometanks2', 'load/bad-ice-cream', 'load/bad-ice-cream-2', 
+                    'load/bad-ice-cream-3', 'load/basketball-stars', 'load/bitlife', 
+                    'load/blockblast', 'load/blocky-snakes', 'load/bloonstd', 'load/bloonstd2', 
+                    'load/bloonstd3', 'load/bloonstd4', 'load/bloxorz', 'load/bounceback', 
+                    'load/boxing-random', 'load/breakingthebank', 'load/burger-and-frights', 
+                    'load/cookieclicker', 'load/core-ball', 'load/creativekillchamber', 
+                    'load/deepest-sword', 'load/DogeMiner', 'load/ducklife', 'load/ducklife2', 
+                    'load/ducklife3', 'load/ducklife4', 'load/eaglercraft', 'load/emulatorjs', 
+                    'load/flappy-bird', 'load/fnaw', 'load/geometrydash', 'load/geometrydashmeltdown', 
+                    'load/geometrydashsubzero', 'load/geometrydashworld', 'load/google-snake', 
+                    'load/gravity-soccer', 'load/gunmayhem2', 'load/gunmayhemredux', 
+                    'load/guymayhem', 'load/interactivebuddy', 'load/learntofly', 
+                    'load/learntofly 2', 'load/learntofly3', 'load/littlealchemy', 
+                    'load/littlealchemy2', 'load/lolbeans', 'load/ma', 'load/melonplayground', 
+                    'load/noob-steve-parkour', 'load/nowgg', 'load/nzp', 'load/ovo', 
+                    'load/papasburgeria', 'load/papaspizzaria', 'load/paperminecraft', 
+                    'load/pokemongames', 'load/precisionclient', 'load/quake', 'load/rbcollege', 
+                    'load/redball', 'load/retro-bowl', 'load/riddleschool', 'load/slope', 
+                    'load/slope2', 'load/slowroads', 'load/smashkarts', 'load/snowrider3d', 
+                    'load/soccerrandom', 'load/soccerskills', 'load/soundboard', 'load/stick-merge', 
+                    'load/subwaysurfers', 'load/totm', 'load/webretro'
+                ];
+
+                const gameGrid = document.getElementById('game-grid');
+                const searchBar = document.getElementById('search-bar');
+                const gameCount = document.getElementById('game-count');
+                const noResults = document.getElementById('no-results');
+
+                if (!gameGrid || !searchBar || !gameCount || !noResults) {
+                    console.error('Required DOM elements not found');
+                    return;
+                }
+
+                console.log('Games array loaded:', games.length, 'games');
+
+                // Emoji mapping for games (optional visual enhancement)
+                const gameEmojis = {
+                    '2048': '🔢', 'adcap': '💰', 'adofai': '🎵', 
+                    'basketrandom': '🏀', 'cluster-rush': '🎯', 'cookieclicker': '🍪',
+                    'couch2048': '🛋️', 'drive-mad': '🚗', 'foodstars': '🍔', 
+                    'funnyshooter2': '🔫', 'highway-traffic': '🚦', 'hypercars': '🏎️', 
+                    'keylimba': '🎹', '1on1soccer': '⚽', '8ball': '🎱', 'age-of-war': '⚔️',
+                    'alienhominid': '👽', 'amazing-rope-police': '🚔', 'amongus': '👽',
+                    'angrybirds': '🐦', 'angry-sharks': '🦈', 'asmallworldcup': '⚽',
+                    'astray': '🎮', 'awesometanks2': '🚗', 'bad-ice-cream': '🍦',
+                    'bad-ice-cream-2': '🍦', 'bad-ice-cream-3': '🍦', 'basketball-stars': '🏀',
+                    'bitlife': '💼', 'blockblast': '🧩', 'blocky-snakes': '🐍',
+                    'bloonstd': '🎈', 'bloonstd2': '🎈', 'bloonstd3': '🎈', 'bloonstd4': '🎈',
+                    'bloxorz': '🧱', 'bounceback': '⚽', 'boxing-random': '🥊',
+                    'breakingthebank': '💰', 'burger-and-frights': '🍔', 'core-ball': '⚽',
+                    'creativekillchamber': '🎮', 'deepest-sword': '⚔️', 'DogeMiner': '⛏️',
+                    'ducklife': '🦆', 'ducklife2': '🦆', 'ducklife3': '🦆', 'ducklife4': '🦆',
+                    'eaglercraft': '⛏️', 'emulatorjs': '🎮', 'flappy-bird': '🐦',
+                    'fnaw': '🐻', 'geometrydash': '💎', 'geometrydashmeltdown': '💎',
+                    'geometrydashsubzero': '💎', 'geometrydashworld': '💎', 'google-snake': '🐍',
+                    'gravity-soccer': '⚽', 'gunmayhem2': '🔫', 'gunmayhemredux': '🔫',
+                    'guymayhem': '🔫', 'interactivebuddy': '👤', 'learntofly': '🐧',
+                    'learntofly 2': '🐧', 'learntofly3': '🐧', 'littlealchemy': '🧪',
+                    'littlealchemy2': '🧪', 'lolbeans': '🫘', 'melonplayground': '🍉',
+                    'noob-steve-parkour': '🏃', 'nowgg': '🎮', 'nzp': '🎮', 'ovo': '🥚',
+                    'papasburgeria': '🍔', 'papaspizzaria': '🍕', 'paperminecraft': '⛏️',
+                    'pokemongames': '⚡', 'precisionclient': '🎮', 'quake': '💥',
+                    'rbcollege': '🏈', 'redball': '🔴', 'retro-bowl': '🏈', 'riddleschool': '🎒',
+                    'slope': '⛷️', 'slope2': '⛷️', 'slowroads': '🛣️', 'smashkarts': '🏎️',
+                    'snowrider3d': '⛷️', 'soccerrandom': '⚽', 'soccerskills': '⚽',
+                    'soundboard': '🔊', 'stick-merge': '🪄', 'subwaysurfers': '🏃',
+                    'totm': '🎮', 'webretro': '🎮'
+                };
+
+                const formatGameName = (game) => {
+                    return game
+                        .split('-')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+                };
+
+                const getGameEmoji = (game) => {
+                    return gameEmojis[game.toLowerCase()] || '🎮';
+                };
+
+                // Thumbnail cache - stores which thumbnail path works for each game
+                const thumbnailCache = JSON.parse(localStorage.getItem('thumbnailCache') || '{}');
+                
+                // Known thumbnail paths (from file system scan)
+                const knownThumbnails = {
+                    '2048': './html5/2048/thumb.png',
+                    'adcap': './html5/adcap/splash.jpg',
+                    'adofai': './html5/adofai/splash.png',
+                    'basketrandom': './html5/basketrandom/patch/cdn/kizi/images/branding_logo_kizi_small.png',
+                    'cluster-rush': './html5/cluster-rush/TemplateData/logo.png',
+                    'cookieclicker': './html5/cookieclicker/game/img/dashnetLogo.png',
+                    'couch2048': './html5/couch2048/game/splash.jpg',
+                    'highway-traffic': './html5/highway-traffic/file/TemplateData/progressLogo.Dark.png',
+                    'hypercars': './html5/hypercars/TemplateData/logo.png',
+                    'keylimba': './html5/keylimba/splash.webp',
+                    'load/1': './html5/load/1/logo.jpg',
+                    'load/2': './html5/load/2/logo.jpg',
+                    'load/3': './html5/load/3/logo.webp',
+                    'load/4': './html5/load/4/logo.webp',
+                    'load/8ball': './html5/load/8ball/patch/images/gamemonetize-logo.png',
+                    'load/amazing-rope-police': './html5/load/amazing-rope-police/splash.jpeg',
+                    'load/angry-sharks': './html5/load/angry-sharks/assets/img/splash.png',
+                    'load/angrybirds': './html5/load/angrybirds/media/textureSplash_blue_2.png',
+                    'load/asmallworldcup': './html5/load/asmallworldcup/images/rujogameslogo-sheet0.png',
+                    'load/awesometanks2': './html5/load/awesometanks2/images/menu/logo.jpg',
+                    'load/bad-ice-cream': './html5/load/bad-ice-cream/assets/badicecream_splash.jpg',
+                    'load/bad-ice-cream-2': './html5/load/bad-ice-cream-2/assets/badicecream_splash.jpg',
+                    'load/bad-ice-cream-3': './html5/load/bad-ice-cream-3/assets/badicecream_splash.jpg',
+                    'load/bitlife': './html5/load/bitlife/logo.png',
+                    'load/blockblast': './html5/load/blockblast/TemplateData/icons/unity-logo-dark.png',
+                    'load/blocky-snakes': './html5/load/blocky-snakes/style/progressLogo.Dark.png',
+                    'load/burger-and-frights': './html5/load/burger-and-frights/splash.png',
+                    'load/cookieclicker': './html5/load/cookieclicker/splash.png',
+                    'load/core-ball': './html5/load/core-ball/image/WB_logo.png',
+                    'load/emulatorjs': './html5/load/emulatorjs/docs/Logo-light.png',
+                    'load/flappy-bird': './html5/load/flappy-bird/assets/splash.png',
+                    'load/geometrydash': './html5/load/geometrydash/splash.png',
+                    'load/gravity-soccer': './html5/load/gravity-soccer/images/logo_grande-sheet0.png',
+                    'load/littlealchemy': './html5/load/littlealchemy/images/loading-screen-logo.png',
+                    'load/noob-steve-parkour': './html5/load/noob-steve-parkour/logo.png',
+                    'load/nzp': './html5/load/nzp/splash.png',
+                    'load/ovo': './html5/load/ovo/images/dialogoverlay-sheet0.png',
+                    'load/papasburgeria': './html5/load/papasburgeria/splash.jpg',
+                    'load/precisionclient': './html5/load/precisionclient/logo.png',
+                    'load/quake': './html5/load/quake/splash.jpeg',
+                    'load/rbcollege': './html5/load/rbcollege/html5game/splash.png',
+                    'load/retro-bowl': './html5/load/retro-bowl/html5game/splash.png',
+                    'load/slope2': './html5/load/slope2/splash.png',
+                    'load/slowroads': './html5/load/slowroads/splash.jpeg',
+                    'load/snowrider3d': './html5/load/snowrider3d/TemplateData/logo.png',
+                    'load/soccerskills': './html5/load/soccerskills/data/interface1/logo.png',
+                    'load/stick-merge': './html5/load/stick-merge/splash.png',
+                    'load/subwaysurfers': './html5/load/subwaysurfers/img/splash.jpg',
+                    'load/totm': './html5/load/totm/progressLogo.Dark.png'
+                };
+                
+                // Function to get thumbnail paths for a game (tries multiple common names and locations)
+                const getThumbnailPaths = (game) => {
+                    // Check known thumbnails first (fastest)
+                    if (knownThumbnails[game]) {
+                        return [knownThumbnails[game]];
+                    }
+                    
+                    // Check cache second
+                    if (thumbnailCache[game]) {
+                        return [thumbnailCache[game]];
+                    }
+                    
+                    const gamePath = game.startsWith('load/') ? game : game;
+                    const basePath = `./html5/${gamePath}`;
+                    
+                    // Priority order: root directory files first, then subdirectories
+                    // Most common thumbnail file names
+                    const rootFiles = ['logo.png', 'logo.jpg', 'logo.webp', 'splash.png', 'splash.jpg', 'splash.jpeg', 'splash.webp', 'thumb.png', 'thumb.jpg', 'thumb.webp', 'thumbnail.png', 'thumbnail.jpg'];
+                    
+                    // Common subdirectories to check
+                    const subdirs = ['game/', 'assets/', 'images/', 'img/', 'TemplateData/', 'patch/', 'html5game/'];
+                    
+                    const paths = [];
+                    
+                    // First priority: root directory files (most common location)
+                    rootFiles.forEach(name => {
+                        paths.push(`${basePath}/${name}`);
+                    });
+                    
+                    // Second priority: common subdirectories with same file names
+                    subdirs.forEach(subdir => {
+                        rootFiles.forEach(name => {
+                            paths.push(`${basePath}/${subdir}${name}`);
+                        });
+                    });
+                    
+                    // Third priority: check for logo files in deeper paths
+                    const logoVariants = ['logo.png', 'logo.jpg', 'logo.webp'];
+                    const deepPaths = ['TemplateData/logo.png', 'game/img/splash.png', 'game/splash.png', 'assets/img/splash.png', 'assets/splash.png', 'images/splash.png', 'html5game/splash.png'];
+                    deepPaths.forEach(deepPath => {
+                        paths.push(`${basePath}/${deepPath}`);
+                    });
+                    
+                    return paths;
+                };
+                
+                // Function to cache successful thumbnail
+                const cacheThumbnail = (game, path) => {
+                    thumbnailCache[game] = path;
+                    localStorage.setItem('thumbnailCache', JSON.stringify(thumbnailCache));
+                };
+
+                const createGameCard = (game, index) => {
+                    const card = document.createElement('a');
+                    // Handle games in load directory - they already have the path prefix
+                    const gamePath = game.startsWith('load/') ? `./html5/${game}/index.html` : `./html5/${game}/index.html`;
+                    card.href = gamePath;
+                    card.className = 'game-card';
+                    card.style.animationDelay = `${index * 0.02}s`;
+                    
+                    // Track game click for analytics (don't prevent default navigation)
+                    card.addEventListener('click', () => {
+                        const gameName = game.replace('load/', '');
+                        // Track game start - will monitor play time
+                        if (typeof window.trackGameStart === 'function') {
+                            window.trackGameStart(gameName, gamePath);
+                        }
+                    });
+
+                    const icon = document.createElement('div');
+                    icon.className = 'game-icon';
+                    
+                    // Extract game name for emoji lookup (remove load/ prefix if present)
+                    const gameNameForEmoji = game.replace('load/', '');
+                    const emoji = getGameEmoji(gameNameForEmoji);
+                    
+                    // Try to load thumbnail image
+                    const thumbnailPaths = getThumbnailPaths(game);
+                    let currentPathIndex = 0;
+                    let imgLoaded = false;
+                    
+                    // Add emoji as fallback (shown by default, hidden if image loads)
+                    const emojiSpan = document.createElement('span');
+                    emojiSpan.textContent = emoji;
+                    emojiSpan.className = 'emoji-fallback';
+                    icon.appendChild(emojiSpan);
+                    
+                    const tryLoadThumbnail = () => {
+                        if (currentPathIndex >= thumbnailPaths.length) {
+                            // All paths failed, emoji is already visible
+                            return;
+                        }
+                        
+                        const img = document.createElement('img');
+                        img.src = thumbnailPaths[currentPathIndex];
+                        img.alt = formatGameName(gameNameForEmoji);
+                        img.style.width = '100%';
+                        img.style.height = '100%';
+                        img.style.objectFit = 'cover';
+                        img.style.position = 'absolute';
+                        img.style.top = '0';
+                        img.style.left = '0';
+                        img.style.display = 'none';
+                        img.loading = 'lazy'; // Lazy load for better performance
+                        
+                        // Use cached image if available
+                        if (thumbnailCache[game]) {
+                            img.src = thumbnailCache[game];
+                        }
+                        
+                        img.onload = function() {
+                            this.style.display = 'block';
+                            imgLoaded = true;
+                            // Cache the successful thumbnail path
+                            if (!thumbnailCache[game]) {
+                                cacheThumbnail(game, thumbnailPaths[currentPathIndex]);
+                            }
+                            // Hide emoji if image loads
+                            emojiSpan.style.display = 'none';
+                        };
+                        
+                        img.onerror = function() {
+                            // If using cached path failed, try other paths
+                            if (thumbnailCache[game] && thumbnailPaths[currentPathIndex] === thumbnailCache[game]) {
+                                // Cache was wrong, remove it
+                                delete thumbnailCache[game];
+                                localStorage.setItem('thumbnailCache', JSON.stringify(thumbnailCache));
+                                currentPathIndex = 0; // Start from beginning
+                            } else {
+                                currentPathIndex++;
+                            }
+                            if (currentPathIndex < thumbnailPaths.length) {
+                                tryLoadThumbnail();
+                            }
+                        };
+                        
+                        icon.appendChild(img);
+                    };
+                    
+                    // Start trying to load thumbnail
+                    tryLoadThumbnail();
+
+                    const name = document.createElement('div');
+                    name.className = 'game-name';
+                    // Extract game name for display (remove load/ prefix if present)
+                    const gameNameForDisplay = game.replace('load/', '');
+                    name.textContent = formatGameName(gameNameForDisplay);
+                    
+                    // Check for saved progress (try multiple name formats)
+                    const progressKeys = [
+                        `nova_hub_progress_${gameNameForDisplay}`,
+                        `nova_hub_progress_${gameNameForDisplay.toLowerCase()}`,
+                        `nova_hub_progress_${gameNameForDisplay.toLowerCase().replace(/\s+/g, '')}`,
+                        `nova_hub_progress_${gameNameForDisplay.toLowerCase().replace(/\s+/g, '-')}`
+                    ];
+                    
+                    let savedProgress = null;
+                    for (const key of progressKeys) {
+                        try {
+                            const stored = localStorage.getItem(key);
+                            if (stored) {
+                                savedProgress = JSON.parse(stored);
+                                break;
+                            }
+                        } catch (e) {
+                            // Continue to next key
+                        }
+                    }
+                    
+                    if (savedProgress) {
+                        const progressBadge = document.createElement('div');
+                        progressBadge.className = 'progress-badge';
+                        progressBadge.title = `Progress saved: ${new Date(savedProgress.timestamp).toLocaleString()}`;
+                        card.appendChild(progressBadge);
+                    }
+
+                    card.appendChild(icon);
+                    card.appendChild(name);
+                    return card;
+                };
+
+                const renderGames = (gamesToRender) => {
+                    if (!gameGrid) return;
+                    
+                    gameGrid.innerHTML = '';
+                    noResults.classList.remove('show');
+
+                    if (gamesToRender.length === 0) {
+                        noResults.classList.add('show');
+                        gameCount.textContent = '';
+                        return;
+                    }
+
+                    gameCount.textContent = `Found ${gamesToRender.length} game${gamesToRender.length !== 1 ? 's' : ''}`;
+
+                    gamesToRender.forEach((game, index) => {
+                        const card = createGameCard(game, index);
+                        gameGrid.appendChild(card);
+                    });
+
+                    console.log('Rendered', gamesToRender.length, 'game cards');
+                };
+
+                searchBar.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.trim();
+                    const caseSensitive = localStorage.getItem('caseSensitiveSearch') === 'true';
+                    const searchTermLower = caseSensitive ? searchTerm : searchTerm.toLowerCase();
+                    
+                    const filteredGames = games.filter(game => {
+                        // Remove load/ prefix for search comparison
+                        const gameNameForSearch = game.replace('load/', '');
+                        const formattedName = formatGameName(gameNameForSearch);
+                        const gameNameCompare = caseSensitive ? gameNameForSearch : gameNameForSearch.toLowerCase();
+                        const formattedCompare = caseSensitive ? formattedName : formattedName.toLowerCase();
+                        return gameNameCompare.includes(searchTermLower) || formattedCompare.includes(searchTermLower);
+                    });
+                    renderGames(filteredGames);
+                });
+
+                // Preload and cache thumbnails in background
+                const preloadThumbnails = () => {
+                    games.forEach((game, index) => {
+                        // Delay preloading to not block initial render
+                        setTimeout(() => {
+                            const thumbnailPaths = getThumbnailPaths(game);
+                            if (thumbnailPaths.length > 0) {
+                                const img = new Image();
+                                img.src = thumbnailPaths[0];
+                                img.onload = () => {
+                                    cacheThumbnail(game, thumbnailPaths[0]);
+                                };
+                            }
+                        }, index * 50); // Stagger preloads
+                    });
+                };
+                
+                // Initial render
+                renderGames(games);
+                console.log('Page initialized successfully');
+                
+                // Start preloading thumbnails after initial render
+                setTimeout(preloadThumbnails, 1000);
+            } catch (error) {
+                console.error('Error initializing page:', error);
+                alert('Error loading games. Please check the console for details.');
+            }
+        });
+
+        // Fallback if DOMContentLoaded already fired
+        if (document.readyState === 'loading') {
+            // DOMContentLoaded has not fired yet, the listener above will handle it
+        } else {
+            // DOMContentLoaded has already fired, trigger manually
+            document.dispatchEvent(new Event('DOMContentLoaded'));
+        }
+        
+        // Theme Management
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('selectedTheme', theme);
+            updateThemeButtons(theme);
+        }
+        
+        function updateThemeButtons(activeTheme) {
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                const theme = btn.getAttribute('data-theme');
+                if (theme === activeTheme) {
+                    btn.style.border = '3px solid var(--accent-primary)';
+                    btn.style.transform = 'scale(1.05)';
+                    btn.style.boxShadow = '0 4px 12px var(--shadow-hover)';
+                } else {
+                    btn.style.border = '2px solid var(--border-color)';
+                    btn.style.transform = 'scale(1)';
+                    btn.style.boxShadow = 'none';
+                }
+            });
+        }
+        
+        // Load saved theme on page load (apply immediately)
+        const savedTheme = localStorage.getItem('selectedTheme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        
+        // Apply theme when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                applyTheme(savedTheme);
+            });
+        } else {
+            applyTheme(savedTheme);
+        }
+        
+        // Settings Modal Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const settingsBtn = document.getElementById('settings-btn');
+            const settingsModal = document.getElementById('settings-modal');
+            const closeSettings = document.getElementById('close-settings');
+            
+            if (settingsBtn && settingsModal && closeSettings) {
+                settingsBtn.addEventListener('click', () => {
+                    settingsModal.classList.add('show');
+                    initializeSettings();
+                });
+                
+                closeSettings.addEventListener('click', () => {
+                    settingsModal.classList.remove('show');
+                });
+                
+                settingsModal.addEventListener('click', (e) => {
+                    if (e.target === settingsModal) {
+                        settingsModal.classList.remove('show');
+                    }
+                });
+            }
+            
+            // Tab Cloaking Presets
+            const tabCloakPresets = [
+                { name: 'Default', icon: './favicon.ico', title: 'Nova Hub' },
+                { name: 'Google', icon: 'https://www.google.com/favicon.ico', title: 'Google' },
+                { name: 'Google Drive', icon: 'https://ssl.gstatic.com/images/branding/product/2x/drive_2020q4_32dp.png', title: 'My Drive - Google Drive' },
+                { name: 'Google Classroom', icon: 'https://ssl.gstatic.com/classroom/favicon.png', title: 'Classes' },
+                { name: 'Google Docs', icon: 'https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png', title: 'Google Docs' },
+                { name: 'Google Slides', icon: 'https://ssl.gstatic.com/docs/presentations/images/favicon5.ico', title: 'Google Slides' },
+                { name: 'Schoology', icon: 'https://asset-cdn.schoology.com/sites/all/themes/schoology_theme/favicon.ico', title: 'Home | Schoology' },
+                { name: 'Gmail', icon: 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico', title: 'Gmail' },
+                { name: 'YouTube', icon: 'https://www.youtube.com/favicon.ico', title: 'YouTube' },
+                { name: 'Wikipedia', icon: 'https://www.wikipedia.org/static/favicon/wikipedia.ico', title: 'Wikipedia' },
+                { name: 'Khan Academy', icon: 'https://www.khanacademy.org/favicon.ico', title: 'Dashboard | Khan Academy' },
+                { name: 'Canvas', icon: 'https://www.instructure.com/favicon.ico', title: 'Dashboard' },
+                { name: 'Desmos', icon: 'https://www.desmos.com/assets/img/apps/scientific/favicon.ico', title: 'Desmos | Scientific Calculator' },
+                { name: 'Kahoot', icon: 'https://assets-cdn.kahoot.it/controller/v2/favicon.ico', title: 'Enter Game PIN - Kahoot!' }
+            ];
+            
+            function initializeSettings() {
+                // Update theme buttons to show active theme
+                const currentTheme = localStorage.getItem('selectedTheme') || 'dark';
+                updateThemeButtons(currentTheme);
+                
+                // Theme button handlers (re-initialize each time settings open)
+                document.querySelectorAll('.theme-btn').forEach(btn => {
+                    // Remove existing listeners by cloning
+                    const newBtn = btn.cloneNode(true);
+                    btn.parentNode.replaceChild(newBtn, btn);
+                    newBtn.addEventListener('click', () => {
+                        const theme = newBtn.getAttribute('data-theme');
+                        applyTheme(theme);
+                    });
+                });
+                
+                // Initialize tab cloak presets
+                const presetsContainer = document.getElementById('tab-cloak-presets');
+                if (presetsContainer) {
+                    presetsContainer.innerHTML = '';
+                    const savedCloak = localStorage.getItem('tabCloak') || 'Default';
+                    
+                    tabCloakPresets.forEach(preset => {
+                        const btn = document.createElement('div');
+                        btn.className = 'tab-cloak-btn';
+                        if (preset.name === savedCloak) {
+                            btn.classList.add('active');
+                        }
+                        btn.innerHTML = `
+                            <img src="${preset.icon}" alt="${preset.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100%27%3E%3Ctext y=\'.9em\' font-size=\'90%27%3E🎮%3C/text%3E%3C/svg%3E'">
+                            <span>${preset.name}</span>
+                        `;
+                        btn.addEventListener('click', () => {
+                            applyTabCloak(preset.title, preset.icon, preset.name);
+                            document.querySelectorAll('.tab-cloak-btn').forEach(b => b.classList.remove('active'));
+                            btn.classList.add('active');
+                        });
+                        presetsContainer.appendChild(btn);
+                    });
+                }
+                
+                // Load saved custom cloak
+                const savedCustomTitle = localStorage.getItem('customCloakTitle');
+                const savedCustomIcon = localStorage.getItem('customCloakIcon');
+                if (savedCustomTitle) document.getElementById('custom-title').value = savedCustomTitle;
+                if (savedCustomIcon) document.getElementById('custom-icon').value = savedCustomIcon;
+                
+                // Apply custom cloak button
+                const applyCustomBtn = document.getElementById('apply-custom-cloak');
+                if (applyCustomBtn) {
+                    applyCustomBtn.addEventListener('click', () => {
+                        const title = document.getElementById('custom-title').value;
+                        const icon = document.getElementById('custom-icon').value;
+                        if (title || icon) {
+                            applyTabCloak(title || document.title, icon || './favicon.ico', 'Custom');
+                            localStorage.setItem('customCloakTitle', title);
+                            localStorage.setItem('customCloakIcon', icon);
+                            document.querySelectorAll('.tab-cloak-btn').forEach(b => b.classList.remove('active'));
+                        }
+                    });
+                }
+                
+                // Reset cloak button
+                const resetBtn = document.getElementById('reset-cloak');
+                if (resetBtn) {
+                    resetBtn.addEventListener('click', () => {
+                        applyTabCloak('Nova Hub', './favicon.ico', 'Default');
+                        localStorage.removeItem('tabCloak');
+                        localStorage.removeItem('customCloakTitle');
+                        localStorage.removeItem('customCloakIcon');
+                        document.getElementById('custom-title').value = '';
+                        document.getElementById('custom-icon').value = '';
+                        document.querySelectorAll('.tab-cloak-btn').forEach(b => b.classList.remove('active'));
+                        document.querySelectorAll('.tab-cloak-btn')[0].classList.add('active');
+                    });
+                }
+                
+                // Load saved display options
+                const showGameCount = localStorage.getItem('showGameCount');
+                if (showGameCount === 'false') {
+                    document.getElementById('show-game-count').checked = false;
+                    const gameCountEl = document.getElementById('game-count');
+                    if (gameCountEl) gameCountEl.style.display = 'none';
+                }
+                
+                document.getElementById('show-game-count').addEventListener('change', (e) => {
+                    localStorage.setItem('showGameCount', e.target.checked);
+                    const gameCountEl = document.getElementById('game-count');
+                    if (gameCountEl) {
+                        gameCountEl.style.display = e.target.checked ? 'block' : 'none';
+                    }
+                });
+                
+                // Case sensitive search
+                const caseSensitive = localStorage.getItem('caseSensitiveSearch') === 'true';
+                document.getElementById('case-sensitive-search').checked = caseSensitive;
+                document.getElementById('case-sensitive-search').addEventListener('change', (e) => {
+                    localStorage.setItem('caseSensitiveSearch', e.target.checked);
+                });
+                
+                // Progress Management
+                const clearAllProgressBtn = document.getElementById('clear-all-progress');
+                const refreshProgressBtn = document.getElementById('refresh-progress');
+                const progressStatus = document.getElementById('progress-status');
+                const progressList = document.getElementById('progress-list');
+                
+                function updateProgressList() {
+                    if (!progressList) return;
+                    
+                    const progressKeys = [];
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (key && key.startsWith('nova_hub_progress_')) {
+                            progressKeys.push(key);
+                        }
+                    }
+                    
+                    if (progressKeys.length === 0) {
+                        progressList.innerHTML = '<p style="color: var(--text-secondary); padding: 10px; text-align: center;">No saved progress</p>';
+                        if (progressStatus) {
+                            progressStatus.textContent = 'No games have saved progress yet.';
+                        }
+                    } else {
+                        const progressItems = progressKeys.map(key => {
+                            try {
+                                const progress = JSON.parse(localStorage.getItem(key));
+                                const gameName = key.replace('nova_hub_progress_', '').replace(/-/g, ' ');
+                                const date = new Date(progress.timestamp).toLocaleString();
+                                return `
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; margin-bottom: 5px; background: var(--bg-tertiary); border-radius: 5px;">
+                                        <span style="color: var(--text-primary);">${gameName}</span>
+                                        <div style="display: flex; gap: 10px; align-items: center;">
+                                            <span style="color: var(--text-secondary); font-size: 0.85em;">${date}</span>
+                                            <button onclick="localStorage.removeItem('${key}'); updateProgressList(); window.refreshProgressIndicators();" style="background: #e74c3c; border: none; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8em;">Clear</button>
+                                        </div>
+                                    </div>
+                                `;
+                            } catch (e) {
+                                return '';
+                            }
+                        }).join('');
+                        progressList.innerHTML = progressItems;
+                        if (progressStatus) {
+                            progressStatus.textContent = `${progressKeys.length} game${progressKeys.length !== 1 ? 's' : ''} with saved progress`;
+                        }
+                    }
+                }
+                
+                if (clearAllProgressBtn) {
+                    clearAllProgressBtn.addEventListener('click', () => {
+                        if (confirm('Are you sure you want to clear ALL saved game progress? This cannot be undone.')) {
+                            const progressKeys = [];
+                            for (let i = 0; i < localStorage.length; i++) {
+                                const key = localStorage.key(i);
+                                if (key && key.startsWith('nova_hub_progress_')) {
+                                    progressKeys.push(key);
+                                }
+                            }
+                            progressKeys.forEach(key => localStorage.removeItem(key));
+                            if (progressStatus) {
+                                progressStatus.textContent = 'All progress cleared!';
+                                progressStatus.style.color = '#4ade80';
+                            }
+                            updateProgressList();
+                            if (typeof window.refreshProgressIndicators === 'function') {
+                                window.refreshProgressIndicators();
+                            }
+                            setTimeout(() => {
+                                if (progressStatus) {
+                                    progressStatus.style.color = '';
+                                }
+                            }, 2000);
+                        }
+                    });
+                }
+                
+                if (refreshProgressBtn) {
+                    refreshProgressBtn.addEventListener('click', () => {
+                        updateProgressList();
+                        if (typeof window.refreshProgressIndicators === 'function') {
+                            window.refreshProgressIndicators();
+                        }
+                        if (progressStatus) {
+                            progressStatus.textContent = 'Progress indicators refreshed!';
+                            progressStatus.style.color = '#4ade80';
+                            setTimeout(() => {
+                                progressStatus.style.color = '';
+                            }, 2000);
+                        }
+                    });
+                }
+                
+                // Initialize progress list
+                updateProgressList();
+                
+                // Make updateProgressList available globally
+                window.updateProgressList = updateProgressList;
+                
+                // Clear thumbnail cache button
+                const clearCacheBtn = document.getElementById('clear-thumbnail-cache');
+                const cacheStatus = document.getElementById('cache-status');
+                if (clearCacheBtn) {
+                    // Show cache status
+                    const cacheSize = Object.keys(JSON.parse(localStorage.getItem('thumbnailCache') || '{}')).length;
+                    if (cacheStatus) {
+                        cacheStatus.textContent = `Cached thumbnails: ${cacheSize} games`;
+                    }
+                    
+                    clearCacheBtn.addEventListener('click', () => {
+                        localStorage.removeItem('thumbnailCache');
+                        if (cacheStatus) {
+                            cacheStatus.textContent = 'Thumbnail cache cleared! Refresh page to reload thumbnails.';
+                            cacheStatus.style.color = '#4ade80';
+                        }
+                        // Reload page after a short delay
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    });
+                }
+            }
+            
+            function applyTabCloak(title, icon, name) {
+                document.title = title || 'Nova Hub';
+                
+                // Remove existing favicon
+                const existingFavicon = document.querySelector('link[rel="icon"]') || document.querySelector('link[rel="shortcut icon"]');
+                if (existingFavicon) {
+                    existingFavicon.remove();
+                }
+                
+                // Add new favicon
+                const link = document.createElement('link');
+                link.rel = 'icon';
+                link.type = 'image/x-icon';
+                link.href = icon || './favicon.ico';
+                document.head.appendChild(link);
+                
+                localStorage.setItem('tabCloak', name);
+            }
+            
+            // Apply saved tab cloak on page load
+            const savedCloakName = localStorage.getItem('tabCloak');
+            if (savedCloakName && savedCloakName !== 'Default') {
+                const savedPreset = tabCloakPresets.find(p => p.name === savedCloakName);
+                if (savedPreset) {
+                    applyTabCloak(savedPreset.title, savedPreset.icon, savedPreset.name);
+                } else if (savedCloakName === 'Custom') {
+                    const customTitle = localStorage.getItem('customCloakTitle');
+                    const customIcon = localStorage.getItem('customCloakIcon');
+                    if (customTitle || customIcon) {
+                        applyTabCloak(customTitle || 'Nova Hub', customIcon || './favicon.ico', 'Custom');
+                    }
+                }
+            }
+        });
+
+        // Analytics Tracking
+        (function() {
+            const API_URL = window.location.origin;
+            let sessionId = localStorage.getItem('analytics_session_id');
+            if (!sessionId) {
+                sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('analytics_session_id', sessionId);
+            }
+
+            const sessionStartTime = Date.now();
+            let lastUpdateTime = sessionStartTime;
+            let totalDuration = 0;
+            let pageVisible = true;
+
+            // Track page visibility
+            document.addEventListener('visibilitychange', () => {
+                pageVisible = !document.hidden;
+                if (pageVisible) {
+                    lastUpdateTime = Date.now();
+                } else {
+                    updateSessionDuration();
+                }
+            });
+
+            // Update session duration every 30 seconds
+            function updateSessionDuration() {
+                if (pageVisible) {
+                    const now = Date.now();
+                    const timeSpent = now - lastUpdateTime;
+                    totalDuration += timeSpent;
+                    lastUpdateTime = now;
+
+                    fetch(`${API_URL}/api/session`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            sessionId: sessionId,
+                            startTime: sessionStartTime,
+                            lastActive: now,
+                            totalDuration: totalDuration
+                        })
+                    }).catch(err => console.error('Analytics error:', err));
+                }
+            }
+
+            // Record initial visit
+            fetch(`${API_URL}/api/visit`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    sessionId: sessionId,
+                    timestamp: sessionStartTime,
+                    duration: 0
+                })
+            }).catch(err => console.error('Analytics error:', err));
+
+            // Update session every 30 seconds
+            setInterval(updateSessionDuration, 30000);
+
+            // Track session duration on page unload
+            window.addEventListener('beforeunload', () => {
+                updateSessionDuration();
+                const finalDuration = totalDuration + (Date.now() - lastUpdateTime);
+                
+                // Send final update (navigator.sendBeacon for reliability)
+                const data = JSON.stringify({
+                    sessionId: sessionId,
+                    timestamp: Date.now(),
+                    duration: finalDuration
+                });
+                navigator.sendBeacon(`${API_URL}/api/visit`, data);
+            });
+
+            // Game play tracking - track when games are clicked
+            // Since games open in new tabs/pages, we track based on time away from main page
+            window.trackGameStart = function(gameName, gamePath) {
+                const gameKey = gameName;
+                const startTime = Date.now();
+                
+                // Store game start time in localStorage
+                localStorage.setItem(`game_start_${gameKey}`, startTime.toString());
+                localStorage.setItem('current_game', gameName);
+                
+                // Set up a timer to check if user played for 1+ minute
+                // This will fire when user returns to the page or after 1 minute
+                const checkPlayDuration = () => {
+                    const storedStart = localStorage.getItem(`game_start_${gameKey}`);
+                    if (storedStart) {
+                        const playDuration = Date.now() - parseInt(storedStart);
+                        
+                        // Only record if played for at least 1 minute (60000ms)
+                        if (playDuration >= 60000) {
+                            fetch(`${API_URL}/api/game-play`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    gameName: gameName,
+                                    sessionId: sessionId,
+                                    timestamp: parseInt(storedStart),
+                                    duration: playDuration
+                                })
+                            }).catch(err => console.error('Analytics error:', err));
+                            
+                            // Mark as recorded to prevent duplicate entries
+                            localStorage.setItem(`game_recorded_${gameKey}`, 'true');
+                        }
+                        
+                        // Clean up
+                        localStorage.removeItem(`game_start_${gameKey}`);
+                    }
+                };
+                
+                // Check when page becomes visible again (user returned from game)
+                const handleVisibilityChange = () => {
+                    if (!document.hidden && localStorage.getItem('current_game') === gameName) {
+                        checkPlayDuration();
+                        localStorage.removeItem('current_game');
+                        document.removeEventListener('visibilitychange', handleVisibilityChange);
+                    }
+                };
+                
+                document.addEventListener('visibilitychange', handleVisibilityChange);
+                
+                // Also check after 1 minute (in case user doesn't return)
+                setTimeout(() => {
+                    checkPlayDuration();
+                    document.removeEventListener('visibilitychange', handleVisibilityChange);
+                }, 65000); // 65 seconds to ensure 1 minute has passed
+            };
+            
+            // Check for any games that were started before page reload
+            window.addEventListener('load', () => {
+                const currentGame = localStorage.getItem('current_game');
+                if (currentGame) {
+                    const gameKey = currentGame;
+                    const storedStart = localStorage.getItem(`game_start_${gameKey}`);
+                    if (storedStart) {
+                        const playDuration = Date.now() - parseInt(storedStart);
+                        if (playDuration >= 60000 && !localStorage.getItem(`game_recorded_${gameKey}`)) {
+                            fetch(`${API_URL}/api/game-play`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    gameName: gameKey,
+                                    sessionId: sessionId,
+                                    timestamp: parseInt(storedStart),
+                                    duration: playDuration
+                                })
+                            }).catch(err => console.error('Analytics error:', err));
+                            
+                            localStorage.setItem(`game_recorded_${gameKey}`, 'true');
+                        }
+                        localStorage.removeItem(`game_start_${gameKey}`);
+                        localStorage.removeItem('current_game');
+                    }
+                }
+                
+                // Refresh progress indicators on page load
+                refreshProgressIndicators();
+            });
+            
+            // Listen for progress updates from game pages
+            window.addEventListener('message', (event) => {
+                if (event.data && event.data.type === 'nova_hub_progress_saved') {
+                    // Progress was saved, refresh the game card indicator
+                    refreshProgressIndicators();
+                }
+            });
+            
+            // Function to refresh progress indicators on game cards
+            function refreshProgressIndicators() {
+                const gameCards = document.querySelectorAll('.game-card');
+                gameCards.forEach(card => {
+                    // Remove existing progress badge
+                    const existingBadge = card.querySelector('.progress-badge');
+                    if (existingBadge) {
+                        existingBadge.remove();
+                    }
+                    
+                    // Get game name from card and check all possible progress keys
+                    const gameNameEl = card.querySelector('.game-name');
+                    if (gameNameEl) {
+                        const displayName = gameNameEl.textContent;
+                        const progressKeys = [
+                            `nova_hub_progress_${displayName.toLowerCase()}`,
+                            `nova_hub_progress_${displayName.toLowerCase().replace(/\s+/g, '')}`,
+                            `nova_hub_progress_${displayName.toLowerCase().replace(/\s+/g, '-')}`
+                        ];
+                        
+                        let savedProgress = null;
+                        for (const key of progressKeys) {
+                            try {
+                                const stored = localStorage.getItem(key);
+                                if (stored) {
+                                    savedProgress = JSON.parse(stored);
+                                    break;
+                                }
+                            } catch (e) {
+                                // Continue
+                            }
+                        }
+                        
+                        if (savedProgress) {
+                            const progressBadge = document.createElement('div');
+                            progressBadge.className = 'progress-badge';
+                            progressBadge.title = `Progress saved: ${new Date(savedProgress.timestamp).toLocaleString()}`;
+                            card.appendChild(progressBadge);
+                        }
+                    }
+                });
+            }
+            
+            // Make refresh function available globally
+            window.refreshProgressIndicators = refreshProgressIndicators;
+        })();
+    </script>
+</body>
+</html>

@@ -1,18 +1,13 @@
-w<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en-us">
   <head>
     <!-- Google tag (gtag.js) -->
-
-<script>
-
-</script>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>BitLife | 3kh0</title>
     <link rel="icon" href="./splash.png">
     <link rel="shortcut icon" href="./splash.png">
-    <script src="/js/main.js"></script>
 
     <!-- WEBGL GAME IN FULLSCREEN - COPY AND PASTE THIS CSS -->
     <style>
@@ -23,7 +18,22 @@ w<!DOCTYPE html>
 	<script src="TemplateData/UnityProgress.js"></script>
     <script src="Build/UnityLoader.js"></script>
     <script>
-      var unityInstance = UnityLoader.instantiate("gameContainer", "Build/BitLife.json", {onProgress: UnityProgress});
+      var unityInstance = UnityLoader.instantiate("gameContainer", "Build/BitLife.json", {
+        onProgress: UnityProgress,
+        Module: {
+          onRuntimeInitialized: function() {
+            UnityProgress(unityInstance, "complete");
+          },
+          errorHandler: function(error) {
+            console.error("Unity Error:", error);
+          }
+        }
+      });
+      
+      // Add error handling
+      window.addEventListener('error', function(e) {
+        console.error('Game loading error:', e);
+      });
     </script>
   </head>
   <body>

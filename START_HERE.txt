@@ -1,0 +1,35 @@
+═══════════════════════════════════════════════════════════════
+  NOVA HUB - QUICK START INSTRUCTIONS
+═══════════════════════════════════════════════════════════════
+
+Node.js has been installed! Follow these steps:
+
+STEP 1: RESTART YOUR TERMINAL/POWERSHELL
+   - Close this PowerShell window
+   - Open a NEW PowerShell window
+   - This is required for Node.js to be available
+
+STEP 2: NAVIGATE TO THE PROJECT FOLDER
+   cd C:\Users\learnwell\HTML5-games-main\HTML5-games-1
+
+STEP 3: RUN THE SETUP SCRIPT
+   .\setup.ps1
+
+   OR manually:
+   npm install
+   npm start
+
+STEP 4: ACCESS NOVA HUB
+   - Main Site: http://localhost:3000
+   - Admin Panel: http://localhost:3000/admin
+   - Default Password: admin
+
+═══════════════════════════════════════════════════════════════
+
+If you get "node is not recognized" after restarting:
+   1. Restart your computer (to fully update PATH)
+   2. Or manually add Node.js to PATH
+   3. Or download Node.js from https://nodejs.org/
+
+═══════════════════════════════════════════════════════════════
+

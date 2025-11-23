@@ -1,0 +1,302 @@
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+require('dotenv').config();
+
+const db = require('./database');
+const auth = require('./auth');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Accept', 'Range'],
+    exposedHeaders: ['Content-Range', 'Content-Length', 'Accept-Ranges']
+}));
+
+// Handle preflight requests
+app.options('*', cors());
+
+app.use(express.json());
+
+// Set proper MIME types and headers for Unity and other game files
+app.use((req, res, next) => {
+    // Set CORS headers for all requests
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Accept, Range');
+    res.header('Access-Control-Expose-Headers', 'Content-Range, Content-Length, Accept-Ranges');
+    
+    // Set proper MIME types
+    if (req.url.endsWith('.unityweb')) {
+        res.type('application/octet-stream');
+        res.header('Content-Type', 'application/octet-stream');
+    } else if (req.url.endsWith('.wasm')) {
+        res.type('application/wasm');
+        res.header('Content-Type', 'application/wasm');
+    } else if (req.url.endsWith('.data')) {
+        res.type('application/octet-stream');
+        res.header('Content-Type', 'application/octet-stream');
+    } else if (req.url.endsWith('.json')) {
+        res.type('application/json');
+    }
+    
+    // Enable range requests for Unity files (important for large files)
+    if (req.url.match(/\.(unityweb|wasm|data)$/)) {
+        res.header('Accept-Ranges', 'bytes');
+    }
+    
+    next();
+});
+
+// Custom handler for Unity files to ensure proper range request support
+const fs = require('fs');
+
+app.get(/\.(unityweb|wasm|data)$/, (req, res, next) => {
+    const filePath = path.join(__dirname, req.path);
+    
+    if (!fs.existsSync(filePath)) {
+        return next();
+    }
+    
+    const stat = fs.statSync(filePath);
+    const fileSize = stat.size;
+    const range = req.headers.range;
+    
+    // Set headers
+    res.set({
+        'Content-Type': req.path.endsWith('.wasm') ? 'application/wasm' : 'application/octet-stream',
+        'Accept-Ranges': 'bytes',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Expose-Headers': 'Content-Range, Content-Length, Accept-Ranges'
+    });
+    
+    if (range) {
+        // Handle range request
+        const parts = range.replace(/bytes=/, "").split("-");
+        const start = parseInt(parts[0], 10);
+        const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+        const chunksize = (end - start) + 1;
+        const file = fs.createReadStream(filePath, { start, end });
+        
+        res.status(206); // Partial Content
+        res.set({
+            'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+            'Content-Length': chunksize
+        });
+        
+        file.pipe(res);
+    } else {
+        // Full file request
+        res.set('Content-Length', fileSize);
+        const file = fs.createReadStream(filePath);
+        file.pipe(res);
+    }
+});
+
+app.use(express.static(__dirname, {
+    setHeaders: (res, path) => {
+        // Set CORS headers for static files
+        res.set('Access-Control-Allow-Origin', '*');
+        
+        // Enable range requests for Unity files
+        if (path.match(/\.(unityweb|wasm|data)$/)) {
+            res.set('Accept-Ranges', 'bytes');
+            res.set('Content-Type', path.endsWith('.wasm') ? 'application/wasm' : 'application/octet-stream');
+        }
+    }
+})); // Serve static files
+
+// Initialize database
+db.getDatabase().catch(err => {
+    console.error('Failed to initialize database:', err);
+    process.exit(1);
+});
+
+// API Routes
+
+// Track visit
+app.post('/api/visit', async (req, res) => {
+    try {
+        const { sessionId, timestamp, duration } = req.body;
+        
+        if (!sessionId || !timestamp) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        await db.recordVisit(sessionId, timestamp, duration || 0);
+        await db.updateSession(sessionId, timestamp, timestamp, duration || 0);
+        
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error recording visit:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Track game play
+app.post('/api/game-play', async (req, res) => {
+    try {
+        const { gameName, sessionId, timestamp, duration } = req.body;
+        
+        if (!gameName || !sessionId || !timestamp) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        await db.recordGamePlay(gameName, sessionId, timestamp, duration || 0);
+        
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error recording game play:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Update session
+app.post('/api/session', async (req, res) => {
+    try {
+        const { sessionId, startTime, lastActive, totalDuration } = req.body;
+        
+        if (!sessionId || !startTime || !lastActive) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        await db.updateSession(sessionId, startTime, lastActive, totalDuration || 0);
+        
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error updating session:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Get statistics
+app.get('/api/stats/:timeframe', async (req, res) => {
+    try {
+        const { timeframe } = req.params;
+        const stats = await db.getStats(timeframe);
+        res.json(stats);
+    } catch (error) {
+        console.error('Error getting stats:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Get top games
+app.get('/api/top-games', async (req, res) => {
+    try {
+        const limit = parseInt(req.query.limit) || 10;
+        const topGames = await db.getTopGames(limit);
+        res.json(topGames);
+    } catch (error) {
+        console.error('Error getting top games:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Get chart data
+app.get('/api/chart/:timeframe', async (req, res) => {
+    try {
+        const { timeframe } = req.params;
+        const chartData = await db.getChartData(timeframe);
+        res.json(chartData);
+    } catch (error) {
+        console.error('Error getting chart data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Get active sessions
+app.get('/api/active-sessions', async (req, res) => {
+    try {
+        const activeSessions = await db.getActiveSessions();
+        res.json({ activeSessions });
+    } catch (error) {
+        console.error('Error getting active sessions:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Admin authentication
+app.post('/api/admin/login', async (req, res) => {
+    try {
+        const { password } = req.body;
+        
+        if (!password) {
+            return res.status(400).json({ error: 'Password required' });
+        }
+
+        const isValid = await auth.verifyAdminPassword(password);
+        
+        // Debug logging
+        console.log('Login attempt - Password provided:', password ? 'Yes' : 'No');
+        console.log('Password valid:', isValid);
+        
+        if (isValid) {
+            const token = auth.createSession();
+            res.json({ success: true, token });
+        } else {
+            res.status(401).json({ error: 'Invalid password' });
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Verify admin session
+app.get('/api/admin/verify', (req, res) => {
+    try {
+        const token = req.headers.authorization?.replace('Bearer ', '');
+        
+        if (!token) {
+            return res.status(401).json({ error: 'No token provided' });
+        }
+
+        const isValid = auth.verifySession(token);
+        
+        if (isValid) {
+            res.json({ valid: true });
+        } else {
+            res.status(401).json({ valid: false });
+        }
+    } catch (error) {
+        console.error('Error verifying session:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Admin logout
+app.post('/api/admin/logout', (req, res) => {
+    try {
+        const token = req.headers.authorization?.replace('Bearer ', '');
+        if (token) {
+            auth.removeSession(token);
+        }
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error during logout:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Serve index.html for root
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Serve admin.html
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Admin panel: http://localhost:${PORT}/admin`);
+    console.log(`Default admin password: admin (change via .env file)`);
+});
+
