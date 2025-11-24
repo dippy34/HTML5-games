@@ -1,3 +1,4 @@
+
 # Nova Hub Setup Script
 # This script will install dependencies and start the server
 

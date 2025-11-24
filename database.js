@@ -45,11 +45,24 @@ function initDatabase() {
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )`);
 
+            // Bugs table
+            db.run(`CREATE TABLE IF NOT EXISTS bugs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                description TEXT NOT NULL,
+                page_url TEXT,
+                user_agent TEXT,
+                status TEXT DEFAULT 'pending',
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                resolved_at DATETIME
+            )`);
+
             // Create indexes for better query performance
             db.run(`CREATE INDEX IF NOT EXISTS idx_visits_timestamp ON visits(timestamp)`);
             db.run(`CREATE INDEX IF NOT EXISTS idx_game_plays_timestamp ON game_plays(timestamp)`);
             db.run(`CREATE INDEX IF NOT EXISTS idx_game_plays_name ON game_plays(game_name)`);
             db.run(`CREATE INDEX IF NOT EXISTS idx_sessions_start_time ON sessions(start_time)`);
+            db.run(`CREATE INDEX IF NOT EXISTS idx_bugs_status ON bugs(status)`);
+            db.run(`CREATE INDEX IF NOT EXISTS idx_bugs_created_at ON bugs(created_at)`);
 
             resolve(db);
         });
@@ -351,6 +364,67 @@ function getActiveSessions() {
     });
 }
 
+// Report a bug
+function reportBug(description, pageUrl, userAgent) {
+    return new Promise(async (resolve, reject) => {
+        const db = await getDatabase();
+        db.run(
+            'INSERT INTO bugs (description, page_url, user_agent) VALUES (?, ?, ?)',
+            [description, pageUrl, userAgent],
+            function(err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(this.lastID);
+                }
+            }
+        );
+    });
+}
+
+// Get all bugs
+function getBugs(status = null) {
+    return new Promise(async (resolve, reject) => {
+        const db = await getDatabase();
+        let query = 'SELECT * FROM bugs';
+        let params = [];
+        
+        if (status) {
+            query += ' WHERE status = ?';
+            params.push(status);
+        }
+        
+        query += ' ORDER BY created_at DESC';
+        
+        db.all(query, params, (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
+// Update bug status
+function updateBugStatus(bugId, status) {
+    return new Promise(async (resolve, reject) => {
+        const db = await getDatabase();
+        const resolvedAt = status === 'resolved' ? new Date().toISOString() : null;
+        db.run(
+            'UPDATE bugs SET status = ?, resolved_at = ? WHERE id = ?',
+            [status, resolvedAt, bugId],
+            function(err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(this.changes);
+                }
+            }
+        );
+    });
+}
+
 module.exports = {
     getDatabase,
     recordVisit,
@@ -359,6 +433,9 @@ module.exports = {
     getStats,
     getTopGames,
     getChartData,
-    getActiveSessions
+    getActiveSessions,
+    reportBug,
+    getBugs,
+    updateBugStatus
 };
 

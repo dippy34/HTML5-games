@@ -137,6 +137,194 @@
             transition: opacity 0.5s ease;
         }
 
+        /* Navigation Bar */
+        .main-nav {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5em;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        .nav-link:hover {
+            background: var(--bg-tertiary);
+            color: var(--accent-primary);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+        }
+
+        /* Bug Report Modal */
+        .bug-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bug-modal.show {
+            display: flex;
+        }
+
+        .bug-modal-content {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 20px 60px var(--shadow);
+        }
+
+        .bug-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .bug-modal-header h2 {
+            font-size: 1.8em;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .close-bug-modal {
+            background: var(--bg-tertiary);
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5em;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-bug-modal:hover {
+            background: var(--accent-primary);
+            transform: rotate(90deg);
+        }
+
+        .bug-form textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1em;
+            resize: vertical;
+            margin-bottom: 15px;
+        }
+
+        .bug-form textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .bug-form-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .bug-submit-btn {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .bug-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--shadow-hover);
+        }
+
+        .bug-cancel-btn {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .bug-cancel-btn:hover {
+            background: var(--bg-secondary);
+            border-color: var(--border-hover);
+        }
+
+        .bug-success {
+            color: #4ade80;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .bug-success.show {
+            display: block;
+        }
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -545,35 +733,54 @@
 
         #game-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
             animation: fadeInUp 0.8s ease 0.6s both;
+        }
+        
+        @media (max-width: 768px) {
+            #game-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 16px;
+            }
         }
 
         .game-card {
             background: var(--bg-card);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
+            border-radius: 16px;
             overflow: hidden;
-            text-align: center;
+            text-align: left;
             text-decoration: none;
             color: var(--text-primary);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 2px solid var(--border-color);
-            box-shadow: 0 8px 32px var(--shadow);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
             position: relative;
-            opacity: 0;
-            animation: fadeInScale 0.5s ease forwards;
+            opacity: 1;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            min-height: 160px;
+            cursor: pointer;
+            transform: translateY(0);
         }
 
-        @keyframes fadeInScale {
+        .game-card.fade-in {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInUp 0.4s ease forwards;
+        }
+
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: scale(0.8);
+                transform: translateY(10px);
             }
             to {
                 opacity: 1;
-                transform: scale(1);
+                transform: translateY(0);
             }
         }
 
@@ -581,68 +788,60 @@
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
-            opacity: 0.3;
-            transition: left 0.5s;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .game-card:hover::before {
-            left: 100%;
+            opacity: 1;
         }
 
         .game-card:hover {
-            transform: translateY(-10px) scale(1.05);
+            transform: translateY(-4px);
             background: var(--bg-card-hover);
             border-color: var(--accent-primary);
-            box-shadow: 0 20px 40px var(--shadow-hover);
+            box-shadow: 0 12px 32px rgba(99, 102, 241, 0.2);
         }
-
-        .game-icon {
-            width: 100%;
-            height: 140px;
-            background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3em;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .game-icon img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .game-icon .emoji-fallback {
-            position: absolute;
-            z-index: 1;
-        }
-
-        .game-card:hover .game-icon {
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            transform: scale(1.1);
-        }
-
 
         .game-name {
-            padding: 20px 15px;
-            font-weight: 600;
-            font-size: 1.1em;
-            text-transform: capitalize;
-            letter-spacing: 0.5px;
-            position: relative;
-            z-index: 1;
-            background: var(--bg-tertiary);
+            font-size: 1.75em;
+            font-weight: 700;
+            margin: 0 0 12px 0;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.3;
+            letter-spacing: -0.3px;
+            transition: all 0.3s ease;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
         }
 
         .game-card:hover .game-name {
-            background: var(--bg-secondary);
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .game-description {
+            font-size: 0.95em;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin: 0;
+            opacity: 0.85;
+            transition: all 0.3s ease;
+        }
+
+        .game-card:hover .game-description {
+            color: var(--text-primary);
+            opacity: 1;
         }
         
         .progress-badge {
@@ -697,6 +896,18 @@
     </style>
 </head>
 <body>
+    <!-- Navigation Bar -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="/games" class="nav-logo">🎮 Nova Hub</a>
+            <div class="nav-links">
+                <a href="/games" class="nav-link active">Games</a>
+                <a href="/" class="nav-link">Proxy</a>
+                <button class="nav-link" id="report-bug-btn">Report Bug</button>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
         <div id="header">
             <div id="admin-btn" title="Admin Panel" onclick="window.location.href='/admin'">📊</div>
@@ -717,7 +928,25 @@
             <p>😕 No games found matching your search</p>
         </div>
     </div>
-    
+
+    <!-- Bug Report Modal -->
+    <div class="bug-modal" id="bug-modal">
+        <div class="bug-modal-content">
+            <div class="bug-modal-header">
+                <h2>🐛 Report a Bug</h2>
+                <button class="close-bug-modal" id="close-bug-modal">✕</button>
+            </div>
+            <form class="bug-form" id="bug-form">
+                <textarea id="bug-description" placeholder="Describe the bug you encountered..." required></textarea>
+                <div class="bug-form-buttons">
+                    <button type="button" class="bug-cancel-btn" id="cancel-bug-btn">Cancel</button>
+                    <button type="submit" class="bug-submit-btn">Submit Report</button>
+                </div>
+                <div class="bug-success" id="bug-success">✓ Bug reported successfully! Thank you.</div>
+            </form>
+        </div>
+    </div>
+
     <!-- Settings Modal -->
     <div id="settings-modal">
         <div class="settings-content">
@@ -772,7 +1001,7 @@
                     <input type="text" id="custom-title" class="custom-cloak-input" placeholder="Enter custom tab title (e.g., 'Google')" style="margin-bottom: 10px;">
                     <input type="text" id="custom-icon" class="custom-cloak-input" placeholder="Enter favicon URL (e.g., 'https://www.google.com/favicon.ico')" style="margin-bottom: 15px;">
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button class="btn-primary" id="apply-custom-cloak">Apply Custom Cloak</button>
+                <button class="btn-primary" id="apply-custom-cloak">Apply Custom Cloak</button>
                         <button class="btn-primary" id="reset-cloak" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">Reset to Default</button>
                     </div>
                 </div>
@@ -817,13 +1046,6 @@
                 </div>
             </div>
             
-            <!-- Cache Management -->
-            <div class="settings-section">
-                <h3>🗑️ Cache Management</h3>
-                <p style="margin-bottom: 15px;">Clear cached thumbnail paths to force reload all thumbnails.</p>
-                <button class="btn-primary" id="clear-thumbnail-cache" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">Clear Thumbnail Cache</button>
-                <p id="cache-status" style="margin-top: 12px; font-size: 0.9em; color: var(--text-secondary);"></p>
-            </div>
         </div>
     </div>
 
@@ -917,116 +1139,110 @@
                         .join(' ');
                 };
 
-                const getGameEmoji = (game) => {
-                    return gameEmojis[game.toLowerCase()] || '🎮';
+                // Game descriptions
+                const gameDescriptions = {
+                    '2048': 'Slide numbered tiles to combine them and reach the ultimate 2048 tile! A challenging puzzle game that tests your strategic thinking and planning skills. Keep combining tiles to create higher numbers and achieve the highest score possible.',
+                    'adcap': 'Build and manage your own advertising empire from the ground up. Start small and grow your business by creating ads, managing campaigns, and expanding your reach. Make strategic decisions to maximize profits and become the advertising tycoon.',
+                    'adofai': 'A unique rhythm game where you rotate the world to the beat of the music. Follow the rhythm, rotate at the right moments, and navigate through challenging levels. Perfect your timing and enjoy the mesmerizing music as you play.',
+                    'basketrandom': 'Play basketball with realistic physics-based gameplay. Shoot hoops, practice your aim, and compete in various basketball challenges. The physics engine makes every shot feel authentic and satisfying.',
+                    'cluster-rush': 'Navigate through clusters of obstacles at high speed. Test your reflexes and timing as you dodge, weave, and rush through increasingly difficult levels. Can you survive the cluster rush?',
+                    'cookieclicker': 'Click cookies, buy upgrades, and build your cookie empire! Start by clicking cookies, then invest in upgrades to automate production. Expand your cookie factory, unlock achievements, and become the ultimate cookie tycoon in this addictive idle game.',
+                    'couch2048': 'Play the classic 2048 puzzle game from the comfort of your couch. Same addictive gameplay, perfect for relaxing. Combine tiles strategically to reach higher numbers and beat your high score.',
+                    'drive-mad': 'Drive crazy vehicles through challenging and unpredictable courses. Navigate through obstacles, perform stunts, and complete wild driving challenges. Each vehicle has unique physics that will test your driving skills.',
+                    'foodstars': 'Manage your restaurant and serve customers efficiently. Take orders, prepare meals, and keep your customers happy. Build your restaurant empire by expanding your menu and improving your service.',
+                    'funnyshooter2': 'Engage in hilarious shooting action with wacky weapons and comical enemies. This fun-filled shooter game combines action with humor, featuring ridiculous scenarios and over-the-top gameplay that will keep you laughing.',
+                    'highway-traffic': 'Navigate through busy highway traffic and avoid collisions. Test your driving skills as you weave through traffic, change lanes, and reach your destination safely. The traffic gets more intense as you progress.',
+                    'hypercars': 'Race with the fastest hypercars in intense competitions. Experience the thrill of high-speed racing with realistic physics and stunning visuals. Customize your car and compete against the best racers.',
+                    'keylimba': 'Play the limba and create beautiful music. This musical game lets you experiment with different sounds and rhythms. Compose your own melodies and enjoy the creative freedom of making music.',
+                    'load/1on1soccer': 'One-on-one soccer matches with realistic physics and smooth controls. Face off against opponents in intense matches where skill and strategy matter. Score goals, make saves, and become the ultimate soccer champion.',
+                    'load/8ball': 'Play classic 8-ball pool against AI opponents or practice your skills. Master the art of pool with realistic physics, precise aiming, and strategic shot planning. Sink all your balls before your opponent does.',
+                    'load/age-of-war': 'Command armies and conquer territories in this epic strategy game. Build your base, train troops, and lead them into battle. Use strategy and tactics to defeat your enemies and expand your empire across different ages.',
+                    'load/alienhominid': 'Fight aliens in this action-packed side-scrolling shooter. Play as a yellow alien defending Earth from humans. Use various weapons, power-ups, and special abilities to survive waves of enemies in this retro-style game.',
+                    'load/amazing-rope-police': 'Use your rope skills to catch criminals and maintain order. Swing through the city, apprehend bad guys, and complete missions. The physics-based rope mechanics make every catch satisfying.',
+                    'load/amongus': 'Find the impostor among your crewmates in this social deduction game. Complete tasks, watch for suspicious behavior, and vote out the impostor. Or if you\'re the impostor, sabotage and eliminate crewmates without being caught.',
+                    'load/angrybirds': 'Launch birds to destroy pig fortresses in this classic physics puzzle game. Use different bird types with unique abilities to strategically take down structures. Aim carefully and use the environment to your advantage.',
+                    'load/angry-sharks': 'Control a shark and eat everything in your path. Grow bigger by consuming fish, swimmers, and other sea creatures. Avoid larger predators and become the ultimate apex predator of the ocean.',
+                    'load/asmallworldcup': 'Play soccer in a small world cup tournament. Compete in matches, score goals, and win the championship. The compact field makes for fast-paced, exciting gameplay with quick matches.',
+                    'load/astray': 'Navigate through a mysterious and beautiful world filled with puzzles and challenges. Explore stunning environments, solve intricate puzzles, and uncover the secrets hidden within this atmospheric adventure game.',
+                    'load/awesometanks2': 'Build and battle with awesome customizable tanks. Design your tank, choose weapons, and engage in epic tank battles. Upgrade your vehicle and dominate the battlefield with superior firepower.',
+                    'load/bad-ice-cream': 'Help the ice cream escape from enemies while collecting fruits. Navigate through mazes, avoid enemies, and use ice blocks strategically to trap your pursuers. A fun puzzle-action game with charming graphics.',
+                    'load/bad-ice-cream-2': 'More ice cream adventures await in this sequel! New levels, new enemies, and new challenges. The ice cream must escape again, but this time the obstacles are even more challenging.',
+                    'load/bad-ice-cream-3': 'The ultimate ice cream escape challenge. Face the most difficult levels yet as you help the ice cream navigate through complex mazes and avoid increasingly clever enemies. The final chapter of the series.',
+                    'load/basketball-stars': 'Show off your basketball skills in this fast-paced sports game. Dribble, shoot, and score in exciting matches. Master the controls to perform amazing moves and become a basketball legend.',
+                    'load/bitlife': 'Live your life one decision at a time in this life simulation game. Make choices about education, career, relationships, and more. See how your decisions shape your character\'s life from birth to old age.',
+                    'load/blockblast': 'Blast blocks and clear the board in this addictive puzzle game. Match blocks of the same color to clear them and score points. Plan your moves carefully to create powerful combos and achieve high scores.',
+                    'load/blocky-snakes': 'Classic snake game with modern blocky graphics. Grow your snake by eating food, but avoid hitting walls or your own tail. The retro gameplay with a modern twist makes this endlessly entertaining.',
+                    'load/bloonstd': 'Pop balloons and defend your towers in this strategic tower defense game. Place towers strategically to pop waves of balloons before they reach the end. Upgrade towers and use special abilities to survive.',
+                    'load/bloonstd2': 'More balloon popping tower defense action with new towers and challenges. Face stronger balloon waves and use advanced strategies to protect your base. The sequel brings more depth and complexity.',
+                    'load/bloonstd3': 'Advanced tower defense with even more challenging balloon waves. New tower types, special abilities, and complex maps await. Master the art of tower placement and balloon popping.',
+                    'load/bloonstd4': 'The ultimate balloon tower defense experience. Face the toughest challenges yet with the most powerful towers and abilities. This is the pinnacle of the Bloons TD series with maximum strategy and action.',
+                    'load/bloxorz': 'Move blocks to solve puzzles in this physics-based puzzle game. Rotate and move blocks to fit them into holes. Each level requires careful planning and precise movements to complete.',
+                    'load/bounceback': 'Bounce the ball and score goals in this physics-based sports game. Use the ball\'s momentum and physics to your advantage. Master the bouncing mechanics to score amazing goals.',
+                    'load/boxing-random': 'Random boxing matches with unique fighters and unpredictable outcomes. Step into the ring and fight against various opponents. Each match is different, keeping the gameplay fresh and exciting.',
+                    'load/breakingthebank': 'Break into banks and steal the loot in this heist game. Plan your approach, avoid security, and escape with the money. Use stealth and strategy to pull off the perfect heist.',
+                    'load/burger-and-frights': 'Serve burgers while avoiding frights in this spooky restaurant game. Manage your burger joint during a horror-themed night. Keep customers happy while dealing with supernatural scares.',
+                    'load/cookieclicker': 'Click cookies and build your cookie empire in this addictive idle game. Start simple, then automate production with upgrades. Expand your cookie operations and unlock achievements as you become the ultimate cookie tycoon.',
+                    'load/core-ball': 'Control the ball and score goals in this physics-based soccer game. Use realistic ball physics to your advantage. Master the controls to perform precise shots and amazing saves.',
+                    'load/creativekillchamber': 'Creative combat in a kill chamber with various weapons and enemies. Experiment with different combat styles and weapons. The creative approach to combat makes each playthrough unique.',
+                    'load/deepest-sword': 'Dive deep with your sword in this action-adventure game. Explore underwater depths, fight sea creatures, and discover treasures. The deeper you go, the more challenging and rewarding it becomes.',
+                    'load/DogeMiner': 'Mine Dogecoins and become rich in this cryptocurrency-themed mining game. Dig for coins, upgrade your equipment, and expand your mining operation. Watch your wealth grow as you mine deeper.',
+                    'load/ducklife': 'Train your duck to become a champion in various competitions. Improve your duck\'s skills through training mini-games. Compete in races, swimming, and flying competitions to become the ultimate duck champion.',
+                    'load/ducklife2': 'Continue your duck training journey with new challenges and competitions. Your duck has grown stronger, but so have the competitors. Train harder and compete in more difficult events.',
+                    'load/ducklife3': 'Advanced duck training challenges await in this sequel. New training methods, tougher competitions, and more duck customization options. Take your duck training to the next level.',
+                    'load/ducklife4': 'Master level duck training with the most challenging competitions yet. This is the ultimate test of your duck\'s abilities. Train your duck to perfection and dominate every competition.',
+                    'load/eaglercraft': 'Play Minecraft in your browser with full multiplayer support. Build, explore, and survive in a blocky world. Experience the full Minecraft experience directly in your web browser without downloads.',
+                    'load/emulatorjs': 'Play retro games with full emulator support. Access classic games from various consoles and systems. Relive gaming history with authentic emulation of your favorite retro games.',
+                    'load/flappy-bird': 'Navigate a bird through pipes in this classic endless runner. Tap to make the bird flap and avoid obstacles. Simple controls but challenging gameplay that tests your reflexes and timing.',
+                    'load/fnaw': 'Five Nights at Freddy\'s horror experience where you must survive the night. Monitor security cameras, conserve power, and avoid animatronics. A tense survival horror game that will keep you on edge.',
+                    'load/geometrydash': 'Jump and fly through dangerous passages in this rhythm-based action platformer. Time your jumps to the beat of the music and navigate through challenging levels. Master the rhythm to complete each level.',
+                    'load/geometrydashmeltdown': 'More Geometry Dash levels and challenges with new music and obstacles. Face new geometric challenges and test your skills with additional levels and increased difficulty.',
+                    'load/geometrydashsubzero': 'Subzero edition of Geometry Dash with icy themes and frozen challenges. Navigate through frozen levels with new obstacles and mechanics. The cold never bothered this game anyway.',
+                    'load/geometrydashworld': 'Explore the world of Geometry Dash with expanded content and features. More levels, more music, and more challenges await. Experience Geometry Dash on a grander scale.',
+                    'load/google-snake': 'Classic snake game with Google\'s signature styling. Grow your snake by eating food while avoiding walls and yourself. The timeless gameplay with Google\'s clean design aesthetic.',
+                    'load/gravity-soccer': 'Play soccer with gravity-defying physics. The ball and players are affected by unique gravity mechanics that create unpredictable and exciting gameplay. Master the physics to score amazing goals.',
+                    'load/gunmayhem2': 'Intense gun battles and mayhem in this action-packed shooter. Choose your weapons, customize your character, and fight in chaotic battles. The fast-paced action keeps you on your toes.',
+                    'load/gunmayhemredux': 'Redux version with more action, weapons, and mayhem. Enhanced graphics and gameplay make this the definitive Gun Mayhem experience. More chaos, more fun, more mayhem.',
+                    'load/guymayhem': 'Control a guy and cause mayhem in this action game. Use various weapons and abilities to create chaos. The simple controls make it easy to pick up but hard to master.',
+                    'load/interactivebuddy': 'Interact with your buddy in fun and creative ways. Experiment with different interactions and see how your buddy responds. A sandbox-style game perfect for creative experimentation.',
+                    'load/learntofly': 'Help a penguin learn to fly by building momentum and using physics. Launch your penguin as far as possible using upgrades and strategy. A charming physics-based game with a heartwarming story.',
+                    'load/learntofly 2': 'Continue the flying journey with new challenges and upgrades. Your penguin has learned the basics, now master advanced flying techniques. More distance, more upgrades, more fun.',
+                    'load/learntofly3': 'Master the art of penguin flying with the most advanced mechanics yet. This is the ultimate flying challenge. Use all your skills and upgrades to achieve the longest flight possible.',
+                    'load/littlealchemy': 'Combine elements to create new ones in this creative puzzle game. Start with basic elements and discover hundreds of combinations. Experiment and see what you can create.',
+                    'load/littlealchemy2': 'More elements and combinations in this expanded sequel. Discover even more items and combinations. The expanded element library offers endless creative possibilities.',
+                    'load/lolbeans': 'Play with beans in this fun and quirky game. Engage in bean-based activities and mini-games. The lighthearted gameplay makes for a relaxing and entertaining experience.',
+                    'load/melonplayground': 'Play with melons in a physics sandbox. Create scenarios, experiment with physics, and watch the chaos unfold. A creative sandbox game where your imagination is the limit.',
+                    'load/noob-steve-parkour': 'Parkour challenges with Noob Steve in a Minecraft-inspired world. Jump, climb, and navigate through challenging parkour courses. Test your agility and precision.',
+                    'load/nowgg': 'Cloud gaming platform access to play games instantly. No downloads required, just play directly in your browser. Experience high-quality gaming through cloud technology.',
+                    'load/nzp': 'Navigate through challenging levels in this platformer game. Jump, run, and overcome obstacles to reach the end. Each level presents new challenges and requires different strategies.',
+                    'load/ovo': 'Control an egg and explore a colorful world. Roll, jump, and navigate through levels as you help the egg on its adventure. Simple controls with engaging gameplay.',
+                    'load/papasburgeria': 'Run Papa\'s burger restaurant and serve customers efficiently. Take orders, cook burgers, and manage your time to keep customers happy. Build your restaurant reputation and unlock new ingredients.',
+                    'load/papaspizzaria': 'Manage Papa\'s pizza restaurant and create the perfect pizzas. Take orders, choose toppings, and bake pizzas to customer specifications. Time management and attention to detail are key.',
+                    'load/paperminecraft': 'Minecraft with paper graphics and simplified gameplay. Build, explore, and create in a papercraft-style world. All the fun of Minecraft with a unique visual style.',
+                    'load/pokemongames': 'Play various Pokemon games and experience the world of Pokemon. Battle, catch, and train Pokemon in different game modes. Relive your favorite Pokemon adventures.',
+                    'load/precisionclient': 'Precision gaming client for enhanced gaming experience. Access advanced features and optimizations for better performance. The professional gaming tool for serious players.',
+                    'load/quake': 'Classic Quake first-person shooter with fast-paced action. Battle enemies with various weapons in intense combat. The legendary FPS experience that defined a generation.',
+                    'load/rbcollege': 'Retro Bowl college football edition with college teams and players. Manage your college football team, recruit players, and compete for championships. Experience the excitement of college football.',
+                    'load/redball': 'Control a red ball through challenging platform levels. Roll, jump, and navigate through obstacles to reach the goal. Physics-based gameplay makes every movement feel natural.',
+                    'load/retro-bowl': 'Manage a football team in retro style and lead them to victory. Make strategic decisions, call plays, and guide your team through the season. Simple controls with deep strategy.',
+                    'load/riddleschool': 'Solve riddles and escape school in this puzzle adventure game. Explore the school, find clues, and solve puzzles to progress. A charming adventure with brain-teasing challenges.',
+                    'load/slope': 'Navigate a ball down a never-ending slope with increasing speed. Control the ball\'s direction to avoid obstacles and stay on the track. The simple concept creates addictive and challenging gameplay.',
+                    'load/slope2': 'More slope challenges and obstacles in this sequel. New tracks, new obstacles, and increased difficulty. The slope gets steeper and the challenges get harder.',
+                    'load/slowroads': 'Drive slowly on relaxing roads in this peaceful driving game. Enjoy the scenery, take your time, and experience a stress-free driving experience. Perfect for unwinding and relaxation.',
+                    'load/smashkarts': 'Smash karts in multiplayer racing with weapons and power-ups. Race against others while using items to gain an advantage. Fast-paced kart racing with chaotic fun.',
+                    'load/snowrider3d': 'Snowboard down 3D slopes in this winter sports game. Perform tricks, avoid obstacles, and race down mountains. The 3D graphics make the slopes feel realistic and exciting.',
+                    'load/soccerrandom': 'Random soccer matches and challenges with unpredictable gameplay. Each match is different, keeping the experience fresh. Quick matches perfect for short gaming sessions.',
+                    'load/soccerskills': 'Improve your soccer skills through various training exercises and challenges. Practice shooting, passing, and dribbling to become a better player. Perfect for soccer fans who want to improve.',
+                    'load/soundboard': 'Play various sounds and effects in this interactive soundboard. Create music, make sound effects, or just have fun with different audio clips. A simple but entertaining tool.',
+                    'load/stick-merge': 'Merge sticks to create powerful weapons and tools. Combine sticks strategically to build better items. The merging mechanic creates satisfying progression and strategy.',
+                    'load/subwaysurfers': 'Run, jump, and dash through subway tracks while avoiding obstacles. Collect coins, power-ups, and complete missions. The endless runner that started a genre.',
+                    'load/totm': 'Tower of the Master challenges you to climb higher and higher. Face increasingly difficult challenges as you ascend the tower. Each floor presents new obstacles and rewards.',
+                    'load/webretro': 'Play retro games in your browser with full emulator support. Access classic games from various retro systems. Relive gaming history with authentic emulation.'
                 };
 
-                // Thumbnail cache - stores which thumbnail path works for each game
-                const thumbnailCache = JSON.parse(localStorage.getItem('thumbnailCache') || '{}');
-                
-                // Known thumbnail paths (from file system scan)
-                const knownThumbnails = {
-                    '2048': './html5/2048/thumb.png',
-                    'adcap': './html5/adcap/splash.jpg',
-                    'adofai': './html5/adofai/splash.png',
-                    'basketrandom': './html5/basketrandom/patch/cdn/kizi/images/branding_logo_kizi_small.png',
-                    'cluster-rush': './html5/cluster-rush/TemplateData/logo.png',
-                    'cookieclicker': './html5/cookieclicker/game/img/dashnetLogo.png',
-                    'couch2048': './html5/couch2048/game/splash.jpg',
-                    'highway-traffic': './html5/highway-traffic/file/TemplateData/progressLogo.Dark.png',
-                    'hypercars': './html5/hypercars/TemplateData/logo.png',
-                    'keylimba': './html5/keylimba/splash.webp',
-                    'load/1': './html5/load/1/logo.jpg',
-                    'load/2': './html5/load/2/logo.jpg',
-                    'load/3': './html5/load/3/logo.webp',
-                    'load/4': './html5/load/4/logo.webp',
-                    'load/8ball': './html5/load/8ball/patch/images/gamemonetize-logo.png',
-                    'load/amazing-rope-police': './html5/load/amazing-rope-police/splash.jpeg',
-                    'load/angry-sharks': './html5/load/angry-sharks/assets/img/splash.png',
-                    'load/angrybirds': './html5/load/angrybirds/media/textureSplash_blue_2.png',
-                    'load/asmallworldcup': './html5/load/asmallworldcup/images/rujogameslogo-sheet0.png',
-                    'load/awesometanks2': './html5/load/awesometanks2/images/menu/logo.jpg',
-                    'load/bad-ice-cream': './html5/load/bad-ice-cream/assets/badicecream_splash.jpg',
-                    'load/bad-ice-cream-2': './html5/load/bad-ice-cream-2/assets/badicecream_splash.jpg',
-                    'load/bad-ice-cream-3': './html5/load/bad-ice-cream-3/assets/badicecream_splash.jpg',
-                    'load/bitlife': './html5/load/bitlife/logo.png',
-                    'load/blockblast': './html5/load/blockblast/TemplateData/icons/unity-logo-dark.png',
-                    'load/blocky-snakes': './html5/load/blocky-snakes/style/progressLogo.Dark.png',
-                    'load/burger-and-frights': './html5/load/burger-and-frights/splash.png',
-                    'load/cookieclicker': './html5/load/cookieclicker/splash.png',
-                    'load/core-ball': './html5/load/core-ball/image/WB_logo.png',
-                    'load/emulatorjs': './html5/load/emulatorjs/docs/Logo-light.png',
-                    'load/flappy-bird': './html5/load/flappy-bird/assets/splash.png',
-                    'load/geometrydash': './html5/load/geometrydash/splash.png',
-                    'load/gravity-soccer': './html5/load/gravity-soccer/images/logo_grande-sheet0.png',
-                    'load/littlealchemy': './html5/load/littlealchemy/images/loading-screen-logo.png',
-                    'load/noob-steve-parkour': './html5/load/noob-steve-parkour/logo.png',
-                    'load/nzp': './html5/load/nzp/splash.png',
-                    'load/ovo': './html5/load/ovo/images/dialogoverlay-sheet0.png',
-                    'load/papasburgeria': './html5/load/papasburgeria/splash.jpg',
-                    'load/precisionclient': './html5/load/precisionclient/logo.png',
-                    'load/quake': './html5/load/quake/splash.jpeg',
-                    'load/rbcollege': './html5/load/rbcollege/html5game/splash.png',
-                    'load/retro-bowl': './html5/load/retro-bowl/html5game/splash.png',
-                    'load/slope2': './html5/load/slope2/splash.png',
-                    'load/slowroads': './html5/load/slowroads/splash.jpeg',
-                    'load/snowrider3d': './html5/load/snowrider3d/TemplateData/logo.png',
-                    'load/soccerskills': './html5/load/soccerskills/data/interface1/logo.png',
-                    'load/stick-merge': './html5/load/stick-merge/splash.png',
-                    'load/subwaysurfers': './html5/load/subwaysurfers/img/splash.jpg',
-                    'load/totm': './html5/load/totm/progressLogo.Dark.png'
-                };
-                
-                // Function to get thumbnail paths for a game (tries multiple common names and locations)
-                const getThumbnailPaths = (game) => {
-                    // Check known thumbnails first (fastest)
-                    if (knownThumbnails[game]) {
-                        return [knownThumbnails[game]];
-                    }
-                    
-                    // Check cache second
-                    if (thumbnailCache[game]) {
-                        return [thumbnailCache[game]];
-                    }
-                    
-                    const gamePath = game.startsWith('load/') ? game : game;
-                    const basePath = `./html5/${gamePath}`;
-                    
-                    // Priority order: root directory files first, then subdirectories
-                    // Most common thumbnail file names
-                    const rootFiles = ['logo.png', 'logo.jpg', 'logo.webp', 'splash.png', 'splash.jpg', 'splash.jpeg', 'splash.webp', 'thumb.png', 'thumb.jpg', 'thumb.webp', 'thumbnail.png', 'thumbnail.jpg'];
-                    
-                    // Common subdirectories to check
-                    const subdirs = ['game/', 'assets/', 'images/', 'img/', 'TemplateData/', 'patch/', 'html5game/'];
-                    
-                    const paths = [];
-                    
-                    // First priority: root directory files (most common location)
-                    rootFiles.forEach(name => {
-                        paths.push(`${basePath}/${name}`);
-                    });
-                    
-                    // Second priority: common subdirectories with same file names
-                    subdirs.forEach(subdir => {
-                        rootFiles.forEach(name => {
-                            paths.push(`${basePath}/${subdir}${name}`);
-                        });
-                    });
-                    
-                    // Third priority: check for logo files in deeper paths
-                    const logoVariants = ['logo.png', 'logo.jpg', 'logo.webp'];
-                    const deepPaths = ['TemplateData/logo.png', 'game/img/splash.png', 'game/splash.png', 'assets/img/splash.png', 'assets/splash.png', 'images/splash.png', 'html5game/splash.png'];
-                    deepPaths.forEach(deepPath => {
-                        paths.push(`${basePath}/${deepPath}`);
-                    });
-                    
-                    return paths;
-                };
-                
-                // Function to cache successful thumbnail
-                const cacheThumbnail = (game, path) => {
-                    thumbnailCache[game] = path;
-                    localStorage.setItem('thumbnailCache', JSON.stringify(thumbnailCache));
+                // Get description for a game
+                const getGameDescription = (game) => {
+                    const gameKey = game.toLowerCase();
+                    return gameDescriptions[game] || gameDescriptions[gameKey] || 'An exciting game waiting for you to play!';
                 };
 
                 const createGameCard = (game, index) => {
@@ -1034,8 +1250,12 @@
                     // Handle games in load directory - they already have the path prefix
                     const gamePath = game.startsWith('load/') ? `./html5/${game}/index.html` : `./html5/${game}/index.html`;
                     card.href = gamePath;
-                    card.className = 'game-card';
-                    card.style.animationDelay = `${index * 0.02}s`;
+                    card.className = 'game-card fade-in';
+                    // Stagger animation in batches for smoother appearance
+                    const batchSize = 20;
+                    const batchIndex = Math.floor(index / batchSize);
+                    const delay = batchIndex * 0.1 + (index % batchSize) * 0.01;
+                    card.style.animationDelay = `${delay}s`;
                     
                     // Track game click for analytics (don't prevent default navigation)
                     card.addEventListener('click', () => {
@@ -1046,84 +1266,17 @@
                         }
                     });
 
-                    const icon = document.createElement('div');
-                    icon.className = 'game-icon';
-                    
-                    // Extract game name for emoji lookup (remove load/ prefix if present)
-                    const gameNameForEmoji = game.replace('load/', '');
-                    const emoji = getGameEmoji(gameNameForEmoji);
-                    
-                    // Try to load thumbnail image
-                    const thumbnailPaths = getThumbnailPaths(game);
-                    let currentPathIndex = 0;
-                    let imgLoaded = false;
-                    
-                    // Add emoji as fallback (shown by default, hidden if image loads)
-                    const emojiSpan = document.createElement('span');
-                    emojiSpan.textContent = emoji;
-                    emojiSpan.className = 'emoji-fallback';
-                    icon.appendChild(emojiSpan);
-                    
-                    const tryLoadThumbnail = () => {
-                        if (currentPathIndex >= thumbnailPaths.length) {
-                            // All paths failed, emoji is already visible
-                            return;
-                        }
-                        
-                        const img = document.createElement('img');
-                        img.src = thumbnailPaths[currentPathIndex];
-                        img.alt = formatGameName(gameNameForEmoji);
-                        img.style.width = '100%';
-                        img.style.height = '100%';
-                        img.style.objectFit = 'cover';
-                        img.style.position = 'absolute';
-                        img.style.top = '0';
-                        img.style.left = '0';
-                        img.style.display = 'none';
-                        img.loading = 'lazy'; // Lazy load for better performance
-                        
-                        // Use cached image if available
-                        if (thumbnailCache[game]) {
-                            img.src = thumbnailCache[game];
-                        }
-                        
-                        img.onload = function() {
-                            this.style.display = 'block';
-                            imgLoaded = true;
-                            // Cache the successful thumbnail path
-                            if (!thumbnailCache[game]) {
-                                cacheThumbnail(game, thumbnailPaths[currentPathIndex]);
-                            }
-                            // Hide emoji if image loads
-                            emojiSpan.style.display = 'none';
-                        };
-                        
-                        img.onerror = function() {
-                            // If using cached path failed, try other paths
-                            if (thumbnailCache[game] && thumbnailPaths[currentPathIndex] === thumbnailCache[game]) {
-                                // Cache was wrong, remove it
-                                delete thumbnailCache[game];
-                                localStorage.setItem('thumbnailCache', JSON.stringify(thumbnailCache));
-                                currentPathIndex = 0; // Start from beginning
-                            } else {
-                                currentPathIndex++;
-                            }
-                            if (currentPathIndex < thumbnailPaths.length) {
-                                tryLoadThumbnail();
-                            }
-                        };
-                        
-                        icon.appendChild(img);
-                    };
-                    
-                    // Start trying to load thumbnail
-                    tryLoadThumbnail();
-
+                    // Game name (big letters)
                     const name = document.createElement('div');
                     name.className = 'game-name';
                     // Extract game name for display (remove load/ prefix if present)
                     const gameNameForDisplay = game.replace('load/', '');
                     name.textContent = formatGameName(gameNameForDisplay);
+                    
+                    // Game description
+                    const description = document.createElement('p');
+                    description.className = 'game-description';
+                    description.textContent = getGameDescription(game);
                     
                     // Check for saved progress (try multiple name formats)
                     const progressKeys = [
@@ -1153,8 +1306,8 @@
                         card.appendChild(progressBadge);
                     }
 
-                    card.appendChild(icon);
                     card.appendChild(name);
+                    card.appendChild(description);
                     return card;
                 };
 
@@ -1172,12 +1325,31 @@
 
                     gameCount.textContent = `Found ${gamesToRender.length} game${gamesToRender.length !== 1 ? 's' : ''}`;
 
-                    gamesToRender.forEach((game, index) => {
-                        const card = createGameCard(game, index);
-                        gameGrid.appendChild(card);
-                    });
-
-                    console.log('Rendered', gamesToRender.length, 'game cards');
+                    // Use requestAnimationFrame for smooth rendering
+                    const renderBatch = (startIndex) => {
+                        const batchSize = 50;
+                        const endIndex = Math.min(startIndex + batchSize, gamesToRender.length);
+                        
+                        // Create document fragment for better performance
+                        const fragment = document.createDocumentFragment();
+                        
+                        for (let i = startIndex; i < endIndex; i++) {
+                            const card = createGameCard(gamesToRender[i], i);
+                            fragment.appendChild(card);
+                        }
+                        
+                        gameGrid.appendChild(fragment);
+                        
+                        // Continue with next batch
+                        if (endIndex < gamesToRender.length) {
+                            requestAnimationFrame(() => renderBatch(endIndex));
+                        } else {
+                            console.log('Rendered', gamesToRender.length, 'game cards');
+                        }
+                    };
+                    
+                    // Start rendering in batches
+                    renderBatch(0);
                 };
 
                 searchBar.addEventListener('input', (e) => {
@@ -1196,29 +1368,9 @@
                     renderGames(filteredGames);
                 });
 
-                // Preload and cache thumbnails in background
-                const preloadThumbnails = () => {
-                    games.forEach((game, index) => {
-                        // Delay preloading to not block initial render
-                        setTimeout(() => {
-                            const thumbnailPaths = getThumbnailPaths(game);
-                            if (thumbnailPaths.length > 0) {
-                                const img = new Image();
-                                img.src = thumbnailPaths[0];
-                                img.onload = () => {
-                                    cacheThumbnail(game, thumbnailPaths[0]);
-                                };
-                            }
-                        }, index * 50); // Stagger preloads
-                    });
-                };
-                
                 // Initial render
                 renderGames(games);
                 console.log('Page initialized successfully');
-                
-                // Start preloading thumbnails after initial render
-                setTimeout(preloadThumbnails, 1000);
             } catch (error) {
                 console.error('Error initializing page:', error);
                 alert('Error loading games. Please check the console for details.');
@@ -1506,29 +1658,6 @@
                 
                 // Make updateProgressList available globally
                 window.updateProgressList = updateProgressList;
-                
-                // Clear thumbnail cache button
-                const clearCacheBtn = document.getElementById('clear-thumbnail-cache');
-                const cacheStatus = document.getElementById('cache-status');
-                if (clearCacheBtn) {
-                    // Show cache status
-                    const cacheSize = Object.keys(JSON.parse(localStorage.getItem('thumbnailCache') || '{}')).length;
-                    if (cacheStatus) {
-                        cacheStatus.textContent = `Cached thumbnails: ${cacheSize} games`;
-                    }
-                    
-                    clearCacheBtn.addEventListener('click', () => {
-                        localStorage.removeItem('thumbnailCache');
-                        if (cacheStatus) {
-                            cacheStatus.textContent = 'Thumbnail cache cleared! Refresh page to reload thumbnails.';
-                            cacheStatus.style.color = '#4ade80';
-                        }
-                        // Reload page after a short delay
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1500);
-                    });
-                }
             }
             
             function applyTabCloak(title, icon, name) {
@@ -1565,6 +1694,131 @@
                 }
             }
         });
+
+        // Bug Report Modal
+        const bugModal = document.getElementById('bug-modal');
+        const reportBugBtn = document.getElementById('report-bug-btn');
+        const closeBugModal = document.getElementById('close-bug-modal');
+        const cancelBugBtn = document.getElementById('cancel-bug-btn');
+        const bugForm = document.getElementById('bug-form');
+        const bugSuccess = document.getElementById('bug-success');
+
+        function openBugModal() {
+            bugModal.classList.add('show');
+        }
+
+        function closeBugModalFunc() {
+            bugModal.classList.remove('show');
+            bugForm.reset();
+            bugSuccess.classList.remove('show');
+        }
+
+        if (reportBugBtn) {
+            reportBugBtn.addEventListener('click', openBugModal);
+        }
+
+        if (closeBugModal) {
+            closeBugModal.addEventListener('click', closeBugModalFunc);
+        }
+
+        if (cancelBugBtn) {
+            cancelBugBtn.addEventListener('click', closeBugModalFunc);
+        }
+
+        if (bugModal) {
+            bugModal.addEventListener('click', (e) => {
+                if (e.target === bugModal) {
+                    closeBugModalFunc();
+                }
+            });
+        }
+
+        if (bugForm) {
+            bugForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const description = document.getElementById('bug-description').value.trim();
+                
+                if (!description) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/bug-report', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            description: description,
+                            pageUrl: window.location.href
+                        })
+                    });
+
+                    if (response.ok) {
+                        bugSuccess.classList.add('show');
+                        bugForm.reset();
+                        setTimeout(() => {
+                            closeBugModalFunc();
+                        }, 2000);
+                    } else {
+                        alert('Failed to submit bug report. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error submitting bug report:', error);
+                    alert('Failed to submit bug report. Please try again.');
+                }
+            });
+        }
+
+        // Back Button Injection for Game Pages
+        function injectBackButton() {
+            // Check if we're on a game page (not the main games list)
+            if (window.location.pathname.includes('/html5/') && window.location.pathname !== '/games') {
+                // Check if back button already exists
+                if (document.getElementById('game-back-btn')) return;
+                
+                const backBtn = document.createElement('button');
+                backBtn.id = 'game-back-btn';
+                backBtn.innerHTML = '← Back to Games';
+                backBtn.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    left: 20px;
+                    z-index: 10000;
+                    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+                    color: white;
+                    border: none;
+                    padding: 12px 24px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: 600;
+                    font-size: 1em;
+                    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+                    transition: all 0.3s ease;
+                `;
+                
+                backBtn.addEventListener('mouseenter', () => {
+                    backBtn.style.transform = 'translateY(-2px)';
+                    backBtn.style.boxShadow = '0 6px 20px rgba(99, 102, 241, 0.4)';
+                });
+                
+                backBtn.addEventListener('mouseleave', () => {
+                    backBtn.style.transform = 'translateY(0)';
+                    backBtn.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.3)';
+                });
+                
+                backBtn.addEventListener('click', () => {
+                    window.location.href = '/games';
+                });
+                
+                document.body.appendChild(backBtn);
+            }
+        }
+        
+        // Inject back button on page load if on game page
+        if (window.location.pathname.includes('/html5/')) {
+            injectBackButton();
+        }
 
         // Analytics Tracking
         (function() {

@@ -251,6 +251,96 @@
             padding: 40px;
             color: var(--text-secondary);
         }
+
+        .bugs-section {
+            margin-top: 40px;
+        }
+
+        .bug-item {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .bug-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .bug-id {
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        .bug-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .bug-status.pending {
+            background: #f59e0b;
+            color: #fff;
+        }
+
+        .bug-status.in-progress {
+            background: #3b82f6;
+            color: #fff;
+        }
+
+        .bug-status.resolved {
+            background: #10b981;
+            color: #fff;
+        }
+
+        .bug-status.closed {
+            background: #6b7280;
+            color: #fff;
+        }
+
+        .bug-description {
+            color: var(--text-primary);
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .bug-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            margin-top: 10px;
+        }
+
+        .bug-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .bug-action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+        }
+
+        .bug-action-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .no-bugs {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
     </style>
 </head>
 <body>
@@ -311,6 +401,17 @@
             <div class="top-games">
                 <h3>🎮 Top 10 Most Played Games</h3>
                 <div id="top-games-list" class="loading">Loading...</div>
+            </div>
+
+            <div class="bugs-section">
+                <h3>🐛 Bug Reports</h3>
+                <div style="margin-bottom: 15px;">
+                    <button class="timeframe-btn" onclick="loadBugs('pending')" style="margin-right: 10px;">Pending</button>
+                    <button class="timeframe-btn" onclick="loadBugs('in-progress')" style="margin-right: 10px;">In Progress</button>
+                    <button class="timeframe-btn" onclick="loadBugs('resolved')" style="margin-right: 10px;">Resolved</button>
+                    <button class="timeframe-btn" onclick="loadBugs(null)">All</button>
+                </div>
+                <div id="bugs-list" class="loading">Loading...</div>
             </div>
         </div>
     </div>
@@ -399,6 +500,7 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('dashboard').classList.add('active');
             loadDashboard();
+            loadBugs(); // Load bugs when dashboard is shown
         }
 
         function selectTimeframe(timeframe) {
@@ -458,6 +560,84 @@
             } catch (error) {
                 console.error('Dashboard load error:', error);
                 document.getElementById('top-games-list').innerHTML = '<p style="color: #ef4444;">Error loading data. Please refresh.</p>';
+            }
+        }
+
+        // Load bugs
+        async function loadBugs(status = null) {
+            const bugsList = document.getElementById('bugs-list');
+            if (!bugsList) return;
+            
+            bugsList.innerHTML = '<p style="color: var(--text-secondary);">Loading...</p>';
+            
+            try {
+                const url = status ? `${API_URL}/api/bugs?status=${status}` : `${API_URL}/api/bugs`;
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch bugs');
+                }
+                
+                const bugs = await response.json();
+                
+                if (bugs.length === 0) {
+                    bugsList.innerHTML = '<div class="no-bugs">No bugs found</div>';
+                    return;
+                }
+                
+                bugsList.innerHTML = bugs.map(bug => `
+                    <div class="bug-item">
+                        <div class="bug-header">
+                            <div>
+                                <span class="bug-id">Bug #${bug.id}</span>
+                                <span class="bug-status ${bug.status}">${bug.status}</span>
+                            </div>
+                            <div style="font-size: 0.85em; color: var(--text-secondary);">
+                                ${new Date(bug.created_at).toLocaleString()}
+                            </div>
+                        </div>
+                        <div class="bug-description">${bug.description}</div>
+                        <div class="bug-meta">
+                            <span>Page: ${bug.page_url || 'Unknown'}</span>
+                            ${bug.resolved_at ? `<span>Resolved: ${new Date(bug.resolved_at).toLocaleString()}</span>` : ''}
+                        </div>
+                        <div class="bug-actions">
+                            ${bug.status !== 'in-progress' ? `<button class="bug-action-btn" style="background: #3b82f6; color: white;" onclick="updateBugStatus(${bug.id}, 'in-progress')">Mark In Progress</button>` : ''}
+                            ${bug.status !== 'resolved' ? `<button class="bug-action-btn" style="background: #10b981; color: white;" onclick="updateBugStatus(${bug.id}, 'resolved')">Mark Resolved</button>` : ''}
+                            ${bug.status !== 'closed' ? `<button class="bug-action-btn" style="background: #6b7280; color: white;" onclick="updateBugStatus(${bug.id}, 'closed')">Close</button>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading bugs:', error);
+                bugsList.innerHTML = '<p style="color: #ef4444;">Error loading bugs. Please refresh.</p>';
+            }
+        }
+
+        // Update bug status
+        async function updateBugStatus(bugId, status) {
+            try {
+                const response = await fetch(`${API_URL}/api/bugs/${bugId}/status`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ status })
+                });
+                
+                if (response.ok) {
+                    loadBugs(); // Reload all bugs
+                } else {
+                    alert('Failed to update bug status');
+                }
+            } catch (error) {
+                console.error('Error updating bug status:', error);
+                alert('Failed to update bug status');
             }
         }
 

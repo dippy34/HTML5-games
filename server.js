@@ -1,13 +1,60 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const { createServer } = require('http');
 require('dotenv').config();
+
+// Interstellar/BARE server imports
+const { createBareServer } = require('@nebula-services/bare-server-node');
 
 const db = require('./database');
 const auth = require('./auth');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Create BARE server for Interstellar proxy (Mathematics/Ultraviolet)
+const bare = createBareServer('/ca/', {
+    logErrors: true,
+    blockLocal: false,
+});
+
+// Create HTTP server to handle BARE and WebSocket upgrades
+const server = createServer();
+
+// Handle BARE requests with performance logging
+server.on('request', (req, res) => {
+    const startTime = Date.now();
+    const originalEnd = res.end;
+    
+    res.end = function(...args) {
+        const duration = Date.now() - startTime;
+        if (duration > 100) { // Log slow requests (>100ms)
+            console.log(`[PERF] ${req.method} ${req.url} - ${duration}ms`);
+        }
+        originalEnd.apply(this, args);
+    };
+    
+    if (bare.shouldRoute(req)) {
+        const bareStart = Date.now();
+        bare.routeRequest(req, res);
+        const bareDuration = Date.now() - bareStart;
+        if (bareDuration > 50) {
+            console.log(`[BARE] Routing ${req.url} - ${bareDuration}ms`);
+        }
+    } else {
+        app(req, res);
+    }
+});
+
+// Handle WebSocket upgrades for BARE
+server.on('upgrade', (req, socket, head) => {
+    if (bare.shouldRoute(req)) {
+        bare.routeUpgrade(req, socket, head);
+    } else {
+        socket.end();
+    }
+});
 
 // Middleware
 app.use(cors({
@@ -55,8 +102,9 @@ app.use((req, res, next) => {
 // Custom handler for Unity files to ensure proper range request support
 const fs = require('fs');
 
-app.get(/\.(unityweb|wasm|data)$/, (req, res, next) => {
-    const filePath = path.join(__dirname, req.path);
+app.get(/\/games\/.*\.(unityweb|wasm|data)$/, (req, res, next) => {
+    // Remove /games prefix for file path
+    const filePath = path.join(__dirname, req.path.replace(/^\/games/, ''));
     
     if (!fs.existsSync(filePath)) {
         return next();
@@ -97,18 +145,28 @@ app.get(/\.(unityweb|wasm|data)$/, (req, res, next) => {
     }
 });
 
-app.use(express.static(__dirname, {
-    setHeaders: (res, path) => {
-        // Set CORS headers for static files
-        res.set('Access-Control-Allow-Origin', '*');
-        
-        // Enable range requests for Unity files
-        if (path.match(/\.(unityweb|wasm|data)$/)) {
-            res.set('Accept-Ranges', 'bytes');
-            res.set('Content-Type', path.endsWith('.wasm') ? 'application/wasm' : 'application/octet-stream');
-        }
+// Serve Interstellar static files (proxy UI)
+app.use('/ca', cors({ origin: true }));
+app.use(express.static(path.join(__dirname, 'interstellar-static'), {
+    setHeaders: (res) => {
+        res.set('Cross-Origin-Opener-Policy', 'same-origin');
+        res.set('Cross-Origin-Embedder-Policy', 'require-corp');
     }
-})); // Serve static files
+}));
+
+// Serve Nova Hub games and static files (HIDDEN - kept for future use)
+// app.use('/games', express.static(__dirname, {
+//     setHeaders: (res, filePath) => {
+//         // Set CORS headers for static files
+//         res.set('Access-Control-Allow-Origin', '*');
+//         
+//         // Enable range requests for Unity files
+//         if (filePath.match(/\.(unityweb|wasm|data)$/)) {
+//             res.set('Accept-Ranges', 'bytes');
+//             res.set('Content-Type', filePath.endsWith('.wasm') ? 'application/wasm' : 'application/octet-stream');
+//         }
+//     }
+// }));
 
 // Initialize database (non-blocking - server will start even if DB fails)
 db.getDatabase().catch(err => {
@@ -293,20 +351,117 @@ app.post('/api/admin/logout', (req, res) => {
     }
 });
 
-// Serve index.html for root
+// Serve Interstellar proxy at root
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+    res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+    res.sendFile(path.join(__dirname, 'interstellar-static', 'index.html'));
 });
 
-// Serve admin.html
-app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, 'admin.html'));
+// Interstellar routes (apps, games, settings, tabs)
+app.get('/b', (req, res) => {
+    res.sendFile(path.join(__dirname, 'interstellar-static', 'apps.html'));
+});
+
+app.get('/a', (req, res) => {
+    res.sendFile(path.join(__dirname, 'interstellar-static', 'games.html'));
+});
+
+app.get('/play.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'interstellar-static', 'games.html'));
+});
+
+app.get('/c', (req, res) => {
+    res.sendFile(path.join(__dirname, 'interstellar-static', 'settings.html'));
+});
+
+app.get('/d', (req, res) => {
+    res.sendFile(path.join(__dirname, 'interstellar-static', 'tabs.html'));
+});
+
+// Serve Nova Hub games at /games (HIDDEN - kept for future use)
+// app.get('/games', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'index.html'));
+// });
+
+// Serve admin.html (HIDDEN - kept for future use)
+// app.get('/admin', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'admin.html'));
+// });
+
+// Bug report API (public - anyone can report bugs)
+app.post('/api/bug-report', async (req, res) => {
+    try {
+        const { description, pageUrl } = req.body;
+        const userAgent = req.headers['user-agent'] || 'Unknown';
+        
+        if (!description || !description.trim()) {
+            return res.status(400).json({ error: 'Description is required' });
+        }
+
+        // Ensure database is initialized
+        await db.getDatabase();
+        await db.reportBug(description.trim(), pageUrl || req.headers.referer || 'Unknown', userAgent);
+        res.json({ success: true, message: 'Bug reported successfully' });
+    } catch (error) {
+        console.error('Error reporting bug:', error);
+        console.error('Error stack:', error.stack);
+        res.status(500).json({ error: 'Internal server error', details: error.message });
+    }
+});
+
+// Get bugs (admin only)
+app.get('/api/bugs', async (req, res) => {
+    try {
+        const token = req.headers.authorization?.replace('Bearer ', '');
+        if (!token || !auth.verifySession(token)) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        // Ensure database is initialized
+        await db.getDatabase();
+        const { status } = req.query;
+        const bugs = await db.getBugs(status || null);
+        res.json(bugs);
+    } catch (error) {
+        console.error('Error fetching bugs:', error);
+        console.error('Error stack:', error.stack);
+        // Return empty array if database is unavailable
+        res.json([]);
+    }
+});
+
+// Update bug status (admin only)
+app.post('/api/bugs/:id/status', async (req, res) => {
+    try {
+        const token = req.headers.authorization?.replace('Bearer ', '');
+        if (!token || !auth.verifySession(token)) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const { id } = req.params;
+        const { status } = req.body;
+        
+        if (!['pending', 'in-progress', 'resolved', 'closed'].includes(status)) {
+            return res.status(400).json({ error: 'Invalid status' });
+        }
+
+        // Ensure database is initialized
+        await db.getDatabase();
+        await db.updateBugStatus(parseInt(id), status);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error updating bug status:', error);
+        console.error('Error stack:', error.stack);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 // Start server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
+    console.log(`Starting Nova Hub Server (v5) - Proxy Edition...`);
     console.log(`Server running on port ${PORT}`);
-    console.log(`Admin panel: http://localhost:${PORT}/admin`);
-    console.log(`Default admin password: admin (change via .env file)`);
+    console.log(`Nova Hub Proxy: http://localhost:${PORT}/`);
+    // Games and Admin panel are hidden but code is preserved for future use
 });
 

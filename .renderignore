@@ -1,0 +1,64 @@
+# Files to ignore during Render deployment
+
+# Old proxy (no longer used)
+scramjet/
+
+# Games folder (hidden/not used - keep files but ignore sub-configs)
+html5/package.json
+html5/Procfile
+html5/nixpacks.toml
+html5/railway.json
+html5/*.ps1
+html5/*.bat
+html5/*.cmd
+html5/server.ps1
+html5/serve*.ps1
+html5/serve*.bat
+html5/serve*.cmd
+html5/open-games.bat
+
+# Temporary files
+temp-interstellar/
+*.tmp
+
+# Development scripts (root level)
+*.ps1
+*.bat
+*.cmd
+serve.ps1
+serve.bat
+serve.cmd
+setup.ps1
+start-server.ps1
+start-server.bat
+fix-games.ps1
+
+# Documentation (keep README only)
+ADMIN_SETUP.md
+COMPATIBILITY_IMPROVEMENTS.md
+PERFORMANCE_DIAGNOSTICS.md
+PROGRESS_SYSTEM.md
+QUICK_START.md
+RENDER_DEPLOY.md
+START_HERE.txt
+
+# Test files
+*.test.js
+*.spec.js
+test/
+tests/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database (will be created on Render)
+analytics.db
+*.db
+*.sqlite
+*.sqlite3
+

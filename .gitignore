@@ -1,4 +1,68 @@
-.DS_Store
-.env
-analytics.db
+# Dependencies
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+analytics.db
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build files
+dist/
+build/
+*.log
+
+# Temporary files
+temp-*/
+tmp/
+*.tmp
+
+# Old/unused folders (keep for reference but don't deploy)
+scramjet/
+html5/load/
+
+# Documentation (optional - can keep or remove)
+*.md
+!README.md
+
+# Scripts (development only)
+*.ps1
+*.bat
+*.cmd
+*.sh
+!build.ps1
+
+# Test files
+test/
+tests/
+__tests__/
+*.test.js
+*.spec.js
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Misc
+.cache/
