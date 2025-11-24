@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selenite Games - Nova Hub</title>
+    <script>
+        // Apply theme immediately before CSS loads
+        (function() {
+            const savedTheme = localStorage.getItem('selectedTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+    <script src="/assets/mathematics/bundle.js?v=2025-04-15"></script>
+    <script src="/assets/mathematics/config.js?v=2025-04-15"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-card: rgba(20, 20, 20, 0.9);
+            --bg-card-hover: rgba(30, 30, 30, 0.95);
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        /* Navigation Bar */
+        .main-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            padding: 15px 0;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .nav-logo:hover {
+            color: var(--accent-secondary);
+            transform: scale(1.05);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: var(--bg-card);
+            color: var(--accent-primary);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        #header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        #header h1 {
+            font-size: 3.5em;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        #header p {
+            font-size: 1.2em;
+            color: var(--text-secondary);
+        }
+
+        #search-container {
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        #search-bar {
+            width: 100%;
+            padding: 15px 20px;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            color: var(--text-primary);
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        #search-bar:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+
+        #game-count {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--text-secondary);
+            font-size: 1.1em;
+        }
+
+        #game-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        @media (max-width: 1200px) {
+            #game-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            #game-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 18px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            #game-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                padding: 0 10px;
+            }
+        }
+
+        .game-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 25px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            min-height: 180px;
+            justify-content: center;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: var(--accent-primary);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+            background: var(--bg-card-hover);
+        }
+
+        .game-name {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .game-description {
+            font-size: 0.95em;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        #no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            font-size: 1.5em;
+            opacity: 0.7;
+            display: none;
+        }
+
+        #no-results.show {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="/games" class="nav-logo">🎮 Nova Hub</a>
+            <div class="nav-links">
+                <a href="/games" class="nav-link">Games</a>
+                <a href="/selenite-games.html" class="nav-link active">Proxy Games</a>
+                <a href="/" class="nav-link">Proxy</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="header">
+            <h1>Selenite Games</h1>
+            <p>80+ Games from Selenite - Play through Proxy</p>
+        </div>
+        
+        <div id="search-container">
+            <input type="text" id="search-bar" placeholder="🔍 Search for a game...">
+        </div>
+        
+        <div id="game-count"></div>
+        
+        <div id="game-grid"></div>
+        
+        <div id="no-results">
+            <p>😕 No games found matching your search</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Selenite Games List
+            const seleniteGames = [
+                { name: '1v1lol', description: 'Build, fight, and survive in this fast-paced battle royale game. Create structures, collect weapons, and be the last player standing in intense 1v1 combat matches.' },
+                { name: '2048', description: 'Slide numbered tiles to combine them and reach the ultimate 2048 tile! A challenging puzzle game that tests your strategic thinking and planning skills.' },
+                { name: '2drocketleague', description: 'Play soccer with rocket-powered cars in 2D! Score goals, perform aerial stunts, and compete in fast-paced matches with physics-based gameplay.' },
+                { name: '60sburgerrun', description: 'Run through a burger-filled world in this endless runner. Collect ingredients, avoid obstacles, and survive as long as possible in this food-themed adventure.' },
+                { name: 'achieveunlocked', description: 'Unlock achievements and complete challenges in this meta-game. Progress through various tasks and earn rewards as you play.' },
+                { name: 'achieveunlocked2', description: 'The sequel to Achieve Unlocked with more challenges and achievements. Continue your journey of unlocking and completing various objectives.' },
+                { name: 'adarkroom', description: 'A minimalist text-based adventure game. Start in a dark room and explore a mysterious world through text commands and strategic decisions.' },
+                { name: 'adofai', description: 'A unique rhythm game where you rotate the world to the beat of the music. Follow the rhythm, rotate at the right moments, and navigate through challenging levels.' },
+                { name: 'adventure-capitalist', description: 'Build your business empire from a simple lemonade stand to a global corporation. Click to earn money, buy upgrades, and expand your capitalist empire.' },
+                { name: 'ageofwar', description: 'Command armies and conquer territories in this epic strategy game. Build your base, train troops, and lead them into battle across different historical ages.' },
+                { name: 'amazing-rope-police', description: 'Use your rope skills to catch criminals and maintain order. Swing through the city, apprehend bad guys, and become the ultimate rope-wielding police officer.' },
+                { name: 'amongus', description: 'Work together to complete tasks or sabotage as an impostor in this social deduction game. Find the impostor before they eliminate everyone, or successfully eliminate the crew as the impostor.' },
+                { name: 'avalanche', description: 'Survive an avalanche by dodging obstacles and collecting power-ups. Navigate through the snow at high speed and see how far you can go.' },
+                { name: 'bad-ice-cream', description: 'Help the ice cream characters collect fruits while avoiding enemies. Work together with friends or play solo in this cooperative puzzle game.' },
+                { name: 'bad-ice-cream-2', description: 'The sequel to Bad Ice Cream with new levels and challenges. Continue collecting fruits and avoiding enemies in this fun puzzle adventure.' },
+                { name: 'bad-ice-cream-3', description: 'The third installment of Bad Ice Cream. More levels, more enemies, and more fun as you collect fruits and navigate through challenging puzzles.' },
+                { name: 'basketrandom', description: 'Play basketball with realistic physics-based gameplay. Shoot hoops, practice your aim, and compete in various basketball challenges with unpredictable physics.' },
+                { name: 'bitlife', description: 'Live your life from birth to death in this life simulator. Make choices, pursue careers, build relationships, and see how your life unfolds based on your decisions.' },
+                { name: 'blockblast', description: 'Clear blocks by matching colors and patterns in this puzzle game. Strategically plan your moves to clear the board and achieve high scores.' },
+                { name: 'blocky-snakes', description: 'Control a blocky snake and grow longer by eating food. Avoid hitting walls or yourself in this classic snake game with a modern blocky twist.' },
+                { name: 'bloonstd', description: 'Pop bloons with darts in this tower defense game. Place towers strategically, upgrade them, and defend against waves of colorful bloons.' },
+                { name: 'bloonstd2', description: 'The sequel to Bloons TD with new towers, bloons, and maps. Continue defending against bloons with enhanced gameplay and more strategic options.' },
+                { name: 'bloonstd3', description: 'The third installment of Bloons TD. More towers, more bloons, and more challenging levels await in this addictive tower defense game.' },
+                { name: 'bloonstd4', description: 'The fourth game in the Bloons TD series. Experience the most advanced tower defense gameplay with new mechanics and endless strategic possibilities.' },
+                { name: 'bloxorz', description: 'Roll a block to the goal in this physics-based puzzle game. Navigate through obstacles, flip and rotate the block, and solve challenging puzzles to reach the exit.' },
+                { name: 'bounceback', description: 'Bounce balls to break blocks and clear levels. Use physics and angles to your advantage in this satisfying puzzle game.' },
+                { name: 'boxing-random', description: 'Fight in random boxing matches with unpredictable opponents. Test your reflexes and timing as you throw punches and dodge attacks.' },
+                { name: 'breakingthebank', description: 'Plan and execute the perfect bank heist. Use strategy and timing to break into banks, avoid security, and escape with the loot.' },
+                { name: 'burger-and-frights', description: 'A spooky burger-themed adventure game. Serve customers while dealing with supernatural elements in this unique restaurant management game.' },
+                { name: 'cluster-rush', description: 'Navigate through clusters of obstacles at high speed. Test your reflexes and timing as you dodge, weave, and rush through increasingly difficult levels.' },
+                { name: 'cookieclicker', description: 'Click cookies, buy upgrades, and build your cookie empire! Start by clicking cookies, then invest in upgrades to automate production and become the ultimate cookie tycoon.' },
+                { name: 'core-ball', description: 'Control a ball and navigate through challenging levels. Use physics and momentum to roll through obstacles and reach the goal.' },
+                { name: 'creativekillchamber', description: 'Fight through waves of enemies in this action-packed game. Use various weapons and abilities to survive the kill chamber and defeat all enemies.' },
+                { name: 'couch2048', description: 'Play the classic 2048 puzzle game from the comfort of your couch. Same addictive gameplay, perfect for relaxing and challenging your mind.' },
+                { name: 'deepest-sword', description: 'Descend into the depths with your sword. Fight monsters, collect treasures, and see how deep you can go in this roguelike adventure.' },
+                { name: 'drive-mad', description: 'Drive crazy vehicles through challenging and unpredictable courses. Navigate through obstacles, perform stunts, and complete wild driving challenges.' },
+                { name: 'ducklife', description: 'Train your duck to become a champion racer. Feed it, train it, and compete in races to become the ultimate duck racing champion.' },
+                { name: 'ducklife2', description: 'The sequel to Duck Life with new training methods and races. Continue your journey to become the best duck racer in the world.' },
+                { name: 'ducklife3', description: 'The third Duck Life game with expanded features. Train your duck in multiple disciplines and compete in various championships.' },
+                { name: 'ducklife4', description: 'The fourth installment of Duck Life. More training options, more races, and more challenges await your duck.' },
+                { name: 'ducklife5', description: 'The fifth Duck Life game. Continue the legacy of duck racing with new features and exciting competitions.' },
+                { name: 'ducklife6', description: 'The latest Duck Life game. Experience the most advanced duck training and racing system yet.' },
+                { name: 'emulatorjs', description: 'Play classic retro games through emulation. Access a library of nostalgic games from various consoles and relive gaming history.' },
+                { name: 'escapingtheprison', description: 'Plan your escape from prison in this strategy game. Use items, solve puzzles, and avoid guards to break free and regain your freedom.' },
+                { name: 'factoryballs', description: 'Create balls by following specific patterns and rules. Solve puzzles by painting balls according to the factory requirements.' },
+                { name: 'factoryballsforever', description: 'The endless version of Factory Balls. Continue creating balls with increasingly complex patterns and challenges.' },
+                { name: 'fancypantsadventures', description: 'Run and jump through colorful worlds as Fancy Pants Man. Perform tricks, collect items, and navigate through challenging platforming levels.' },
+                { name: 'fancypantsadventures2', description: 'The sequel to Fancy Pants Adventures. More levels, more tricks, and more adventures await Fancy Pants Man.' },
+                { name: 'fireboywatergirl', description: 'Control two characters simultaneously to solve puzzles. Work together to navigate through fire and water-themed levels in this cooperative puzzle platformer.' },
+                { name: 'fireboywatergirl2', description: 'The second Fireboy and Watergirl game with new levels and mechanics. Continue the cooperative puzzle-solving adventure.' },
+                { name: 'fireboywatergirl3', description: 'The third installment with ice-themed levels. Navigate through frozen challenges with Fireboy and Watergirl.' },
+                { name: 'fireboywatergirl4', description: 'The fourth game in the series with crystal temple levels. Solve new puzzles and overcome new obstacles together.' },
+                { name: 'flappybird', description: 'Tap to keep the bird flying and avoid pipes. This classic endless game tests your reflexes and timing as you try to achieve the highest score.' },
+                { name: 'flappyplane', description: 'Fly a plane through obstacles in this Flappy Bird-inspired game. Navigate through narrow gaps and see how far you can fly.' },
+                { name: 'fleeingthecomplex', description: 'Escape from prison in this point-and-click adventure. Solve puzzles, find items, and use your wits to break free from the complex.' },
+                { name: 'flippyfish', description: 'Control a fish and flip through the ocean. Avoid predators, collect food, and survive as long as possible in this underwater adventure.' },
+                { name: 'fluidsim', description: 'Experiment with fluid physics in this simulation game. Create and interact with realistic fluid dynamics and watch the mesmerizing effects.' },
+                { name: 'fnaf', description: 'Survive five nights at Freddy\'s pizzeria. Monitor security cameras, conserve power, and survive until morning while animatronics try to get you.' },
+                { name: 'fnaf2', description: 'The sequel to Five Nights at Freddy\'s with new animatronics and mechanics. Face even more terrifying nights at the pizzeria.' },
+                { name: 'fnaf3', description: 'The third FNAF game featuring Springtrap. Survive in a horror attraction with new challenges and scares.' },
+                { name: 'fnaf4', description: 'The fourth Five Nights at Freddy\'s game. Experience the scariest nights yet as you defend yourself from animatronics in your own home.' },
+                { name: 'geometrydash', description: 'Jump and fly through dangerous obstacles in this rhythm-based platformer. Time your jumps perfectly to the music and complete challenging levels.' },
+                { name: 'geometrydashmeltdown', description: 'A special edition of Geometry Dash with fire-themed levels. Face new challenges and obstacles in this hot adventure.' },
+                { name: 'geometrydashsubzero', description: 'The ice-themed Geometry Dash game. Navigate through frozen levels with new obstacles and challenges.' },
+                { name: 'geometrydashworld', description: 'Explore the world of Geometry Dash with new levels and features. Experience expanded gameplay in this world edition.' },
+                { name: 'google-snake', description: 'Play the classic Snake game with Google\'s modern twist. Eat food, grow longer, and avoid hitting walls or yourself.' },
+                { name: 'gravity-soccer', description: 'Play soccer with gravity-defying physics. Control the ball with gravity manipulation and score amazing goals.' },
+                { name: 'gunmayhem2', description: 'Fight with various weapons in this action-packed shooter. Use strategy and skill to defeat opponents in intense battles.' },
+                { name: 'gunmayhemredux', description: 'An enhanced version of Gun Mayhem with improved graphics and gameplay. Experience the ultimate weapon-based combat.' },
+                { name: 'guymayhem', description: 'Control a character and fight enemies in this action game. Use various weapons and abilities to survive and defeat all opponents.' },
+                { name: 'interactivebuddy', description: 'Interact with a virtual buddy in various ways. Experiment with physics, items, and see how your buddy reacts to different actions.' },
+                { name: 'learntofly', description: 'Help a penguin learn to fly by building contraptions. Use physics and creativity to launch your penguin as far as possible.' },
+                { name: 'learntofly2', description: 'The sequel to Learn to Fly. Continue helping your penguin achieve flight with new contraptions and challenges.' },
+                { name: 'learntofly3', description: 'The third Learn to Fly game. Master the art of penguin flight with advanced physics and new gameplay mechanics.' },
+                { name: 'littlealchemy', description: 'Combine elements to create new items in this creative puzzle game. Start with basic elements and discover hundreds of combinations.' },
+                { name: 'littlealchemy2', description: 'The sequel to Little Alchemy with more elements and combinations. Continue your journey of discovery and creation.' },
+                { name: 'melonplayground', description: 'A sandbox physics game where you can experiment with melons and various objects. Create scenarios, test physics, and have fun with the interactive environment.' },
+                { name: 'noob-steve-parkour', description: 'Navigate through parkour courses as Noob Steve. Jump, climb, and run through challenging obstacle courses.' },
+                { name: 'nowgg', description: 'Access cloud gaming through Now.gg. Play high-quality games streamed directly to your browser without downloads.' },
+                { name: 'nzp', description: 'Play Newgrounds games through this portal. Access a wide variety of flash games and interactive content.' },
+                { name: 'ovo', description: 'Control an egg and navigate through challenging levels. Avoid obstacles and reach the goal in this unique platformer.' },
+                { name: 'papasburgeria', description: 'Run Papa\'s Burgeria and serve customers delicious burgers. Take orders, cook ingredients, and build the perfect burger to satisfy your customers.' },
+                { name: 'papaspizzaria', description: 'Manage Papa\'s Pizzeria and create custom pizzas. Take orders, add toppings, and serve customers to build your pizza empire.' },
+                { name: 'paperminecraft', description: 'Play Minecraft in your browser with a paper-like aesthetic. Build, explore, and survive in this blocky world.' },
+                { name: 'pokemongames', description: 'Play various Pokemon games through this portal. Experience classic Pokemon adventures and battles in your browser.' },
+                { name: 'precisionclient', description: 'Access a precision gaming client for enhanced gameplay. Experience improved performance and features for various games.' },
+                { name: 'quake', description: 'Play the classic Quake game in your browser. Experience fast-paced first-person shooter action with retro graphics.' },
+                { name: 'rbcollege', description: 'Manage a college football team in Retro Bowl College. Recruit players, train your team, and compete in championships.' },
+                { name: 'redball', description: 'Control a red ball and navigate through physics-based levels. Roll, jump, and solve puzzles to reach the goal.' },
+                { name: 'retro-bowl', description: 'Manage a football team and lead them to victory. Make strategic decisions, train players, and win championships in this retro-style game.' },
+                { name: 'riddleschool', description: 'Solve riddles and escape from school in this puzzle adventure. Use your wits to find clues and solve mysteries.' },
+                { name: 'slope', description: 'Control a ball rolling down a slope and avoid obstacles. Test your reflexes as you navigate through increasingly difficult courses.' },
+                { name: 'slope2', description: 'The sequel to Slope with new levels and challenges. Continue rolling down slopes and avoiding obstacles.' },
+                { name: 'slowroads', description: 'Drive on procedurally generated roads at a relaxed pace. Enjoy the scenery and take a peaceful drive through endless landscapes.' },
+                { name: 'smashkarts', description: 'Race and battle in go-karts in this multiplayer game. Use power-ups, attack opponents, and be the first to cross the finish line.' },
+                { name: 'snowrider3d', description: 'Snowboard down mountains in 3D. Perform tricks, avoid obstacles, and race down slopes in this winter sports game.' },
+                { name: 'soccerrandom', description: 'Play random soccer matches with unpredictable gameplay. Experience chaotic and fun soccer action with random elements.' },
+                { name: 'soccerskills', description: 'Practice and improve your soccer skills. Complete challenges, perform tricks, and master various soccer techniques.' },
+                { name: 'soundboard', description: 'Play various sounds and create your own soundboard. Experiment with different audio clips and have fun with sounds.' },
+                { name: 'stick-merge', description: 'Merge sticks to create powerful weapons. Combine items strategically to build the ultimate stick-based arsenal.' },
+                { name: 'subwaysurfers', description: 'Run through subway tracks and avoid obstacles. Collect coins, perform tricks, and see how far you can run in this endless runner.' },
+                { name: 'totm', description: 'Play Tower of the Master, a challenging puzzle game. Solve complex puzzles and climb the tower to become the master.' },
+                { name: 'webretro', description: 'Play retro games through web emulation. Access classic games from various consoles and relive gaming nostalgia.' }
+            ];
+
+            const gameGrid = document.getElementById('game-grid');
+            const searchBar = document.getElementById('search-bar');
+            const gameCount = document.getElementById('game-count');
+            const noResults = document.getElementById('no-results');
+
+            function renderGames(filteredGames = seleniteGames) {
+                if (!gameGrid) return;
+                
+                gameGrid.innerHTML = '';
+                
+                if (filteredGames.length === 0) {
+                    noResults.classList.add('show');
+                    if (gameCount) gameCount.textContent = '0 games found';
+                    return;
+                }
+                
+                noResults.classList.remove('show');
+                if (gameCount) gameCount.textContent = `${filteredGames.length} game${filteredGames.length !== 1 ? 's' : ''} found`;
+                
+                filteredGames.forEach((game, index) => {
+                    const card = document.createElement('a');
+                    // Use proxy to load Selenite games
+                    const gameUrl = `https://selenite.cc/${game.name}`;
+                    // Encode URL for proxy
+                    let encodedUrl;
+                    if (typeof __uv$config !== 'undefined' && __uv$config.encodeUrl) {
+                        encodedUrl = __uv$config.encodeUrl(gameUrl);
+                    } else {
+                        // Fallback encoding
+                        encodedUrl = btoa(gameUrl).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+                    }
+                    card.href = `/a/${encodedUrl}`;
+                    card.className = 'game-card fade-in';
+                    card.style.animationDelay = `${index * 0.05}s`;
+                    
+                    const name = document.createElement('div');
+                    name.className = 'game-name';
+                    name.textContent = game.name.split('-').map(word => 
+                        word.charAt(0).toUpperCase() + word.slice(1)
+                    ).join(' ');
+                    
+                    const description = document.createElement('div');
+                    description.className = 'game-description';
+                    description.textContent = game.description;
+                    
+                    card.appendChild(name);
+                    card.appendChild(description);
+                    gameGrid.appendChild(card);
+                });
+            }
+
+            // Search functionality
+            if (searchBar) {
+                searchBar.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase().trim();
+                    const filtered = seleniteGames.filter(game => 
+                        game.name.toLowerCase().includes(searchTerm) ||
+                        game.description.toLowerCase().includes(searchTerm)
+                    );
+                    renderGames(filtered);
+                });
+            }
+
+            // Initial render
+            renderGames();
+        });
+    </script>
+</body>
+</html>
+

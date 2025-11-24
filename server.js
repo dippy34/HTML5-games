@@ -379,10 +379,10 @@ app.get('/d', (req, res) => {
     res.sendFile(path.join(__dirname, 'interstellar-static', 'tabs.html'));
 });
 
-// Serve Nova Hub games at /games (HIDDEN - kept for future use)
-// app.get('/games', (req, res) => {
-//     res.sendFile(path.join(__dirname, 'index.html'));
-// });
+// Serve Nova Hub games at /games (local games from selenite-old)
+app.get('/games', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // Serve admin.html (HIDDEN - kept for future use)
 // app.get('/admin', (req, res) => {

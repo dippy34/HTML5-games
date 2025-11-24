@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nova Hub</title>
+    <script src="/assets/mathematics/bundle.js?v=2025-04-15"></script>
+    <script src="/assets/mathematics/config.js?v=2025-04-15"></script>
     <script>
         // Apply theme immediately before CSS loads
         (function() {
@@ -731,38 +733,72 @@
             animation: fadeInUp 0.8s ease 0.4s both;
         }
 
-        #game-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+        #game-grid,
+        #selenite-game-grid {
+            display: grid !important;
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 24px !important;
             animation: fadeInUp 0.8s ease 0.6s both;
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
         }
         
-        @media (max-width: 768px) {
-            #game-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        /* Keep 4 columns on large screens */
+        @media (min-width: 1201px) {
+            #game-grid,
+            #selenite-game-grid {
+                grid-template-columns: repeat(4, 1fr) !important;
+            }
+        }
+        
+        /* 3 columns on medium-large screens */
+        @media (max-width: 1200px) and (min-width: 901px) {
+            #game-grid,
+            #selenite-game-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 20px;
+            }
+        }
+        
+        /* 2 columns on tablets */
+        @media (max-width: 900px) and (min-width: 601px) {
+            #game-grid,
+            #selenite-game-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 18px;
+            }
+        }
+        
+        /* 1 column on mobile */
+        @media (max-width: 600px) {
+            #game-grid,
+            #selenite-game-grid {
+                grid-template-columns: 1fr !important;
                 gap: 16px;
+                padding: 0 10px;
             }
         }
 
         .game-card {
             background: var(--bg-card);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
             overflow: hidden;
             text-align: left;
             text-decoration: none;
             color: var(--text-primary);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid var(--border-color);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
             position: relative;
             opacity: 1;
-            padding: 24px;
+            padding: 32px 28px;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
-            min-height: 160px;
+            min-height: 200px;
             cursor: pointer;
             transform: translateY(0);
         }
@@ -790,34 +826,63 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), var(--accent-primary));
+            background-size: 200% 100%;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.4s ease;
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
         }
 
         .game-card:hover::before {
             opacity: 1;
         }
+        
+        .game-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            border-radius: 20px;
+        }
+        
+        .game-card:hover::after {
+            opacity: 1;
+        }
 
         .game-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-8px) scale(1.02);
             background: var(--bg-card-hover);
             border-color: var(--accent-primary);
-            box-shadow: 0 12px 32px rgba(99, 102, 241, 0.2);
+            box-shadow: 0 16px 48px rgba(99, 102, 241, 0.35), 0 4px 16px rgba(0, 0, 0, 0.3);
         }
 
         .game-name {
-            font-size: 1.75em;
-            font-weight: 700;
-            margin: 0 0 12px 0;
+            font-size: 2em;
+            font-weight: 800;
+            margin: 0 0 16px 0;
             background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            line-height: 1.3;
-            letter-spacing: -0.3px;
-            transition: all 0.3s ease;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+            transition: all 0.4s ease;
             word-wrap: break-word;
             overflow-wrap: break-word;
             hyphens: auto;
@@ -831,12 +896,13 @@
         }
 
         .game-description {
-            font-size: 0.95em;
+            font-size: 1.05em;
             color: var(--text-secondary);
-            line-height: 1.6;
+            line-height: 1.7;
             margin: 0;
-            opacity: 0.85;
-            transition: all 0.3s ease;
+            opacity: 0.9;
+            transition: all 0.4s ease;
+            flex-grow: 1;
         }
 
         .game-card:hover .game-description {
@@ -880,13 +946,65 @@
             animation: fadeInUp 0.5s ease;
         }
 
+        /* Tab Navigation */
+        .games-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            padding: 0 20px;
+        }
+
+        .tab-btn {
+            padding: 12px 30px;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            color: var(--text-primary);
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            border-color: var(--accent-primary);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .games-section {
+            display: none;
+        }
+
+        .games-section.active {
+            display: block;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            font-size: 1.5em;
+            opacity: 0.7;
+            display: none;
+        }
+
+        .no-results.show {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
         @media (max-width: 768px) {
             #header h1 {
                 font-size: 2.5em;
-            }
-            #game-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 15px;
             }
             .game-icon {
                 height: 100px;
@@ -902,6 +1020,7 @@
             <a href="/games" class="nav-logo">🎮 Nova Hub</a>
             <div class="nav-links">
                 <a href="/games" class="nav-link active">Games</a>
+                <a href="/selenite-games.html" class="nav-link">Proxy Games</a>
                 <a href="/" class="nav-link">Proxy</a>
                 <button class="nav-link" id="report-bug-btn">Report Bug</button>
             </div>
@@ -1050,9 +1169,30 @@
     </div>
 
     <script>
+        // Tab switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const gameSections = document.querySelectorAll('.games-section');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTab = button.getAttribute('data-tab');
+                    
+                    // Remove active class from all buttons and sections
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    gameSections.forEach(section => section.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding section
+                    button.classList.add('active');
+                    document.getElementById(targetTab + '-section').classList.add('active');
+                });
+            });
+        });
+
         // Wait for DOM to be fully loaded
         document.addEventListener('DOMContentLoaded', function() {
             try {
+                // Games (existing games)
                 const games = [
                     // Games from files directory
                     '2048', 'adcap', 'adofai', 'basketrandom', 'cluster-rush', 
@@ -1370,6 +1510,9 @@
 
                 // Initial render
                 renderGames(games);
+
+                // Don't render proxy games on initial load (Selenite games are default)
+
                 console.log('Page initialized successfully');
             } catch (error) {
                 console.error('Error initializing page:', error);
