@@ -142,16 +142,6 @@ self.addEventListener('fetch', (event) => {
     return; // Range requests need to pass through directly
   }
 
-  // Don't intercept YouTube video requests or range requests (streaming)
-  if (urlStr.includes('youtube.com') || urlStr.includes('youtu.be') || urlStr.includes('googlevideo.com')) {
-    return; // Let YouTube requests pass through without caching
-  }
-
-  // Don't intercept range requests (used for video/audio streaming)
-  if (request.headers.get('range')) {
-    return; // Range requests need to pass through directly
-  }
-
   event.respondWith(
     (async () => {
       try {

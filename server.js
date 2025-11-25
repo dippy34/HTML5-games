@@ -145,12 +145,29 @@ app.get(/\/games\/.*\.(unityweb|wasm|data)$/, (req, res, next) => {
     }
 });
 
+// Route for local games redirect (rx) - must be before static middleware
+app.get('/rx', (req, res) => {
+    res.sendFile(path.join(__dirname, 'interstellar-static', 'rx.html'));
+});
+
 // Serve Interstellar static files (proxy UI)
 app.use('/ca', cors({ origin: true }));
 app.use(express.static(path.join(__dirname, 'interstellar-static'), {
     setHeaders: (res) => {
         res.set('Cross-Origin-Opener-Policy', 'same-origin');
         res.set('Cross-Origin-Embedder-Policy', 'require-corp');
+    }
+}));
+
+// Serve local games from html5 directory at /e/ path
+app.use('/e', express.static(path.join(__dirname, 'html5'), {
+    setHeaders: (res, filePath) => {
+        res.set('Access-Control-Allow-Origin', '*');
+        // Enable range requests for Unity files
+        if (filePath.match(/\.(unityweb|wasm|data)$/)) {
+            res.set('Accept-Ranges', 'bytes');
+            res.set('Content-Type', filePath.endsWith('.wasm') ? 'application/wasm' : 'application/octet-stream');
+        }
     }
 }));
 
