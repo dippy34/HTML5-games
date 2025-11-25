@@ -165,31 +165,7 @@ document.addEventListener("DOMContentLoaded", event => {
     particlesJS("particles-js", particlesConfig);
   }
 });
-// Splash texts
-const SplashT = [
-  "Over 8 Million Users since 2023",
-  "Fastest growing proxy server",
-  "Made by xBubbo",
-  "Check out discord.gg/interstellar :)",
-  "Thanks for using the site",
-  "Follow us on Tiktok (@useinterstellar)",
-  "Subscribe to us on YouTube (@unblocking)",
-  "Subscribe to my Youtube (@xbubbo)",
-  "Check out the settings page",
-  "Check out our Patreon (https://www.patreon.com/gointerstellar)",
-];
-
-let SplashI = Math.floor(Math.random() * SplashT.length);
-const SplashE = document.getElementById("splash");
-
-function US() {
-  SplashI = (SplashI + 1) % SplashT.length;
-  SplashE.innerText = SplashT[SplashI];
-}
-
-SplashE.innerText = SplashT[SplashI];
-
-SplashE.addEventListener("click", US);
+// Splash texts removed
 // Random URL
 function getRandomUrl() {
   const randomUrls = [

@@ -27,7 +27,7 @@ class UVServiceWorker extends EventEmitter {
           "x-powered-by",
           "x-xss-protection",
         ],
-        forward: ["accept-encoding", "connection", "content-length"],
+        forward: ["accept-encoding", "connection", "content-length", "user-agent", "accept", "accept-language", "sec-ch-ua", "sec-ch-ua-mobile", "sec-ch-ua-platform", "sec-fetch-dest", "sec-fetch-mode", "sec-fetch-site", "sec-fetch-user"],
       }),
       (this.method = { empty: ["GET", "HEAD"] }),
       (this.statusCode = { empty: [204, 304] }),
@@ -36,8 +36,7 @@ class UVServiceWorker extends EventEmitter {
         self.navigator.userAgent,
       ).getBrowserName()),
       "Firefox" === this.browser &&
-        (this.headers.forward.push("user-agent"),
-        this.headers.forward.push("content-type"));
+        this.headers.forward.push("content-type");
   }
   async fetch({ request: e }) {
     if (!e.url.startsWith(location.origin + (this.config.prefix || "/service/")))
@@ -67,13 +66,17 @@ class UVServiceWorker extends EventEmitter {
           (n.headers.referer = r.href);
       }
       const s = (await t.cookie.getCookies(r)) || [],
-        i = t.cookie.serialize(s, t.meta, !1);
+      i = t.cookie.serialize(s, t.meta, !1);
       "Firefox" === this.browser &&
         "iframe" !== e.destination &&
         "document" !== e.destination &&
         n.forward.shift(),
         i && (n.headers.cookie = i),
         (n.headers.Host = n.url.host);
+      // Ensure user-agent is always set for all browsers
+      if (!n.headers["user-agent"] && self.navigator.userAgent) {
+        n.headers["user-agent"] = self.navigator.userAgent;
+      }
       const o = new HookEvent(n, null, null);
       if ((this.emit("request", o), o.intercepted)) return o.returnValue;
       const a = await fetch(n.send);

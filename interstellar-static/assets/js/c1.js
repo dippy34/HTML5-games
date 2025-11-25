@@ -200,17 +200,25 @@ function CreateCustomApp(customApp) {
     handleClick(customApp);
   };
 
-  const image = document.createElement("img");
-  image.width = 145;
-  image.height = 145;
-  image.src = customApp.image;
-  image.loading = "lazy";
+  // Don't create image element - thumbnails removed
+  const image = document.createElement("div");
+  image.style.display = "none";
 
   const paragraph = document.createElement("p");
 
+  // Game name
+  const nameContainer = document.createElement("div");
+  nameContainer.className = "game-name";
   for (const span of Span(customApp.name)) {
-    paragraph.appendChild(span);
+    nameContainer.appendChild(span);
   }
+  paragraph.appendChild(nameContainer);
+  
+  // Add description
+  const desc = document.createElement("div");
+  desc.className = "game-description";
+  desc.textContent = customApp.description || `Play ${customApp.name}!`;
+  paragraph.appendChild(desc);
 
   linkElem.appendChild(image);
   linkElem.appendChild(paragraph);
@@ -317,22 +325,25 @@ fetch(path)
         handleClick(app);
       };
 
-      const image = document.createElement("img");
-      image.width = 145;
-      image.height = 145;
-      image.loading = "lazy";
-
-      if (app.image) {
-        image.src = app.image;
-      } else {
-        image.style.display = "none";
-      }
+      // Don't create image element - thumbnails removed
+      const image = document.createElement("div");
+      image.style.display = "none";
 
       const paragraph = document.createElement("p");
 
+      // Game name
+      const nameContainer = document.createElement("div");
+      nameContainer.className = "game-name";
       for (const span of Span(app.name)) {
-        paragraph.appendChild(span);
+        nameContainer.appendChild(span);
       }
+      paragraph.appendChild(nameContainer);
+      
+      // Add description
+      const desc = document.createElement("div");
+      desc.className = "game-description";
+      desc.textContent = app.description || `Experience ${app.name}, a fun and engaging game.`;
+      paragraph.appendChild(desc);
 
       if (app.error) {
         paragraph.style.color = "red";
@@ -357,6 +368,15 @@ fetch(path)
 
       if (appInd !== 0) {
         columnDiv.appendChild(btn);
+      }
+      
+      // Apply custom card styles after element is created
+      if (appInd === 0) {
+        setTimeout(() => {
+          if (typeof applyCardStyles === 'function') {
+            applyCardStyles();
+          }
+        }, 100);
       }
 
       if (pinList != null && appInd !== 0) {

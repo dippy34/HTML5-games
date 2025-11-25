@@ -432,3 +432,118 @@ function importSaveData() {
   };
   input.click();
 }
+
+// Game Card Appearance Customization
+document.addEventListener("DOMContentLoaded", () => {
+  // Load saved values
+  const savedBorderRadius = localStorage.getItem("cardBorderRadius") || "12";
+  const savedOpacity = localStorage.getItem("cardOpacity") || "0.95";
+  const savedNameSize = localStorage.getItem("cardNameSize") || "24";
+  const savedDescSize = localStorage.getItem("cardDescSize") || "14";
+  const savedDescLines = localStorage.getItem("cardDescLines") || "5";
+  
+  const borderRadiusSlider = document.getElementById("card-border-radius");
+  const opacitySlider = document.getElementById("card-opacity");
+  const nameSizeSlider = document.getElementById("name-font-size");
+  const descSizeSlider = document.getElementById("desc-font-size");
+  const descLinesSlider = document.getElementById("desc-lines");
+  
+  if (borderRadiusSlider) {
+    borderRadiusSlider.value = savedBorderRadius;
+    document.getElementById("border-radius-value").textContent = savedBorderRadius + "px";
+  }
+  if (opacitySlider) {
+    opacitySlider.value = savedOpacity;
+    document.getElementById("opacity-value").textContent = Math.round(savedOpacity * 100) + "%";
+  }
+  if (nameSizeSlider) {
+    nameSizeSlider.value = savedNameSize;
+    document.getElementById("name-size-value").textContent = savedNameSize + "px";
+  }
+  if (descSizeSlider) {
+    descSizeSlider.value = savedDescSize;
+    document.getElementById("desc-size-value").textContent = savedDescSize + "px";
+  }
+  if (descLinesSlider) {
+    descLinesSlider.value = savedDescLines;
+    document.getElementById("desc-lines-value").textContent = savedDescLines + " lines";
+  }
+  
+  // Apply saved styles on page load
+  applyCardStyles();
+});
+
+function updateCardStyle() {
+  const borderRadius = document.getElementById("card-border-radius").value;
+  const opacity = document.getElementById("card-opacity").value;
+  const nameSize = document.getElementById("name-font-size").value;
+  const descSize = document.getElementById("desc-font-size").value;
+  const descLines = document.getElementById("desc-lines").value;
+  
+  // Update display values
+  document.getElementById("border-radius-value").textContent = borderRadius + "px";
+  document.getElementById("opacity-value").textContent = Math.round(opacity * 100) + "%";
+  document.getElementById("name-size-value").textContent = nameSize + "px";
+  document.getElementById("desc-size-value").textContent = descSize + "px";
+  document.getElementById("desc-lines-value").textContent = descLines + " lines";
+  
+  // Save to localStorage
+  localStorage.setItem("cardBorderRadius", borderRadius);
+  localStorage.setItem("cardOpacity", opacity);
+  localStorage.setItem("cardNameSize", nameSize);
+  localStorage.setItem("cardDescSize", descSize);
+  localStorage.setItem("cardDescLines", descLines);
+  
+  // Apply styles
+  applyCardStyles();
+}
+
+function applyCardStyles() {
+  const borderRadius = localStorage.getItem("cardBorderRadius") || "12";
+  const opacity = localStorage.getItem("cardOpacity") || "0.95";
+  const nameSize = localStorage.getItem("cardNameSize") || "24";
+  const descSize = localStorage.getItem("cardDescSize") || "14";
+  const descLines = localStorage.getItem("cardDescLines") || "5";
+  
+  // Create or update style element
+  let styleElement = document.getElementById("card-custom-styles");
+  if (!styleElement) {
+    styleElement = document.createElement("style");
+    styleElement.id = "card-custom-styles";
+    document.head.appendChild(styleElement);
+  }
+  
+  styleElement.textContent = `
+    .column {
+      border-radius: ${borderRadius}px !important;
+    }
+    .column p {
+      background: linear-gradient(135deg, rgba(30, 30, 30, ${opacity}) 0%, rgba(20, 20, 20, ${opacity}) 100%) !important;
+    }
+    .column p .game-name {
+      font-size: ${nameSize}px !important;
+    }
+    .column p .game-description {
+      font-size: ${descSize}px !important;
+      -webkit-line-clamp: ${descLines} !important;
+      line-clamp: ${descLines} !important;
+    }
+  `;
+}
+
+function resetCardStyle() {
+  localStorage.removeItem("cardBorderRadius");
+  localStorage.removeItem("cardOpacity");
+  localStorage.removeItem("cardNameSize");
+  localStorage.removeItem("cardDescSize");
+  localStorage.removeItem("cardDescLines");
+  
+  document.getElementById("card-border-radius").value = "12";
+  document.getElementById("card-opacity").value = "0.95";
+  document.getElementById("name-font-size").value = "24";
+  document.getElementById("desc-font-size").value = "14";
+  document.getElementById("desc-lines").value = "5";
+  
+  updateCardStyle();
+  location.reload();
+}

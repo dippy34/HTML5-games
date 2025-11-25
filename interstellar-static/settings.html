@@ -221,16 +221,29 @@
         <button class="key-button" value="Import" onclick="importSaveData();">Import Save</button>
       </div>
       <div class="settings-card">
-        <h3>Information</h3>
-        <p>Version: v5.2.6</p>
-        <p id="last-updated">Last Updated: October 2nd, 2024</p>
-        <p>
-          Questions? Join our
-          <a href="https://discord.gg/interstellar">Discord community</a>,
-          email us at
-          <a href="mailto:hello@gointerstellar.app">hello@gointerstellar.app</a>, or
-          <a href="https://docs.gointerstellar.app/faq">check our FAQ</a>!
-        </p>
+        <h3>Game Card Appearance</h3>
+        <p>Customize how game cards look on the games page.</p>
+        <label style="display: block; margin-top: 10px; color: var(--text-primary);">Card Border Radius:</label>
+        <input type="range" id="card-border-radius" min="0" max="20" value="12" class="key-form" oninput="updateCardStyle()" style="margin-top: 5px;" />
+        <span id="border-radius-value" style="display: inline-block; margin-left: 10px; color: var(--text-primary);">12px</span>
+        
+        <label style="display: block; margin-top: 15px; color: var(--text-primary);">Card Background Opacity:</label>
+        <input type="range" id="card-opacity" min="0.5" max="1" step="0.1" value="0.95" class="key-form" oninput="updateCardStyle()" style="margin-top: 5px;" />
+        <span id="opacity-value" style="display: inline-block; margin-left: 10px; color: var(--text-primary);">95%</span>
+        
+        <label style="display: block; margin-top: 15px; color: var(--text-primary);">Name Font Size:</label>
+        <input type="range" id="name-font-size" min="16" max="28" value="24" class="key-form" oninput="updateCardStyle()" style="margin-top: 5px;" />
+        <span id="name-size-value" style="display: inline-block; margin-left: 10px; color: var(--text-primary);">24px</span>
+        
+        <label style="display: block; margin-top: 15px; color: var(--text-primary);">Description Font Size:</label>
+        <input type="range" id="desc-font-size" min="10" max="18" value="14" class="key-form" oninput="updateCardStyle()" style="margin-top: 5px;" />
+        <span id="desc-size-value" style="display: inline-block; margin-left: 10px; color: var(--text-primary);">14px</span>
+        
+        <label style="display: block; margin-top: 15px; color: var(--text-primary);">Description Lines:</label>
+        <input type="range" id="desc-lines" min="2" max="6" value="5" class="key-form" oninput="updateCardStyle()" style="margin-top: 5px;" />
+        <span id="desc-lines-value" style="display: inline-block; margin-left: 10px; color: var(--text-primary);">5 lines</span>
+        
+        <button class="key-button" onclick="resetCardStyle()" style="margin-top: 15px;">Reset to Default</button>
       </div>
     </div>
   </div>
