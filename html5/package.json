@@ -1,0 +1,17 @@
+{
+  "name": "game-hub",
+  "version": "1.0.0",
+  "description": "Game Hub - Your Ultimate Games Collection",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve -s . -l $PORT"
+  },
+  "keywords": ["games", "game-hub"],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
+
+

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading Game...</title>
+    <script>
+        // Read the saved URL from sessionStorage and redirect
+        window.addEventListener('DOMContentLoaded', function() {
+            const gameUrl = sessionStorage.getItem('GoUrl');
+            if (gameUrl) {
+                // Clear the stored URL
+                sessionStorage.removeItem('GoUrl');
+                // Redirect to the game
+                window.location.href = gameUrl;
+            } else {
+                // If no URL found, redirect back to games page
+                window.location.href = '/a';
+            }
+        });
+    </script>
+</head>
+<body>
+    <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+        <p>Loading game...</p>
+    </div>
+</body>
+</html>
+
