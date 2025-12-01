@@ -150,6 +150,27 @@ app.get('/rx', (req, res) => {
     res.sendFile(path.join(__dirname, 'interstellar-static', 'rx.html'));
 });
 
+// Interstellar routes - must be before static middleware
+app.get('/d', (req, res) => {
+    const filePath = path.join(__dirname, 'interstellar-static', 'tabs.html');
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            console.error('Error serving /d:', err);
+            res.status(404).send('File not found');
+        }
+    });
+});
+
+app.get('/d/', (req, res) => {
+    const filePath = path.join(__dirname, 'interstellar-static', 'tabs.html');
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            console.error('Error serving /d/:', err);
+            res.status(404).send('File not found');
+        }
+    });
+});
+
 // Serve Interstellar static files (proxy UI)
 app.use('/ca', cors({ origin: true }));
 app.use(express.static(path.join(__dirname, 'interstellar-static'), {
@@ -392,13 +413,9 @@ app.get('/c', (req, res) => {
     res.sendFile(path.join(__dirname, 'interstellar-static', 'settings.html'));
 });
 
-app.get('/d', (req, res) => {
-    res.sendFile(path.join(__dirname, 'interstellar-static', 'tabs.html'));
-});
-
-// Serve Nova Hub games at /games (local games from selenite-old)
+// Serve Nova Hub games at /games
 app.get('/games', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'interstellar-static', 'games.html'));
 });
 
 // Serve admin.html (HIDDEN - kept for future use)

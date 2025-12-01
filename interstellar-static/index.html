@@ -12,14 +12,14 @@
   <link rel="stylesheet" href="/assets/css/h.css?v=01" />
   <link rel="stylesheet" href="/assets/css/nav.css?v=01" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <!-- Ads removed for Nova Hub -->
+  <!-- Ads removed for NOVAHUB -->
 </head>
 
 <body class="center" onload="SplashT">
   <div class="f-nav"></div>
   <div id="particles-js" style="display: none;"></div>
   <div class="main">
-      <img src="../novahub-logo.png" alt="Nova Hub" class="title" style="max-width: 500px; width: 100%; height: auto; object-fit: contain;">
+      <h1 class="title">Nova Hub 1</h1>
       <p id="splash"></p>
       <div class="search-container">
         <form id="fv" method="POST">
@@ -35,7 +35,7 @@
   <script src="./assets/mathematics/config.js?v=2025-04-15"></script>
   <script src="/assets/js/m1.js"></script>
   <script>
-    // Mouse interaction for Nova Hub logo
+    // Mouse interaction for NOVAHUB title
     document.addEventListener('DOMContentLoaded', () => {
       const title = document.querySelector('.title');
       if (!title) return;
@@ -50,16 +50,19 @@
         const moveY = (y - centerY) / centerY;
         
         title.style.transform = `translate(${moveX * 5}px, ${moveY * 5 - 5}px) scale(1.03)`;
-        title.style.filter = `drop-shadow(${moveX * 10}px ${moveY * 10 + 4}px 20px rgba(74, 158, 255, 0.6)) drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3))`;
+        title.style.textShadow = `
+          ${moveX * 10}px ${moveY * 10 + 4}px 20px rgba(74, 158, 255, 0.6),
+          2px 4px 6px rgba(0, 0, 0, 0.3)
+        `;
       });
 
       title.addEventListener('mouseleave', () => {
         title.style.transform = '';
-        title.style.filter = 'drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.2))';
+        title.style.textShadow = '2px 4px 6px rgba(0, 0, 0, 0.2)';
       });
     });
   </script>
-  <!-- Analytics removed for Nova Hub -->
+  <!-- Analytics removed for NOVAHUB -->
 </body>
 
 </html>

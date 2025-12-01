@@ -4,6 +4,68 @@ const g = window.location.pathname === "/a";
 const a = window.location.pathname === "/b";
 const c = window.location.pathname === "/gt";
 
+// Image cache system - stores successful image URLs for instant loading
+const ImageCache = {
+  cacheKey: 'gameThumbnailCache',
+  maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
+  
+  getCache: function() {
+    try {
+      const cached = localStorage.getItem(this.cacheKey);
+      if (!cached) return {};
+      const data = JSON.parse(cached);
+      // Clean old entries
+      const now = Date.now();
+      const cleaned = {};
+      for (const [key, value] of Object.entries(data)) {
+        if (value.timestamp && (now - value.timestamp) < this.maxAge) {
+          cleaned[key] = value;
+        }
+      }
+      if (Object.keys(cleaned).length !== Object.keys(data).length) {
+        localStorage.setItem(this.cacheKey, JSON.stringify(cleaned));
+      }
+      return cleaned;
+    } catch (e) {
+      return {};
+    }
+  },
+  
+  get: function(gameLink) {
+    const cache = this.getCache();
+    return cache[gameLink]?.url || null;
+  },
+  
+  set: function(gameLink, imageUrl) {
+    try {
+      const cache = this.getCache();
+      cache[gameLink] = {
+        url: imageUrl,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(this.cacheKey, JSON.stringify(cache));
+    } catch (e) {
+      // If storage is full, clear old entries
+      try {
+        localStorage.removeItem(this.cacheKey);
+        this.set(gameLink, imageUrl);
+      } catch (e2) {}
+    }
+  }
+};
+
+// Image loading - no limits, load all immediately
+const ImageLoader = {
+  load: function(image, src, callback) {
+    image.src = src;
+    if (callback) callback();
+  },
+  
+  onLoadComplete: function() {
+    // No-op, no queue to manage
+  }
+};
+
 let t;
 
 try {
@@ -22,6 +84,96 @@ function Span(name) {
     span.textContent = char;
     return span;
   });
+}
+
+function createGameCard(app, appIndex, pinList) {
+  const columnDiv = document.createElement("div");
+  columnDiv.classList.add("column");
+  columnDiv.setAttribute("data-category", app.categories.join(" "));
+  // Removed --index animation delay for instant loading
+
+  const link = document.createElement("a");
+  link.onclick = () => {
+    handleClick(app);
+  };
+
+  // Thumbnail container
+  const thumbnailContainer = document.createElement("div");
+  thumbnailContainer.className = "thumbnail-container";
+
+  const image = document.createElement("img");
+  image.alt = app.name;
+  image.className = "thumbnail-img";
+  
+  // Simple approach: build paths, try in order, cache on success
+  let paths = [];
+  let currentIndex = 0;
+  
+  function buildPaths() {
+    if (paths.length > 0) return;
+    const cached = ImageCache.get(app.link);
+    if (cached) paths.push(cached);
+    if (app.image) paths.push(app.image);
+    
+    if (app.link && (app.link.startsWith('/e/') || app.local)) {
+      const linkPath = app.link;
+      if (linkPath.includes('/')) {
+        const dir = linkPath.substring(0, linkPath.lastIndexOf('/') + 1);
+        const gameName = linkPath.match(/\/e\/load\/([^\/]+)/)?.[1] || '';
+        const patterns = ['splash.png', 'splash.jpg', 'splash.jpeg', 'logo.png', 'logo.jpg', 
+                         'icon.png', 'icon.jpg', 'cover.png', 'cover.jpg', 'thumbnail.png', 
+                         'thumbnail.jpg', 'banner.png', 'banner.jpg', 'preview.png', 
+                         'image.png', 'image.jpg', 'img.png', 'img.jpg'];
+        const subdirs = ['', 'assets/img/', 'assets/', 'img/'];
+        patterns.forEach(p => subdirs.forEach(s => paths.push(dir + s + p)));
+        if (gameName) [gameName + '.png', gameName + '.jpg'].forEach(p => paths.push(dir + p));
+      }
+    }
+    paths.push("/assets/media/icons/custom.webp");
+  }
+  
+  function tryNext() {
+    buildPaths();
+    if (currentIndex < paths.length) image.src = paths[currentIndex++];
+  }
+  
+  image.onload = function() {
+    if (!this.src.includes('custom.webp') && app.link) {
+      ImageCache.set(app.link, this.src);
+    }
+    image.onerror = null; // Stop trying once loaded
+  };
+  
+  image.onerror = tryNext; // Try next path on error
+  
+  tryNext(); // Start loading
+  
+  thumbnailContainer.appendChild(image);
+  link.appendChild(thumbnailContainer);
+
+  // Title
+  const title = document.createElement("div");
+  title.className = "game-title";
+  title.textContent = app.name;
+  link.appendChild(title);
+
+  columnDiv.appendChild(link);
+
+  if (app.error) {
+    if (!app.say) {
+      app.say = "This app is currently not working.";
+    }
+  } else if (app.load) {
+    if (!app.say) {
+      app.say = "This app may experience excessive loading times.";
+    }
+  } else if (app.partial) {
+    if (!app.say) {
+      app.say = "This app is currently experiencing some issues, it may not work for you. (Dynamic doesn't work in about:blank)";
+    }
+  }
+
+  return columnDiv;
 }
 
 function saveToLocal(path) {
@@ -182,18 +334,11 @@ function CreateCustomApp(customApp) {
 
   const btn = document.createElement("button");
   btn.appendChild(pinIcon);
-  btn.style.float = "right";
-  btn.style.cursor = "pointer";
-  btn.style.backgroundColor = "rgb(45,45,45)";
-  btn.style.borderRadius = "50%";
-  btn.style.borderColor = "transparent";
-  btn.style.color = "white";
-  btn.style.top = "-200px";
-  btn.style.position = "relative";
   btn.onclick = () => {
     setPin(appInd);
   };
   btn.title = "Pin";
+  btn.setAttribute("aria-label", "Pin game");
 
   const linkElem = document.createElement("a");
   linkElem.onclick = () => {
@@ -267,8 +412,8 @@ fetch(path)
       }
       return a.name.localeCompare(b.name);
     });
-    const nonPinnedApps = document.querySelector(".apps");
-    const pinnedApps = document.querySelector(".pinned");
+    
+    const gamesGrid = document.querySelector(".games-grid");
     let pinList;
     if (g) {
       pinList = localStorage.getItem("Gpinned") || "";
@@ -295,105 +440,14 @@ fetch(path)
         }
       }
 
-      const pinNum = appInd;
-
-      const columnDiv = document.createElement("div");
-      columnDiv.classList.add("column");
-      columnDiv.setAttribute("data-category", app.categories.join(" "));
-
-      const pinIcon = document.createElement("i");
-      pinIcon.classList.add("fa", "fa-map-pin");
-      pinIcon.ariaHidden = true;
-
-      const btn = document.createElement("button");
-      btn.appendChild(pinIcon);
-      btn.style.float = "right";
-      btn.style.backgroundColor = "rgb(45,45,45)";
-      btn.style.borderRadius = "50%";
-      btn.style.borderColor = "transparent";
-      btn.style.color = "white";
-      btn.style.top = "-200px";
-      btn.style.position = "relative";
-      btn.onclick = () => {
-        setPin(pinNum);
-      };
-      btn.title = "Pin";
-
-      const link = document.createElement("a");
-
-      link.onclick = () => {
-        handleClick(app);
-      };
-
-      // Don't create image element - thumbnails removed
-      const image = document.createElement("div");
-      image.style.display = "none";
-
-      const paragraph = document.createElement("p");
-
-      // Game name
-      const nameContainer = document.createElement("div");
-      nameContainer.className = "game-name";
-      for (const span of Span(app.name)) {
-        nameContainer.appendChild(span);
-      }
-      paragraph.appendChild(nameContainer);
+      const columnDiv = createGameCard(app, appInd, pinList);
       
-      // Add description
-      const desc = document.createElement("div");
-      desc.className = "game-description";
-      desc.textContent = app.description || `Experience ${app.name}, a fun and engaging game.`;
-      paragraph.appendChild(desc);
-
-      if (app.error) {
-        paragraph.style.color = "red";
-        if (!app.say) {
-          app.say = "This app is currently not working.";
-        }
-      } else if (app.load) {
-        paragraph.style.color = "yellow";
-        if (!app.say) {
-          app.say = "This app may experience excessive loading times.";
-        }
-      } else if (app.partial) {
-        paragraph.style.color = "yellow";
-        if (!app.say) {
-          app.say = "This app is currently experiencing some issues, it may not work for you. (Dynamic doesn't work in about:blank)";
-        }
-      }
-
-      link.appendChild(image);
-      link.appendChild(paragraph);
-      columnDiv.appendChild(link);
-
-      if (appInd !== 0) {
-        columnDiv.appendChild(btn);
+      if (gamesGrid) {
+        gamesGrid.appendChild(columnDiv);
       }
       
-      // Apply custom card styles after element is created
-      if (appInd === 0) {
-        setTimeout(() => {
-          if (typeof applyCardStyles === 'function') {
-            applyCardStyles();
-          }
-        }, 100);
-      }
-
-      if (pinList != null && appInd !== 0) {
-        if (pinContains(appInd, pinList)) {
-          pinnedApps.appendChild(columnDiv);
-        } else {
-          nonPinnedApps.appendChild(columnDiv);
-        }
-      } else {
-        nonPinnedApps.appendChild(columnDiv);
-      }
       appInd += 1;
     }
-
-    const appsContainer = document.getElementById("apps-container");
-    appsContainer.appendChild(pinnedApps);
-    appsContainer.appendChild(nonPinnedApps);
   })
   .catch(error => {
     console.error("Error fetching JSON data:", error);
@@ -420,7 +474,8 @@ function bar() {
   const g = document.getElementsByClassName("column");
 
   for (const game of g) {
-    const name = game.getElementsByTagName("p")[0].textContent.toLowerCase();
+    const titleElement = game.querySelector(".game-title");
+    const name = titleElement ? titleElement.textContent.toLowerCase() : "";
 
     if (name.includes(filter)) {
       game.style.display = "block";

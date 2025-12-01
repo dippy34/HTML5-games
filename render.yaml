@@ -2,7 +2,7 @@ services:
   - type: web
     name: nova-hub
     env: node
-    rootDir: .
+    rootDir: HTML5-games-1
     buildCommand: npm install
     startCommand: npm start
     envVars:
