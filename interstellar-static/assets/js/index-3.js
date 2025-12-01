@@ -190,8 +190,67 @@ function openAboutBlankTab(targetUrl) {
       link.rel = "icon";
       link.href = icon;
 
-      // Set the iframe src to the target proxied URL
-      iframe.src = targetUrl;
+      // Ensure targetUrl is an absolute URL for about:blank context
+      let absoluteUrl = targetUrl;
+      if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+        // It's a relative URL, need to make it absolute
+        let baseOrigin = storedOrigin || sessionStorage.getItem('proxyOrigin') || '';
+        
+        // If we still don't have a valid origin, try multiple methods
+        if (!baseOrigin || baseOrigin === 'about:' || !baseOrigin.includes('://')) {
+          try {
+            // Method 1: Try to get from current window location (if not in about:blank)
+            if (window.location.origin && window.location.origin !== 'null' && 
+                window.location.origin !== 'undefined' && window.location.origin !== 'about:' &&
+                window.location.origin.includes('://')) {
+              baseOrigin = window.location.origin;
+            }
+            // Method 2: Try to get from top window (if we're in an iframe)
+            else if (window.top && window.top !== window) {
+              try {
+                const topOrigin = window.top.location.origin;
+                if (topOrigin && topOrigin !== 'null' && topOrigin !== 'about:' && topOrigin.includes('://')) {
+                  baseOrigin = topOrigin;
+                }
+              } catch (e) {
+                // Cross-origin, can't access
+              }
+            }
+            // Method 3: Try document.referrer
+            if ((!baseOrigin || baseOrigin === 'about:' || !baseOrigin.includes('://')) && document.referrer) {
+              try {
+                const referrerUrl = new URL(document.referrer);
+                baseOrigin = referrerUrl.origin;
+              } catch (e) {
+                // Invalid referrer
+              }
+            }
+          } catch (e) {
+            console.error("Could not determine origin:", e);
+          }
+        }
+        
+        // Construct absolute URL
+        if (baseOrigin && baseOrigin !== 'about:' && baseOrigin.includes('://')) {
+          // Ensure targetUrl starts with /
+          if (!targetUrl.startsWith('/')) {
+            targetUrl = '/' + targetUrl;
+          }
+          absoluteUrl = baseOrigin + targetUrl;
+        } else {
+          console.error("Cannot create absolute URL - no valid origin found. targetUrl:", targetUrl);
+          // Fall back to normal navigation in the current window
+          try {
+            window.location.href = targetUrl;
+          } catch (e) {
+            console.error("Fallback navigation also failed:", e);
+          }
+          return;
+        }
+      }
+
+      // Set the iframe src to the absolute proxied URL
+      iframe.src = absoluteUrl;
       style.position = "fixed";
       style.top = style.bottom = style.left = style.right = 0;
       style.border = style.outline = "none";
