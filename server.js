@@ -180,10 +180,48 @@ app.use(express.static(path.join(__dirname, 'interstellar-static'), {
     }
 }));
 
+// Explicit route for game index.html files to ensure they're served correctly
+// This route must come BEFORE the static middleware to catch these requests
+app.get(/^\/e\/load\/.+\/index\.html$/, (req, res) => {
+    const gamePath = req.path.replace('/e/', '');
+    const filePath = path.join(__dirname, 'html5', gamePath);
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            console.error(`Error serving game file ${filePath}:`, err);
+            res.status(404).send('Game not found');
+        }
+    });
+});
+
 // Serve local games from html5 directory at /e/ path
 app.use('/e', express.static(path.join(__dirname, 'html5'), {
+    index: 'index.html',
     setHeaders: (res, filePath) => {
         res.set('Access-Control-Allow-Origin', '*');
+        
+        // Set MIME types for JavaScript files
+        if (filePath.endsWith('.js')) {
+            res.set('Content-Type', 'application/javascript');
+        }
+        // Set MIME type for JSON files
+        if (filePath.endsWith('.json')) {
+            res.set('Content-Type', 'application/json');
+        }
+        // Set MIME type for SWF files
+        if (filePath.endsWith('.swf')) {
+            res.set('Content-Type', 'application/x-shockwave-flash');
+        }
+        // Set MIME types for audio files
+        if (filePath.endsWith('.mp3')) {
+            res.set('Content-Type', 'audio/mpeg');
+        }
+        if (filePath.endsWith('.ogg') || filePath.endsWith('.flac')) {
+            res.set('Content-Type', filePath.endsWith('.ogg') ? 'audio/ogg' : 'audio/flac');
+        }
+        // Set MIME types for 3D model files
+        if (filePath.endsWith('.glb') || filePath.endsWith('.gltf')) {
+            res.set('Content-Type', 'model/gltf-binary');
+        }
         // Enable range requests for Unity files
         if (filePath.match(/\.(unityweb|wasm|data)$/)) {
             res.set('Accept-Ranges', 'bytes');
@@ -191,6 +229,14 @@ app.use('/e', express.static(path.join(__dirname, 'html5'), {
         }
     }
 }));
+
+// Route for all.min.js (proxy script used by games)
+app.get('/js/all.min.js', (req, res) => {
+    res.set('Content-Type', 'application/javascript');
+    res.set('Access-Control-Allow-Origin', '*');
+    // Return empty script - games use this as a proxy/loader
+    res.send('// Proxy script');
+});
 
 // Serve Nova Hub games and static files (HIDDEN - kept for future use)
 // app.use('/games', express.static(__dirname, {
@@ -403,6 +449,10 @@ app.get('/b', (req, res) => {
 
 app.get('/a', (req, res) => {
     res.sendFile(path.join(__dirname, 'interstellar-static', 'games.html'));
+});
+
+app.get('/selenite', (req, res) => {
+    res.sendFile(path.join(__dirname, 'interstellar-static', 'selenite.html'));
 });
 
 app.get('/play.html', (req, res) => {

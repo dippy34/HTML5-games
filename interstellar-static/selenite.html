@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <link rel="shortcut icon" id="tab-favicon" href="favicon.png" />
+  <title id="t">Selenite Games</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/assets/css/global.css?v=6" />
+  <link rel="stylesheet" href="/assets/css/container.css?v=5" />
+  <link rel="stylesheet" href="/assets/css/nav.css?v=01" />
+  <script src="/assets/js/index-3.js"></script>
+  <!-- Ads removed for Nova Hub -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+  <div class="f-nav"></div>
+  <div class="input-c">
+    <input type="text" id="search" onkeyup="bar()" placeholder="Search Selenite games..." />
+  </div>
+  
+  <div class="games-grid"></div>
+  
+  <script src="/assets/js/m1.js?v=003"></script>
+  <script src="/assets/js/card-styles.js"></script>
+  <script>
+    // Prevent c1.js from loading apps - define page type variables first
+    const g = false;
+    const a = false;
+    const c = false;
+    
+    // Simple search function
+    function bar() {
+      const searchTerm = document.getElementById('search').value.toLowerCase();
+      const games = document.querySelectorAll('.games-grid .column');
+      games.forEach(game => {
+        const gameName = game.querySelector('p')?.textContent?.toLowerCase() || '';
+        if (gameName.includes(searchTerm)) {
+          game.style.display = '';
+        } else {
+          game.style.display = 'none';
+        }
+      });
+    }
+    
+    // Simplified createGameCard function for Selenite page only
+    function createGameCard(app, appIndex, pinList) {
+      const columnDiv = document.createElement('div');
+      columnDiv.classList.add('column');
+      const categories = Array.isArray(app.categories) && app.categories.length > 0 
+        ? app.categories 
+        : ['all'];
+      columnDiv.setAttribute('data-category', categories.join(' '));
+
+      const link = document.createElement('a');
+      link.href = app.link;
+      link.onclick = (e) => {
+        if (app.local) {
+          e.preventDefault();
+          window.location.href = app.link;
+        }
+      };
+
+      const thumbnailContainer = document.createElement('div');
+      thumbnailContainer.className = 'thumbnail-container';
+
+      const image = document.createElement('img');
+      image.alt = app.name;
+      image.className = 'thumbnail-img';
+      image.src = app.image || '/assets/media/icons/custom.webp';
+      image.onerror = () => {
+        image.src = '/assets/media/icons/custom.webp';
+      };
+      
+      thumbnailContainer.appendChild(image);
+      link.appendChild(thumbnailContainer);
+
+      const paragraph = document.createElement('p');
+      const nameContainer = document.createElement('div');
+      nameContainer.className = 'game-name';
+      nameContainer.textContent = app.name;
+      paragraph.appendChild(nameContainer);
+      link.appendChild(paragraph);
+
+      columnDiv.appendChild(link);
+      return columnDiv;
+    }
+
+    // Load Polytrack game after scripts are loaded
+    function loadPolytrack() {
+      const gamesGrid = document.querySelector('.games-grid');
+      if (!gamesGrid) {
+        setTimeout(loadPolytrack, 100);
+        return;
+      }
+
+      const polytrack = {
+        name: 'Polytrack',
+        link: '/e/polytrack/index.html',
+        local: true,
+        categories: ['all', 'action'],
+        image: '/e/polytrack/images/icon.svg'
+      };
+
+      // Create game card using our local function
+      const card = createGameCard(polytrack, 0, []);
+      gamesGrid.appendChild(card);
+    }
+
+    // Wait for DOM and scripts to load
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(loadPolytrack, 100);
+      });
+    } else {
+      setTimeout(loadPolytrack, 100);
+    }
+  </script>
+  <!-- Analytics removed for Nova Hub -->
+</body>
+
+</html>
+

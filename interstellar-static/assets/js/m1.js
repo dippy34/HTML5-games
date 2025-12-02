@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
       <div class="f-nav-right">
         <a class="navbar-link" href="/./a"><i class="fa-solid fa-gamepad navbar-icon"></i><an>&#71;&#97;</an><an>&#109;&#101;&#115;</an></a>
+        <a class="navbar-link" href="/./selenite"><i class="fa-solid fa-rocket navbar-icon"></i><an>S</an><an>elenite</an></a>
         <a class="navbar-link" href="/./b"><i class="fa-solid fa-phone navbar-icon"></i><an>&#65;&#112;</an><an>&#112;&#115;</an></a>
         ${qp ? "" : '<a class="navbar-link" href="/./d"><i class="fa-solid fa-laptop navbar-icon"></i><an>&#84;&#97;</an><an>&#98;&#115;</an></a>'}
         <a class="navbar-link" href="/./bug-reports.html"><i class="fa-solid fa-bug navbar-icon"></i><an>&#66;&#117;&#103;</an><an>&#32;&#82;&#101;&#112;&#111;&#114;&#116;&#115;</an></a>
