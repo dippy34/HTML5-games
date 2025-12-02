@@ -158,14 +158,17 @@
         <h3>Search Engine</h3>
         <p>Change the search engine when searching.</p>
         <select title="engine" id="engine" onchange="EngineChange(this)">
-          <option value="Google">Google (Default)</option>
+          <option value="DuckDuckGo">DuckDuckGo (Recommended - Proxy Friendly)</option>
+          <option value="Google">Google (May be blocked by CAPTCHA)</option>
           <option value="Bing">Bing</option>
-          <option value="DuckDuckGo">DuckDuckGo</option>
           <option value="Qwant">Qwant</option>
           <option value="Startpage">Startpage</option>
           <option value="SearchEncrypt">SearchEncrypt</option>
           <option value="Ecosia">Ecosia</option>
         </select>
+        <p style="font-size: 12px; color: #888; margin-top: 5px;">
+          Note: Google often blocks proxy traffic and may show CAPTCHA pages. DuckDuckGo works better with proxies.
+        </p>
         <input class="key-form" type="text" id="engine-form" placeholder="Change Search Engine" name="engine" />
         <button class="key-button" value="Save" onclick="SaveEngine();">
           Save

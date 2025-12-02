@@ -338,8 +338,21 @@ function SaveEngine() {
 document.addEventListener("DOMContentLoaded", () => {
   const selectedEngineName = localStorage.getItem("enginename");
   const dropdown = document.getElementById("engine");
-  if (selectedEngineName) {
+  
+  // If no engine is set, default to DuckDuckGo (more proxy-friendly)
+  if (!selectedEngineName) {
+    localStorage.setItem("engine", "https://duckduckgo.com/?q=");
+    localStorage.setItem("enginename", "DuckDuckGo");
+    if (dropdown) {
+      dropdown.value = "DuckDuckGo";
+    }
+  } else if (dropdown) {
     dropdown.value = selectedEngineName;
+    
+    // Show warning if Google is selected (Google blocks proxy traffic)
+    if (selectedEngineName === "Google") {
+      console.warn("Note: Google may block proxy traffic and show CAPTCHA pages. Consider using DuckDuckGo or another search engine for better compatibility.");
+    }
   }
 });
 

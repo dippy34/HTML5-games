@@ -66,3 +66,6 @@ coverage/
 
 # Misc
 .cache/
+
+# Admin accounts
+admin-accounts.js

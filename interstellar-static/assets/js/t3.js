@@ -18,7 +18,16 @@ window.addEventListener("load", () => {
     form.addEventListener("submit", async event => {
       event.preventDefault();
       const formValue = input.value.trim();
-      const url = isUrl(formValue) ? prependHttps(formValue) : `https://duckduckgo.com/?q=${formValue}`;
+      
+      // Get search engine from localStorage, default to DuckDuckGo (more proxy-friendly)
+      let engine = localStorage.getItem("engine");
+      if (!engine) {
+        engine = "https://duckduckgo.com/?q=";
+        localStorage.setItem("engine", engine);
+        localStorage.setItem("enginename", "DuckDuckGo");
+      }
+      
+      const url = isUrl(formValue) ? prependHttps(formValue) : engine + formValue;
       processUrl(url);
     });
   }

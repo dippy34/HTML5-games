@@ -2,7 +2,18 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const { createServer } = require('http');
+const fs = require('fs');
+
+// Load environment variables
+// Load .env first (for shared/default values)
 require('dotenv').config();
+
+// Load .env.local if it exists (for local overrides - not in git)
+// This allows each developer to have their own local environment
+if (fs.existsSync('.env.local')) {
+    require('dotenv').config({ path: '.env.local', override: true });
+    console.log('[Config] Loaded local environment variables from .env.local');
+}
 
 // Interstellar/BARE server imports
 const { createBareServer } = require('@nebula-services/bare-server-node');
@@ -100,8 +111,6 @@ app.use((req, res, next) => {
 });
 
 // Custom handler for Unity files to ensure proper range request support
-const fs = require('fs');
-
 app.get(/\/games\/.*\.(unityweb|wasm|data)$/, (req, res, next) => {
     // Remove /games prefix for file path
     const filePath = path.join(__dirname, req.path.replace(/^\/games/, ''));
@@ -375,23 +384,29 @@ app.get('/api/active-sessions', async (req, res) => {
 // Admin authentication
 app.post('/api/admin/login', async (req, res) => {
     try {
-        const { password } = req.body;
+        const { email, password } = req.body;
         
-        if (!password) {
-            return res.status(400).json({ error: 'Password required' });
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password required' });
         }
 
-        const isValid = await auth.verifyAdminPassword(password);
+        const account = await auth.verifyAdminCredentials(email, password);
         
-        // Debug logging
-        console.log('Login attempt - Password provided:', password ? 'Yes' : 'No');
-        console.log('Password valid:', isValid);
-        
-        if (isValid) {
-            const token = auth.createSession();
-            res.json({ success: true, token });
+        if (account) {
+            const token = auth.createSession(account);
+            console.log(`Admin login successful: ${account.email} (${account.role})`);
+            res.json({ 
+                success: true, 
+                token,
+                user: {
+                    email: account.email,
+                    name: account.name,
+                    role: account.role
+                }
+            });
         } else {
-            res.status(401).json({ error: 'Invalid password' });
+            console.log(`Failed login attempt for email: ${email}`);
+            res.status(401).json({ error: 'Invalid email or password' });
         }
     } catch (error) {
         console.error('Error during login:', error);
@@ -409,9 +424,10 @@ app.get('/api/admin/verify', (req, res) => {
         }
 
         const isValid = auth.verifySession(token);
+        const user = auth.getSessionUser(token);
         
-        if (isValid) {
-            res.json({ valid: true });
+        if (isValid && user) {
+            res.json({ valid: true, user });
         } else {
             res.status(401).json({ valid: false });
         }
@@ -468,10 +484,10 @@ app.get('/games', (req, res) => {
     res.sendFile(path.join(__dirname, 'interstellar-static', 'games.html'));
 });
 
-// Serve admin.html (HIDDEN - kept for future use)
-// app.get('/admin', (req, res) => {
-//     res.sendFile(path.join(__dirname, 'admin.html'));
-// });
+// Serve admin.html
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin.html'));
+});
 
 // Bug report API (public - anyone can report bugs)
 app.post('/api/bug-report', async (req, res) => {
@@ -538,6 +554,51 @@ app.post('/api/bugs/:id/status', async (req, res) => {
         console.error('Error updating bug status:', error);
         console.error('Error stack:', error.stack);
         res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Google Forms integration
+const googleForms = require('./google-forms');
+
+// Get Google Forms responses (admin only)
+app.get('/api/google-forms', async (req, res) => {
+    try {
+        const token = req.headers.authorization?.replace('Bearer ', '');
+        if (!token || !auth.verifySession(token)) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const responses = await googleForms.getAllFormResponses();
+        // Always return a response, even if empty/not configured
+        res.json(responses || {});
+    } catch (error) {
+        console.error('Error fetching Google Forms responses:', error);
+        // Return empty structure instead of error to allow admin panel to load
+        res.json({});
+    }
+});
+
+// Get specific form responses (admin only)
+app.get('/api/google-forms/:formName', async (req, res) => {
+    try {
+        const token = req.headers.authorization?.replace('Bearer ', '');
+        if (!token || !auth.verifySession(token)) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const { formName } = req.params;
+        const responses = await googleForms.getFormResponses(formName);
+        // Always return a response, even if empty/not configured
+        res.json(responses || { formName, responses: [], configured: false });
+    } catch (error) {
+        console.error(`Error fetching Google Forms responses for ${req.params.formName}:`, error);
+        // Return empty structure instead of error
+        res.json({ 
+            formName: req.params.formName, 
+            responses: [], 
+            configured: false,
+            error: error.message 
+        });
     }
 });
 

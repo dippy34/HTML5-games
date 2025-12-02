@@ -45,8 +45,16 @@ if (form && input) {
 }
 function processUrl(value, path) {
   let url = value.trim();
-  const engine = localStorage.getItem("engine");
-  const searchUrl = engine ? engine : "https://duckduckgo.com/?q=";
+  let engine = localStorage.getItem("engine");
+  
+  // If no engine is set, default to DuckDuckGo (more proxy-friendly than Google)
+  if (!engine) {
+    engine = "https://duckduckgo.com/?q=";
+    localStorage.setItem("engine", engine);
+    localStorage.setItem("enginename", "DuckDuckGo");
+  }
+  
+  const searchUrl = engine;
 
   if (!isUrl(url)) {
     url = searchUrl + url;

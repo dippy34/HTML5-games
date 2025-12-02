@@ -58,10 +58,188 @@ function isYouTubeUrl(url) {
   }
 }
 
+// Helper function to check if URL is a CAPTCHA resource that should bypass proxy
+function isCaptchaResource(url) {
+  try {
+    let urlStr = url.toString();
+    
+    // Check if it's a proxied URL and decode it first
+    if (urlStr.includes('/a/') && !urlStr.includes('/a/q/')) {
+      try {
+        const urlObj = new URL(url);
+        const pathMatch = urlObj.pathname.match(/\/a\/(.+?)(?:\?|$)/);
+        if (pathMatch) {
+          const encoded = pathMatch[1];
+          try {
+            const decoded = __uv$config.decodeUrl(encoded);
+            urlStr = decoded;
+          } catch (e) {
+            // If decoding fails, continue with original URL
+          }
+        }
+      } catch (e) {
+        // Continue with original URL
+      }
+    }
+    
+    // Check for CAPTCHA-related domains and paths
+    const captchaDomains = [
+      'www.gstatic.com',
+      'gstatic.com',
+      'recaptcha.net',
+      'www.recaptcha.net',
+      'google.com/recaptcha',
+      'accounts.google.com',
+      'www.google.com/recaptcha',
+      'apis.google.com'
+    ];
+    
+    const captchaPaths = [
+      '/recaptcha',
+      '/recaptcha/api',
+      '/recaptcha/enterprise',
+      '/recaptcha/api.js',
+      '/recaptcha/api2/',
+      '/_/recaptcha',
+      '/accounts/static',
+      '/accounts/iframe'
+    ];
+    
+    const captchaFilePatterns = [
+      'recaptcha',
+      'challenge',
+      'anchor'
+    ];
+    
+    // Check if URL contains CAPTCHA domain
+    for (const domain of captchaDomains) {
+      if (urlStr.includes(domain)) {
+        return true;
+      }
+    }
+    
+    // Check if URL contains CAPTCHA path (and is from Google)
+    for (const path of captchaPaths) {
+      if (urlStr.includes(path)) {
+        // Check if it's from a Google domain or if path is specific enough
+        if (urlStr.includes('google.com') || urlStr.includes('gstatic.com') || path.startsWith('/recaptcha')) {
+          return true;
+        }
+      }
+    }
+    
+    // Check for CAPTCHA file patterns in Google domains
+    for (const pattern of captchaFilePatterns) {
+      if (urlStr.includes(pattern) && (urlStr.includes('google.com') || urlStr.includes('gstatic.com'))) {
+        return true;
+      }
+    }
+    
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+// Helper function to get direct URL for CAPTCHA resources
+function getDirectUrl(url) {
+  try {
+    let urlStr = url.toString();
+    
+    // Check if it's already a direct URL (starts with http/https)
+    if (urlStr.startsWith('http://') || urlStr.startsWith('https://')) {
+      try {
+        const urlObj = new URL(urlStr);
+        // If it's already a full URL, return it
+        if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
+          return urlStr;
+        }
+      } catch {
+        // Continue processing
+      }
+    }
+    
+    // If it's a proxied URL, decode it
+    if (urlStr.includes('/a/') && !urlStr.includes('/a/q/')) {
+      try {
+        const urlObj = new URL(urlStr);
+        const pathMatch = urlObj.pathname.match(/\/a\/(.+?)(?:\?|$)/);
+        if (pathMatch) {
+          const encoded = pathMatch[1];
+          try {
+            const decoded = __uv$config.decodeUrl(encoded);
+            // Ensure it's a full URL
+            if (decoded.startsWith('http://') || decoded.startsWith('https://')) {
+              // Add query string if present
+              const fullUrl = decoded + (urlObj.search || '');
+              return fullUrl;
+            } else {
+              // If decoded URL is relative, try to construct full URL
+              const fullUrl = 'https://' + decoded + (urlObj.search || '');
+              return fullUrl;
+            }
+          } catch (e) {
+            console.error('[SW] Error decoding CAPTCHA URL:', e);
+          }
+        }
+      } catch (e) {
+        console.error('[SW] Error parsing CAPTCHA URL:', e);
+      }
+    }
+    
+    // If it doesn't start with http/https, try to construct full URL
+    if (!urlStr.startsWith('http://') && !urlStr.startsWith('https://')) {
+      return 'https://' + urlStr;
+    }
+    
+    return urlStr;
+  } catch {
+    return url.toString();
+  }
+}
+
 self.addEventListener("fetch", event => {
   event.respondWith(
     (async () => {
       const requestUrl = event.request.url;
+      
+      // Check if this is a CAPTCHA resource - bypass proxy for direct access
+      if (isCaptchaResource(requestUrl)) {
+        try {
+          const directUrl = getDirectUrl(requestUrl);
+          console.log('[SW] Bypassing proxy for CAPTCHA resource:', directUrl);
+          
+          // Create headers for direct request (copy from original but remove proxy-specific ones)
+          const headers = new Headers();
+          const originalHeaders = event.request.headers;
+          
+          // Copy relevant headers, skipping proxy-specific ones
+          for (const [key, value] of originalHeaders.entries()) {
+            const lowerKey = key.toLowerCase();
+            if (!['host', 'referer', 'origin', 'x-bare-protocol', 'x-bare-host', 'x-bare-path', 'x-bare-port', 'x-bare-headers'].includes(lowerKey)) {
+              headers.set(key, value);
+            }
+          }
+          
+          // Create a direct fetch request bypassing the proxy
+          const directRequest = new Request(directUrl, {
+            method: event.request.method,
+            headers: headers,
+            body: event.request.body ? await event.request.clone().arrayBuffer() : null,
+            mode: 'cors', // Use CORS for cross-origin requests
+            credentials: 'include', // Include credentials for CAPTCHA
+            cache: event.request.cache,
+            redirect: 'follow' // Follow redirects
+          });
+          
+          // Fetch directly and return response
+          return await fetch(directRequest);
+        } catch (e) {
+          console.error('[SW] Error fetching CAPTCHA resource directly:', e);
+          // Fall through to normal processing - let proxy handle it as fallback
+        }
+      }
+      
       const isYouTube = isYouTubeUrl(requestUrl);
       
       // For YouTube: Always use Dynamic transport (/a/q/)
