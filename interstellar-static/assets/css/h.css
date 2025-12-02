@@ -27,27 +27,6 @@
    text-shadow: 0 0 20px rgba(74, 158, 255, 0.5), 2px 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* Mouse interaction effect */
-.title::before {
-   content: '';
-   position: absolute;
-   top: 50%;
-   left: 50%;
-   width: 0;
-   height: 0;
-   border-radius: 50%;
-   background: rgba(74, 158, 255, 0.1);
-   transform: translate(-50%, -50%);
-   transition: width 0.6s ease, height 0.6s ease;
-   pointer-events: none;
-   z-index: -1;
-}
-
-.title:hover::before {
-   width: 300px;
-   height: 300px;
-}
-
 @media (orientation: portrait) {
    .title {
       position: relative;
