@@ -56,6 +56,16 @@ function initDatabase() {
                 resolved_at DATETIME
             )`);
 
+            // Visited URLs table - tracks websites accessed through proxy
+            db.run(`CREATE TABLE IF NOT EXISTS visited_urls (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                session_id TEXT NOT NULL,
+                url TEXT NOT NULL,
+                domain TEXT NOT NULL,
+                timestamp INTEGER NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )`);
+
             // Create indexes for better query performance
             db.run(`CREATE INDEX IF NOT EXISTS idx_visits_timestamp ON visits(timestamp)`);
             db.run(`CREATE INDEX IF NOT EXISTS idx_game_plays_timestamp ON game_plays(timestamp)`);
@@ -63,6 +73,9 @@ function initDatabase() {
             db.run(`CREATE INDEX IF NOT EXISTS idx_sessions_start_time ON sessions(start_time)`);
             db.run(`CREATE INDEX IF NOT EXISTS idx_bugs_status ON bugs(status)`);
             db.run(`CREATE INDEX IF NOT EXISTS idx_bugs_created_at ON bugs(created_at)`);
+            db.run(`CREATE INDEX IF NOT EXISTS idx_visited_urls_timestamp ON visited_urls(timestamp)`);
+            db.run(`CREATE INDEX IF NOT EXISTS idx_visited_urls_domain ON visited_urls(domain)`);
+            db.run(`CREATE INDEX IF NOT EXISTS idx_visited_urls_session ON visited_urls(session_id)`);
 
             resolve(db);
         });
@@ -425,6 +438,145 @@ function updateBugStatus(bugId, status) {
     });
 }
 
+// Record a visited URL
+function recordVisitedUrl(sessionId, url, domain, timestamp) {
+    return new Promise(async (resolve, reject) => {
+        const db = await getDatabase();
+        db.run(
+            'INSERT INTO visited_urls (session_id, url, domain, timestamp) VALUES (?, ?, ?, ?)',
+            [sessionId, url, domain, timestamp],
+            function(err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(this.lastID);
+                }
+            }
+        );
+    });
+}
+
+// Get top visited domains
+function getTopDomains(limit = 20, timeframe = 'total') {
+    return new Promise(async (resolve, reject) => {
+        const db = await getDatabase();
+        const now = Date.now();
+        let startTime = 0;
+
+        switch (timeframe) {
+            case '1hour':
+                startTime = now - (60 * 60 * 1000);
+                break;
+            case '12hours':
+                startTime = now - (12 * 60 * 60 * 1000);
+                break;
+            case 'day':
+                startTime = now - (24 * 60 * 60 * 1000);
+                break;
+            case '3days':
+                startTime = now - (3 * 24 * 60 * 60 * 1000);
+                break;
+            case 'week':
+                startTime = now - (7 * 24 * 60 * 60 * 1000);
+                break;
+            case '2weeks':
+                startTime = now - (14 * 24 * 60 * 60 * 1000);
+                break;
+            case 'month':
+                startTime = now - (30 * 24 * 60 * 60 * 1000);
+                break;
+            case '6months':
+                startTime = now - (180 * 24 * 60 * 60 * 1000);
+                break;
+            case 'year':
+                startTime = now - (365 * 24 * 60 * 60 * 1000);
+                break;
+            case 'total':
+                startTime = 0;
+                break;
+            default:
+                startTime = 0;
+        }
+
+        db.all(
+            `SELECT domain, COUNT(*) as visit_count, COUNT(DISTINCT session_id) as unique_visitors
+             FROM visited_urls
+             WHERE timestamp >= ?
+             GROUP BY domain
+             ORDER BY visit_count DESC
+             LIMIT ?`,
+            [startTime, limit],
+            (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            }
+        );
+    });
+}
+
+// Get visited URLs for a timeframe
+function getVisitedUrls(timeframe = 'total', limit = 100) {
+    return new Promise(async (resolve, reject) => {
+        const db = await getDatabase();
+        const now = Date.now();
+        let startTime = 0;
+
+        switch (timeframe) {
+            case '1hour':
+                startTime = now - (60 * 60 * 1000);
+                break;
+            case '12hours':
+                startTime = now - (12 * 60 * 60 * 1000);
+                break;
+            case 'day':
+                startTime = now - (24 * 60 * 60 * 1000);
+                break;
+            case '3days':
+                startTime = now - (3 * 24 * 60 * 60 * 1000);
+                break;
+            case 'week':
+                startTime = now - (7 * 24 * 60 * 60 * 1000);
+                break;
+            case '2weeks':
+                startTime = now - (14 * 24 * 60 * 60 * 1000);
+                break;
+            case 'month':
+                startTime = now - (30 * 24 * 60 * 60 * 1000);
+                break;
+            case '6months':
+                startTime = now - (180 * 24 * 60 * 60 * 1000);
+                break;
+            case 'year':
+                startTime = now - (365 * 24 * 60 * 60 * 1000);
+                break;
+            case 'total':
+                startTime = 0;
+                break;
+            default:
+                startTime = 0;
+        }
+
+        db.all(
+            `SELECT url, domain, session_id, timestamp, created_at
+             FROM visited_urls
+             WHERE timestamp >= ?
+             ORDER BY timestamp DESC
+             LIMIT ?`,
+            [startTime, limit],
+            (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            }
+        );
+    });
+}
+
 module.exports = {
     getDatabase,
     recordVisit,
@@ -436,6 +588,9 @@ module.exports = {
     getActiveSessions,
     reportBug,
     getBugs,
-    updateBugStatus
+    updateBugStatus,
+    recordVisitedUrl,
+    getTopDomains,
+    getVisitedUrls
 };
 

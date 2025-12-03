@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
 <<<<<<< HEAD
     const html = `
       <div id="icon-container">
-        <a class="icon" href="/./" style="font-size: 28px; font-weight: 800; color: #4a9eff; text-decoration: none;">Nova Hub</a>
+        <a class="icon" href="/" style="font-size: 28px; font-weight: 800; color: #4a9eff; text-decoration: none;">NOVA HUB</a>
       </div>
       <div class="f-nav-right">
         <a class="navbar-link" href="/./a"><i class="fa-solid fa-gamepad navbar-icon"></i><an>&#71;&#97;</an><an>&#109;&#101;&#115;</an></a>

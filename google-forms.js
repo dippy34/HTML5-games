@@ -6,8 +6,15 @@ const https = require('https');
 const http = require('http');
 
 // Helper function to make HTTP requests (Node.js compatible)
-function makeRequest(url) {
+// Handles redirects for Google Apps Script web apps
+function makeRequest(url, redirectCount = 0) {
     return new Promise((resolve, reject) => {
+        // Prevent infinite redirect loops
+        if (redirectCount > 5) {
+            reject(new Error('Too many redirects'));
+            return;
+        }
+        
         const urlObj = new URL(url);
         const client = urlObj.protocol === 'https:' ? https : http;
         
@@ -17,8 +24,11 @@ function makeRequest(url) {
             path: urlObj.pathname + urlObj.search,
             method: 'GET',
             headers: {
-                'User-Agent': 'Nova-Hub-Admin/1.0'
-            }
+                'User-Agent': 'Nova-Hub-Admin/1.0',
+                'Accept': 'application/json, text/html, */*'
+            },
+            // Don't automatically follow redirects, we'll handle them manually
+            followRedirect: false
         };
         
         const req = client.request(options, (res) => {
@@ -29,15 +39,30 @@ function makeRequest(url) {
             });
             
             res.on('end', () => {
+                // Handle redirects (301, 302, 303, 307, 308)
+                if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+                    const redirectUrl = res.headers.location;
+                    console.log(`[Google Forms] Following redirect ${res.statusCode} to: ${redirectUrl}`);
+                    // Recursively follow the redirect
+                    return makeRequest(redirectUrl, redirectCount + 1).then(resolve).catch(reject);
+                }
+                
                 if (res.statusCode >= 200 && res.statusCode < 300) {
                     try {
+                        // Handle empty response
+                        if (!data || data.trim() === '') {
+                            reject(new Error('Empty response from Apps Script'));
+                            return;
+                        }
+                        
                         const jsonData = JSON.parse(data);
                         resolve(jsonData);
                     } catch (e) {
-                        reject(new Error('Failed to parse JSON response'));
+                        console.error('[Google Forms] JSON parse error. Response:', data.substring(0, 500));
+                        reject(new Error(`Failed to parse JSON response: ${e.message}. Response: ${data.substring(0, 200)}`));
                     }
                 } else {
-                    reject(new Error(`HTTP ${res.statusCode}: ${res.statusMessage}`));
+                    reject(new Error(`HTTP ${res.statusCode}: ${res.statusMessage}. Response: ${data.substring(0, 200)}`));
                 }
             });
         });
@@ -66,11 +91,33 @@ async function fetchFromAppScript() {
         return getEmptyResponses();
     }
     
+    console.log('[Google Forms] Fetching from Apps Script:', config.appScriptUrl);
+    
     try {
         const data = await makeRequest(config.appScriptUrl);
-        return data || getEmptyResponses();
+        console.log('[Google Forms] Received data:', JSON.stringify(data).substring(0, 200) + '...');
+        
+        // Validate response structure
+        if (!data || typeof data !== 'object') {
+            console.error('[Google Forms] Invalid response format:', typeof data);
+            return getEmptyResponses('Invalid response format from Apps Script');
+        }
+        
+        // Check if we got any form data
+        const hasData = Object.keys(data).some(key => 
+            data[key] && data[key].responses && Array.isArray(data[key].responses)
+        );
+        
+        if (!hasData) {
+            console.warn('[Google Forms] No form responses found in Apps Script response');
+            // Still return the structure with empty responses
+            return data || getEmptyResponses('No responses found in Apps Script');
+        }
+        
+        return data;
     } catch (error) {
-        console.error('Error fetching from Google Apps Script:', error);
+        console.error('[Google Forms] Error fetching from Apps Script:', error.message);
+        console.error('[Google Forms] Error details:', error);
         // Return empty responses instead of throwing - allows admin panel to load
         return getEmptyResponses(error.message);
     }

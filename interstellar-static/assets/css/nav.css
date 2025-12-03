@@ -90,6 +90,13 @@ img {
    text-shadow: 0 0 15px rgba(74, 158, 255, 0.6);
 }
 
+#icon-container {
+   display: flex;
+   align-items: center;
+   margin-right: auto;
+   padding-right: 20px;
+}
+
 .f-nav .icon {
    /* no longer used as a separate logo; kept for compatibility */
    display: none;
