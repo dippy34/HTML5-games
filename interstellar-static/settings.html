@@ -39,19 +39,6 @@
         </div>
       </div>
       <div class="settings-card">
-        <h3>Set Panic Key</h3>
-        <p>
-          Quick open another site with one press. Used for redirects when
-          about:blank is opened. For multiple key strokes separate them with a
-          comma. Ex. "A,B,C"
-        </p>
-        <input type="text" id="eventKeyInput" placeholder="Panic Keys (comma separated)" class="key-form" />
-        <input class="key-form" placeholder="Panic Link" type="text" id="linkInput" value />
-        <button class="key-button" value="Save" onclick="saveEventKey()">
-          Save
-        </button>
-      </div>
-      <div class="settings-card">
         <h3>&#84;&#97;&#98;&#32;&#67;&#108;&#111;&#97;&#107;&#101;&#114;</h3>
         <p>Change the title and icon of the page.</p>
         <select id="dropdown" onchange="handleDropdownChange(this)">
@@ -148,6 +135,7 @@
         </div>
       </div>
       <div class="settings-card">
+<<<<<<< HEAD
         <h3>Set Background Image</h3>
         <p>Change the site's background image.</p>
         <input class="key-form" type="text" id="background-input" placeholder="Enter image URL" />
@@ -176,42 +164,40 @@
       </div>
       <div class="settings-card">
         <h3>Choose your <an>Pro</an>xy</h3>
+=======
+        <h3>Panic Button</h3>
+>>>>>>> 0212292e0972b7d2034b24a4a7cab825bf278f4c
         <p>
-          Ultra<an>vio</an>let is the main <an>pro</an>xy, but Dynamic is
-          faster and supports more sites. (Dynamic is still in beta, so expect
-          some bugs.)
-        </p>
-        <select id="pChange">
-          <option value="uv">Ultra<an>vio</an>let (Default)</option>
-          <option value="dy">Dynamic (Doesn't work in about:blank)</option>
-        </select>
-      </div>
-      <div class="settings-card">
-        <h3>Particles</h3>
-        <p>
-          Add the particles that are from the previous version to the new
-          site.
+          Show a small button in the bottom-right corner that instantly opens a safe page
+          (for example Google Classroom) when clicked.
         </p>
         <label class="switch">
-          <input type="checkbox" class="slider-checkbox" id="2" />
+          <input type="checkbox" class="slider-checkbox" id="panic-button-toggle" />
           <span class="slider-round"></span>
         </label>
+        <input
+          class="key-form"
+          type="text"
+          id="panic-button-url"
+          placeholder="https://classroom.google.com/"
+        />
       </div>
       <div class="settings-card">
-        <h3>Themes!</h3>
-        <p>Pick from a variety of themes to customize your experience.</p>
-        <select placeholder="Solid Color Themes" id="dropdown" class="td" onchange="themeChange(this)">
-          <option disabled selected>Solid Color Themes</option>
-          <option value="d">Default</option>
-          <option value="Inverted">Inverted</option>
-          <option value="sky">Sky</option>
-          <option disabled selected>Catppuccin Themes</option>
-          <option value="catppuccinMocha">Mocha</option>
-          <option value="catppuccinMacchiato">Macchiato</option>
-          <option value="catppuccinFrappe">Frappe</option>
-          <option value="catppuccinLatte">Latte</option>
-          <option disabled selected>Custom Themes</option>
-        </select>
+        <h3><i class="fa-solid fa-broom"></i> Clear All Data & Caches</h3>
+        <p>
+          Permanently delete all saved game progress, browser caches, and stored data from your browser.
+          This will clear localStorage, sessionStorage, IndexedDB, and cache storage.
+          <strong style="color: #ff6666;">This action cannot be undone.</strong>
+        </p>
+        <div id="clear-progress-warning" style="background-color: rgba(255, 102, 102, 0.1); border: 2px solid #ff6666; border-radius: 8px; padding: 12px; margin-top: 15px; display: none;">
+          <p style="color: #ff6666; margin: 0; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-triangle-exclamation" style="font-size: 20px;"></i>
+            <strong>Warning:</strong> This will delete ALL game saves, caches, and stored data!
+          </p>
+        </div>
+        <button class="key-button" id="clear-game-progress-btn" onclick="clearGameProgress()" style="background: linear-gradient(135deg, #ff5555 0%, #cc0000 100%); border: 2px solid #ff6666; margin-top: 15px; padding: 12px 24px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 15px rgba(255, 85, 85, 0.4); transition: all 0.3s ease;">
+          <i class="fa-solid fa-trash"></i> Clear All Data & Caches
+        </button>
       </div>
       <div class="settings-card">
         <h3>Save Data Management</h3>
@@ -222,31 +208,6 @@
         <p id="warning">Importing a save file will overwrite your current saves!</p>
         <button class="key-button" value="Export" onclick="exportSaveData();">Export Save</button>
         <button class="key-button" value="Import" onclick="importSaveData();">Import Save</button>
-      </div>
-      <div class="settings-card">
-        <h3>Game Card Appearance</h3>
-        <p>Customize how game cards look on the games page.</p>
-        <label style="display: block; margin-top: 10px; color: var(--text-primary);">Card Border Radius:</label>
-        <input type="range" id="card-border-radius" min="0" max="20" value="12" class="key-form" oninput="updateCardStyle()" style="margin-top: 5px;" />
-        <span id="border-radius-value" style="display: inline-block; margin-left: 10px; color: var(--text-primary);">12px</span>
-        
-        <label style="display: block; margin-top: 15px; color: var(--text-primary);">Card Background Opacity:</label>
-        <input type="range" id="card-opacity" min="0.5" max="1" step="0.1" value="0.95" class="key-form" oninput="updateCardStyle()" style="margin-top: 5px;" />
-        <span id="opacity-value" style="display: inline-block; margin-left: 10px; color: var(--text-primary);">95%</span>
-        
-        <label style="display: block; margin-top: 15px; color: var(--text-primary);">Name Font Size:</label>
-        <input type="range" id="name-font-size" min="16" max="28" value="24" class="key-form" oninput="updateCardStyle()" style="margin-top: 5px;" />
-        <span id="name-size-value" style="display: inline-block; margin-left: 10px; color: var(--text-primary);">24px</span>
-        
-        <label style="display: block; margin-top: 15px; color: var(--text-primary);">Description Font Size:</label>
-        <input type="range" id="desc-font-size" min="10" max="18" value="14" class="key-form" oninput="updateCardStyle()" style="margin-top: 5px;" />
-        <span id="desc-size-value" style="display: inline-block; margin-left: 10px; color: var(--text-primary);">14px</span>
-        
-        <label style="display: block; margin-top: 15px; color: var(--text-primary);">Description Lines:</label>
-        <input type="range" id="desc-lines" min="2" max="6" value="5" class="key-form" oninput="updateCardStyle()" style="margin-top: 5px;" />
-        <span id="desc-lines-value" style="display: inline-block; margin-left: 10px; color: var(--text-primary);">5 lines</span>
-        
-        <button class="key-button" onclick="resetCardStyle()" style="margin-top: 15px;">Reset to Default</button>
       </div>
     </div>
   </div>

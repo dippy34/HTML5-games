@@ -2373,7 +2373,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience 10 Minutes Till Dawn, a fun and engaging game."
+    "description": "Play 10 Minutes Till Dawn in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "100ng",
@@ -2384,7 +2384,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience 100ng, a fun and engaging game."
+    "description": "Play 100ng in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "1v1space",
@@ -2395,7 +2395,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience 1v1space, a fun and engaging game."
+    "description": "Play 1v1space in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "9007199254740992",
@@ -2406,7 +2406,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience 9007199254740992, a fun and engaging game."
+    "description": "Play 9007199254740992 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "99balls",
@@ -2417,7 +2417,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience 99balls, a fun and engaging game."
+    "description": "Play 99balls in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "A Dance Of Fire And Ice",
@@ -2428,7 +2428,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience A Dance Of Fire And Ice, a fun and engaging game."
+    "description": "Play A Dance Of Fire And Ice in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Achievementunlocked",
@@ -2439,7 +2439,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Achievementunlocked, a fun and engaging game."
+    "description": "Play Achievementunlocked in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Adrenalinechallenge",
@@ -2450,7 +2450,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Adrenalinechallenge, a fun and engaging game."
+    "description": "Play Adrenalinechallenge in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Adventure Drivers",
@@ -2461,7 +2461,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Adventure Drivers, a fun and engaging game."
+    "description": "Play Adventure Drivers in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Ages Of Conflict",
@@ -2472,7 +2472,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Ages Of Conflict, a fun and engaging game."
+    "description": "Play Ages Of Conflict in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Alienhominid",
@@ -2483,7 +2483,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Alienhominid, a fun and engaging game."
+    "description": "Play Alienhominid in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Align 4",
@@ -2494,7 +2494,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Align 4, a fun and engaging game."
+    "description": "Play Align 4 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Amazing Rope Police",
@@ -2505,7 +2505,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Amazing Rope Police, a fun and engaging game."
+    "description": "Play Amazing Rope Police in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Amidst The Clouds",
@@ -2516,7 +2516,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Amidst The Clouds, a fun and engaging game."
+    "description": "Play Amidst The Clouds in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Angelunder",
@@ -2527,7 +2527,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Angelunder, a fun and engaging game."
+    "description": "Play Angelunder in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Angry Sharks",
@@ -2538,7 +2538,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Angry Sharks, a fun and engaging game."
+    "description": "Play Angry Sharks in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Aquapark Slides",
@@ -2549,7 +2549,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Aquapark Slides, a fun and engaging game."
+    "description": "Play Aquapark Slides in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Astray",
@@ -2560,7 +2560,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Astray, a fun and engaging game."
+    "description": "Play Astray in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Avalanche",
@@ -2571,7 +2571,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Avalanche, a fun and engaging game."
+    "description": "Play Avalanche in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Awesometanks2",
@@ -2582,7 +2582,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Awesometanks2, a fun and engaging game."
+    "description": "Play Awesometanks2 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Backrooms",
@@ -2593,7 +2593,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Backrooms, a fun and engaging game."
+    "description": "Play Backrooms in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Backrooms 2d",
@@ -2604,7 +2604,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Backrooms 2d, a fun and engaging game."
+    "description": "Play Backrooms 2d in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Bacon May Die",
@@ -2615,7 +2615,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Bacon May Die, a fun and engaging game."
+    "description": "Play Bacon May Die in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Bad Ice Cream",
@@ -2626,7 +2626,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Bad Ice Cream, a fun and engaging game."
+    "description": "Play Bad Ice Cream in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Bad Ice Cream 2",
@@ -2637,7 +2637,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Bad Ice Cream 2, a fun and engaging game."
+    "description": "Play Bad Ice Cream 2 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Bad Ice Cream 3",
@@ -2648,7 +2648,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Bad Ice Cream 3, a fun and engaging game."
+    "description": "Play Bad Ice Cream 3 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Baldis Basics",
@@ -2659,7 +2659,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Baldis Basics, a fun and engaging game."
+    "description": "Play Baldis Basics in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Basketbros Io",
@@ -2670,7 +2670,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Basketbros Io, a fun and engaging game."
+    "description": "Play Basketbros Io in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Battleforgondor",
@@ -2681,7 +2681,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Battleforgondor, a fun and engaging game."
+    "description": "Play Battleforgondor in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Bigredbutton",
@@ -2692,7 +2692,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Bigredbutton, a fun and engaging game."
+    "description": "Play Bigredbutton in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Blacholesquare",
@@ -2703,7 +2703,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Blacholesquare, a fun and engaging game."
+    "description": "Play Blacholesquare in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Blackknight",
@@ -2714,7 +2714,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Blackknight, a fun and engaging game."
+    "description": "Play Blackknight in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Blockpost",
@@ -2725,7 +2725,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Blockpost, a fun and engaging game."
+    "description": "Play Blockpost in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Bloonstd",
@@ -2736,7 +2736,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Bloonstd, a fun and engaging game."
+    "description": "Play Bloonstd in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Bloonstd2",
@@ -2747,7 +2747,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Bloonstd2, a fun and engaging game."
+    "description": "Play Bloonstd2 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Bloxors",
@@ -2758,7 +2758,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Bloxors, a fun and engaging game."
+    "description": "Play Bloxors in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Bntts",
@@ -2769,7 +2769,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Bntts, a fun and engaging game."
+    "description": "Play Bntts in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Bobtherobber2",
@@ -2780,7 +2780,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Bobtherobber2, a fun and engaging game."
+    "description": "Play Bobtherobber2 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Boxhead2play",
@@ -2791,7 +2791,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Boxhead2play, a fun and engaging game."
+    "description": "Play Boxhead2play in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Boxing Random",
@@ -2802,7 +2802,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Boxing Random, a fun and engaging game."
+    "description": "Play Boxing Random in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Breakingthebank",
@@ -2813,7 +2813,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Breakingthebank, a fun and engaging game."
+    "description": "Play Breakingthebank in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Btd4",
@@ -2824,7 +2824,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Btd4, a fun and engaging game."
+    "description": "Play Btd4 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Btd5",
@@ -2835,7 +2835,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Btd5, a fun and engaging game."
+    "description": "Play Btd5 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Btts",
@@ -2846,7 +2846,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Btts, a fun and engaging game."
+    "description": "Play Btts in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Burger And Frights",
@@ -2857,7 +2857,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Burger And Frights, a fun and engaging game."
+    "description": "Play Burger And Frights in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Bus and subway",
@@ -2868,7 +2868,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Bus and subway, a fun and engaging game."
+    "description": "Play Bus and subway in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Cannon Basketball 4",
@@ -2879,7 +2879,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Cannon Basketball 4, a fun and engaging game."
+    "description": "Play Cannon Basketball 4 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Canyondefense",
@@ -2890,7 +2890,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Canyondefense, a fun and engaging game."
+    "description": "Play Canyondefense in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Cars Simulator",
@@ -2901,7 +2901,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Cars Simulator, a fun and engaging game."
+    "description": "Play Cars Simulator in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Cell Machine",
@@ -2912,7 +2912,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Cell Machine, a fun and engaging game."
+    "description": "Play Cell Machine in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Championarcher",
@@ -2923,7 +2923,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Championarcher, a fun and engaging game."
+    "description": "Play Championarcher in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Chess",
@@ -2934,7 +2934,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Chess, a fun and engaging game."
+    "description": "Play Chess in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Chill Radio",
@@ -2945,7 +2945,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Chill Radio, a fun and engaging game."
+    "description": "Play Chill Radio in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Chrome Dino",
@@ -2956,7 +2956,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Chrome Dino, a fun and engaging game."
+    "description": "Play Chrome Dino in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Circlo",
@@ -2967,7 +2967,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Circlo, a fun and engaging game."
+    "description": "Play Circlo in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Cnpingpong",
@@ -2978,7 +2978,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Cnpingpong, a fun and engaging game."
+    "description": "Play Cnpingpong in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Connect3",
@@ -2989,7 +2989,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Connect3, a fun and engaging game."
+    "description": "Play Connect3 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Core Ball",
@@ -3000,7 +3000,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Core Ball, a fun and engaging game."
+    "description": "Play Core Ball in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Craftmine",
@@ -3011,7 +3011,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Craftmine, a fun and engaging game."
+    "description": "Play Craftmine in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Creativekillchamber",
@@ -3022,7 +3022,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Creativekillchamber, a fun and engaging game."
+    "description": "Play Creativekillchamber in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Crossyroad",
@@ -3033,7 +3033,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Crossyroad, a fun and engaging game."
+    "description": "Play Crossyroad in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Ctr",
@@ -3044,7 +3044,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Ctr, a fun and engaging game."
+    "description": "Play Ctr in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Ctr Holiday",
@@ -3055,7 +3055,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Ctr Holiday, a fun and engaging game."
+    "description": "Play Ctr Holiday in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Ctr Tr",
@@ -3066,7 +3066,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Ctr Tr, a fun and engaging game."
+    "description": "Play Ctr Tr in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Cubefield",
@@ -3077,7 +3077,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Cubefield, a fun and engaging game."
+    "description": "Play Cubefield in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Cupcake2048",
@@ -3088,7 +3088,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Cupcake2048, a fun and engaging game."
+    "description": "Play Cupcake2048 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Dante",
@@ -3099,7 +3099,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Dante, a fun and engaging game."
+    "description": "Play Dante in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Death Run 3d",
@@ -3110,7 +3110,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Death Run 3d, a fun and engaging game."
+    "description": "Play Death Run 3d in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Deepest Sword",
@@ -3121,7 +3121,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Deepest Sword, a fun and engaging game."
+    "description": "Play Deepest Sword in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Defend The Tank",
@@ -3132,7 +3132,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Defend The Tank, a fun and engaging game."
+    "description": "Play Defend The Tank in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Doctor Acorn2",
@@ -3143,7 +3143,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Doctor Acorn2, a fun and engaging game."
+    "description": "Play Doctor Acorn2 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Doge2048",
@@ -3154,7 +3154,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Doge2048, a fun and engaging game."
+    "description": "Play Doge2048 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Dogeminer2",
@@ -3165,7 +3165,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Dogeminer2, a fun and engaging game."
+    "description": "Play Dogeminer2 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Doomori",
@@ -3176,7 +3176,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Doomori, a fun and engaging game."
+    "description": "Play Doomori in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Doublewires",
@@ -3187,7 +3187,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Doublewires, a fun and engaging game."
+    "description": "Play Doublewires in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Dragon Vs Bricks",
@@ -3198,7 +3198,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Dragon Vs Bricks, a fun and engaging game."
+    "description": "Play Dragon Vs Bricks in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Draw The Hill",
@@ -3209,7 +3209,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Draw The Hill, a fun and engaging game."
+    "description": "Play Draw The Hill in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Duke Nukem 2",
@@ -3220,7 +3220,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Duke Nukem 2, a fun and engaging game."
+    "description": "Play Duke Nukem 2 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Eaglerfaithful",
@@ -3231,7 +3231,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Eaglerfaithful, a fun and engaging game."
+    "description": "Play Eaglerfaithful in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Eaglerjp",
@@ -3242,7 +3242,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Eaglerjp, a fun and engaging game."
+    "description": "Play Eaglerjp in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Edge Surf",
@@ -3253,7 +3253,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Edge Surf, a fun and engaging game."
+    "description": "Play Edge Surf in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Edgenotfound",
@@ -3264,7 +3264,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Edgenotfound, a fun and engaging game."
+    "description": "Play Edgenotfound in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Eel Slap",
@@ -3275,7 +3275,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Eel Slap, a fun and engaging game."
+    "description": "Play Eel Slap in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Eggycar",
@@ -3286,7 +3286,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Eggycar, a fun and engaging game."
+    "description": "Play Eggycar in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Elasticman",
@@ -3297,7 +3297,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Elasticman, a fun and engaging game."
+    "description": "Play Elasticman in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Endlesswar3",
@@ -3308,7 +3308,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Endlesswar3, a fun and engaging game."
+    "description": "Play Endlesswar3 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Escapingtheprison",
@@ -3319,7 +3319,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Escapingtheprison, a fun and engaging game."
+    "description": "Play Escapingtheprison in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Evil Glitch",
@@ -3330,7 +3330,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Evil Glitch, a fun and engaging game."
+    "description": "Play Evil Glitch in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Evolution",
@@ -3341,7 +3341,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Evolution, a fun and engaging game."
+    "description": "Play Evolution in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Exo",
@@ -3352,7 +3352,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Exo, a fun and engaging game."
+    "description": "Play Exo in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Factoryballs",
@@ -3363,7 +3363,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Factoryballs, a fun and engaging game."
+    "description": "Play Factoryballs in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Fairsquares",
@@ -3374,7 +3374,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Fairsquares, a fun and engaging game."
+    "description": "Play Fairsquares in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Fake Virus",
@@ -3385,7 +3385,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Fake Virus, a fun and engaging game."
+    "description": "Play Fake Virus in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Fancypantsadventures",
@@ -3396,7 +3396,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Fancypantsadventures, a fun and engaging game."
+    "description": "Play Fancypantsadventures in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Fireboywatergirlforesttemple",
@@ -3407,7 +3407,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Fireboywatergirlforesttemple, a fun and engaging game."
+    "description": "Play Fireboywatergirlforesttemple in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Flappy 2048",
@@ -3418,7 +3418,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Flappy 2048, a fun and engaging game."
+    "description": "Play Flappy 2048 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Flappy Bird",
@@ -3429,7 +3429,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Flappy Bird, a fun and engaging game."
+    "description": "Play Flappy Bird in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Flashtetris",
@@ -3440,7 +3440,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Flashtetris, a fun and engaging game."
+    "description": "Play Flashtetris in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Fleeingthecomplex",
@@ -3451,7 +3451,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Fleeingthecomplex, a fun and engaging game."
+    "description": "Play Fleeingthecomplex in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Fnaw",
@@ -3462,7 +3462,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Fnaw, a fun and engaging game."
+    "description": "Play Fnaw in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Fridaynightfunkin",
@@ -3473,7 +3473,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Fridaynightfunkin, a fun and engaging game."
+    "description": "Play Fridaynightfunkin in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Froggys Battle",
@@ -3484,7 +3484,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Froggys Battle, a fun and engaging game."
+    "description": "Play Froggys Battle in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Fruitninja",
@@ -3495,7 +3495,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Fruitninja, a fun and engaging game."
+    "description": "Play Fruitninja in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Frying Nemo",
@@ -3506,7 +3506,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Frying Nemo, a fun and engaging game."
+    "description": "Play Frying Nemo in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Fsucraft",
@@ -3517,7 +3517,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Fsucraft, a fun and engaging game."
+    "description": "Play Fsucraft in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Fuclient",
@@ -3528,7 +3528,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Fuclient, a fun and engaging game."
+    "description": "Play Fuclient in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Gachalife",
@@ -3539,7 +3539,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Gachalife, a fun and engaging game."
+    "description": "Play Gachalife in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Game Inside",
@@ -3550,7 +3550,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Game Inside, a fun and engaging game."
+    "description": "Play Game Inside in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Gdtd",
@@ -3561,7 +3561,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Gdtd, a fun and engaging game."
+    "description": "Play Gdtd in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Gearsofbabies",
@@ -3572,7 +3572,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Gearsofbabies, a fun and engaging game."
+    "description": "Play Gearsofbabies in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Generic Fishing Game",
@@ -3583,7 +3583,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Generic Fishing Game, a fun and engaging game."
+    "description": "Play Generic Fishing Game in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Geochallenge",
@@ -3594,7 +3594,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Geochallenge, a fun and engaging game."
+    "description": "Play Geochallenge in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Geodash",
@@ -3605,7 +3605,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Geodash, a fun and engaging game."
+    "description": "Play Geodash in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Geogeo",
@@ -3616,7 +3616,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Geogeo, a fun and engaging game."
+    "description": "Play Geogeo in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Geoneondash",
@@ -3627,7 +3627,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Geoneondash, a fun and engaging game."
+    "description": "Play Geoneondash in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Geops1",
@@ -3638,7 +3638,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Geops1, a fun and engaging game."
+    "description": "Play Geops1 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Georash",
@@ -3649,7 +3649,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Georash, a fun and engaging game."
+    "description": "Play Georash in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Georgeandtheprinter",
@@ -3660,7 +3660,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Georgeandtheprinter, a fun and engaging game."
+    "description": "Play Georgeandtheprinter in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Geotrash",
@@ -3671,7 +3671,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Geotrash, a fun and engaging game."
+    "description": "Play Geotrash in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Getaway Shootout",
@@ -3682,7 +3682,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Getaway Shootout, a fun and engaging game."
+    "description": "Play Getaway Shootout in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Gimme The Airpod",
@@ -3693,7 +3693,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Gimme The Airpod, a fun and engaging game."
+    "description": "Play Gimme The Airpod in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Glass City",
@@ -3704,7 +3704,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Glass City, a fun and engaging game."
+    "description": "Play Glass City in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Gmonster",
@@ -3715,7 +3715,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Gmonster, a fun and engaging game."
+    "description": "Play Gmonster in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Go Ball",
@@ -3726,7 +3726,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Go Ball, a fun and engaging game."
+    "description": "Play Go Ball in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Goodnight",
@@ -3737,7 +3737,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Goodnight, a fun and engaging game."
+    "description": "Play Goodnight in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Goodnight Meowmie",
@@ -3748,7 +3748,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Goodnight Meowmie, a fun and engaging game."
+    "description": "Play Goodnight Meowmie in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Google Snake",
@@ -3759,7 +3759,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Google Snake, a fun and engaging game."
+    "description": "Play Google Snake in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Gravity Soccer",
@@ -3770,7 +3770,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Gravity Soccer, a fun and engaging game."
+    "description": "Play Gravity Soccer in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Greybox",
@@ -3781,7 +3781,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Greybox, a fun and engaging game."
+    "description": "Play Greybox in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Grindcraft",
@@ -3792,7 +3792,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Grindcraft, a fun and engaging game."
+    "description": "Play Grindcraft in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Hackertype",
@@ -3803,7 +3803,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Hackertype, a fun and engaging game."
+    "description": "Play Hackertype in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Handshakes",
@@ -3814,7 +3814,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Handshakes, a fun and engaging game."
+    "description": "Play Handshakes in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Happy Hop",
@@ -3825,7 +3825,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Happy Hop, a fun and engaging game."
+    "description": "Play Happy Hop in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Hardware Tycoon",
@@ -3836,7 +3836,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Hardware Tycoon, a fun and engaging game."
+    "description": "Play Hardware Tycoon in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Hba",
@@ -3847,7 +3847,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Hba, a fun and engaging game."
+    "description": "Play Hba in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Helicopter",
@@ -3858,7 +3858,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Helicopter, a fun and engaging game."
+    "description": "Play Helicopter in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Hexempire",
@@ -3869,7 +3869,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Hexempire, a fun and engaging game."
+    "description": "Play Hexempire in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Hextris",
@@ -3880,7 +3880,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Hextris, a fun and engaging game."
+    "description": "Play Hextris in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Highrisehop",
@@ -3891,7 +3891,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Highrisehop, a fun and engaging game."
+    "description": "Play Highrisehop in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Hill Climb Racing",
@@ -3902,7 +3902,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Hill Climb Racing, a fun and engaging game."
+    "description": "Play Hill Climb Racing in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Hungry Lamu",
@@ -3913,7 +3913,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Hungry Lamu, a fun and engaging game."
+    "description": "Play Hungry Lamu in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Iceagebaby",
@@ -3924,7 +3924,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Iceagebaby, a fun and engaging game."
+    "description": "Play Iceagebaby in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Iceagebaby2",
@@ -3935,7 +3935,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Iceagebaby2, a fun and engaging game."
+    "description": "Play Iceagebaby2 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Idle Shark",
@@ -3946,7 +3946,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Idle Shark, a fun and engaging game."
+    "description": "Play Idle Shark in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Idledices",
@@ -3957,7 +3957,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Idledices, a fun and engaging game."
+    "description": "Play Idledices in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Impossiblequiz",
@@ -3968,7 +3968,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Impossiblequiz, a fun and engaging game."
+    "description": "Play Impossiblequiz in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Invite The Blackbird",
@@ -3979,7 +3979,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Invite The Blackbird, a fun and engaging game."
+    "description": "Play Invite The Blackbird in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Just Fall",
@@ -3990,7 +3990,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Just Fall, a fun and engaging game."
+    "description": "Play Just Fall in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Just One Boss",
@@ -4001,7 +4001,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Just One Boss, a fun and engaging game."
+    "description": "Play Just One Boss in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Kitchen Gun Game",
@@ -4012,7 +4012,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Kitchen Gun Game, a fun and engaging game."
+    "description": "Play Kitchen Gun Game in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Kittencannon",
@@ -4023,7 +4023,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Kittencannon, a fun and engaging game."
+    "description": "Play Kittencannon in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Knife Master",
@@ -4034,7 +4034,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Knife Master, a fun and engaging game."
+    "description": "Play Knife Master in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Learntofly",
@@ -4045,7 +4045,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Learntofly, a fun and engaging game."
+    "description": "Play Learntofly in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Learntofly2",
@@ -4056,7 +4056,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Learntofly2, a fun and engaging game."
+    "description": "Play Learntofly2 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Level13",
@@ -4067,7 +4067,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Level13, a fun and engaging game."
+    "description": "Play Level13 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Linerider",
@@ -4078,7 +4078,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Linerider, a fun and engaging game."
+    "description": "Play Linerider in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Ltf Idle",
@@ -4089,7 +4089,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Ltf Idle, a fun and engaging game."
+    "description": "Play Ltf Idle in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Ltf3",
@@ -4100,7 +4100,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Ltf3, a fun and engaging game."
+    "description": "Play Ltf3 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Mario",
@@ -4111,7 +4111,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Mario, a fun and engaging game."
+    "description": "Play Mario in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Marvinspectrum",
@@ -4122,7 +4122,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Marvinspectrum, a fun and engaging game."
+    "description": "Play Marvinspectrum in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Matrixrampage",
@@ -4133,7 +4133,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Matrixrampage, a fun and engaging game."
+    "description": "Play Matrixrampage in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Mc2d",
@@ -4144,7 +4144,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Mc2d, a fun and engaging game."
+    "description": "Play Mc2d in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Minesweeper",
@@ -4155,7 +4155,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Minesweeper, a fun and engaging game."
+    "description": "Play Minesweeper in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Motox3m",
@@ -4166,7 +4166,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Motox3m, a fun and engaging game."
+    "description": "Play Motox3m in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Motox3m Pool",
@@ -4177,7 +4177,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Motox3m Pool, a fun and engaging game."
+    "description": "Play Motox3m Pool in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Motox3m Spooky",
@@ -4188,7 +4188,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Motox3m Spooky, a fun and engaging game."
+    "description": "Play Motox3m Spooky in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Motox3m Winter",
@@ -4199,7 +4199,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Motox3m Winter, a fun and engaging game."
+    "description": "Play Motox3m Winter in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Noob Steve Parkour",
@@ -4210,7 +4210,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Noob Steve Parkour, a fun and engaging game."
+    "description": "Play Noob Steve Parkour in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Pandemic2",
@@ -4221,7 +4221,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Pandemic2, a fun and engaging game."
+    "description": "Play Pandemic2 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Papaspizzaria",
@@ -4232,7 +4232,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Papaspizzaria, a fun and engaging game."
+    "description": "Play Papaspizzaria in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Poom",
@@ -4243,7 +4243,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Poom, a fun and engaging game."
+    "description": "Play Poom in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Roblox",
@@ -4254,7 +4254,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Roblox, a fun and engaging game."
+    "description": "Play Roblox in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Roblox copy",
@@ -4265,7 +4265,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Roblox copy, a fun and engaging game."
+    "description": "Play Roblox copy in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Soundboard",
@@ -4276,7 +4276,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Soundboard, a fun and engaging game."
+    "description": "Play Soundboard in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Stick Merge",
@@ -4287,7 +4287,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Stick Merge, a fun and engaging game."
+    "description": "Play Stick Merge in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "1v1lol",
@@ -4298,7 +4298,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience 1v1lol, a fun and engaging game."
+    "description": "Play 1v1lol in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "2048 Multitask",
@@ -4309,7 +4309,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience 2048 Multitask, a fun and engaging game."
+    "description": "Play 2048 Multitask in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Adarkroom",
@@ -4320,7 +4320,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Adarkroom, a fun and engaging game."
+    "description": "Play Adarkroom in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Basketball Stars",
@@ -4331,7 +4331,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Basketball Stars, a fun and engaging game."
+    "description": "Play Basketball Stars in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Bitlife",
@@ -4342,7 +4342,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Bitlife, a fun and engaging game."
+    "description": "Play Bitlife in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Deal Or No Deal",
@@ -4353,7 +4353,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Deal Or No Deal, a fun and engaging game."
+    "description": "Play Deal Or No Deal in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Doom",
@@ -4364,7 +4364,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Doom, a fun and engaging game."
+    "description": "Play Doom in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Drift Boss",
@@ -4375,7 +4375,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Drift Boss, a fun and engaging game."
+    "description": "Play Drift Boss in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Ducklife1",
@@ -4386,7 +4386,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Ducklife1, a fun and engaging game."
+    "description": "Play Ducklife1 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Ducklife2",
@@ -4397,7 +4397,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Ducklife2, a fun and engaging game."
+    "description": "Play Ducklife2 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Ducklife3",
@@ -4408,7 +4408,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Ducklife3, a fun and engaging game."
+    "description": "Play Ducklife3 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Earntodie",
@@ -4419,7 +4419,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Earntodie, a fun and engaging game."
+    "description": "Play Earntodie in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Google Feud",
@@ -4430,7 +4430,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Google Feud, a fun and engaging game."
+    "description": "Play Google Feud in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Happywheels",
@@ -4441,7 +4441,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Happywheels, a fun and engaging game."
+    "description": "Play Happywheels in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Interactivebuddy",
@@ -4452,7 +4452,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Interactivebuddy, a fun and engaging game."
+    "description": "Play Interactivebuddy in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Krunker",
@@ -4463,7 +4463,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Krunker, a fun and engaging game."
+    "description": "Play Krunker in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Madalin Stunt Cars 2",
@@ -4474,7 +4474,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Madalin Stunt Cars 2, a fun and engaging game."
+    "description": "Play Madalin Stunt Cars 2 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Madalin Stunt Cars 3",
@@ -4485,7 +4485,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Madalin Stunt Cars 3, a fun and engaging game."
+    "description": "Play Madalin Stunt Cars 3 in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Ovo",
@@ -4496,7 +4496,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Ovo, a fun and engaging game."
+    "description": "Play Ovo in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Papasburgeria",
@@ -4507,7 +4507,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Papasburgeria, a fun and engaging game."
+    "description": "Play Papasburgeria in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Slope",
@@ -4518,7 +4518,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Slope, a fun and engaging game."
+    "description": "Play Slope in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Smashkarts",
@@ -4529,7 +4529,7 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Smashkarts, a fun and engaging game."
+    "description": "Play Smashkarts in your browser and master its own set of levels, mechanics, and challenges."
   },
   {
     "name": "Snowrider3d",
@@ -4540,6 +4540,30 @@
       "local"
     ],
     "local": true,
-    "description": "Experience Snowrider3d, a fun and engaging game."
+    "description": "Play Snowrider3d in your browser and master its own set of levels, mechanics, and challenges."
+  },
+  {
+    "name": "Polytrack",
+    "link": "/e/polytrack/index.html",
+    "image": "/e/polytrack/images/icon.svg",
+    "categories": [
+      "all",
+      "local",
+      "action"
+    ],
+    "local": true,
+    "description": "Race low-poly cars, drift around tight corners, and build your own tracks in this Trackmania-inspired racer."
+  },
+  {
+    "name": "Retro Bowl",
+    "link": "/e/load/retro-bowl/index.html",
+    "image": "/e/load/retro-bowl/img/icon.jpg",
+    "categories": [
+      "all",
+      "local",
+      "sports"
+    ],
+    "local": true,
+    "description": "Manage your NFL franchise, build your roster, and lead your team to victory in this retro-style American football game."
   }
 ];

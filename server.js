@@ -189,17 +189,174 @@ app.use(express.static(path.join(__dirname, 'interstellar-static'), {
     }
 }));
 
-// Explicit route for game index.html files to ensure they're served correctly
-// This route must come BEFORE the static middleware to catch these requests
-app.get(/^\/e\/load\/.+\/index\.html$/, (req, res) => {
-    const gamePath = req.path.replace('/e/', '');
-    const filePath = path.join(__dirname, 'html5', gamePath);
-    res.sendFile(filePath, (err) => {
-        if (err) {
-            console.error(`Error serving game file ${filePath}:`, err);
-            res.status(404).send('Game not found');
+// Middleware to inject panic button into game HTML files
+app.use('/e', (req, res, next) => {
+    let filePath;
+    
+    // Handle explicit HTML files
+    if (req.path.endsWith('.html')) {
+        const gamePath = req.path.replace(/^\/e\//, '');
+        filePath = path.join(__dirname, 'html5', gamePath);
+    } 
+    // Handle directory requests (will serve index.html)
+    else if (req.path.endsWith('/')) {
+        const gamePath = req.path.replace(/^\/e\//, '').replace(/\/$/, '');
+        filePath = path.join(__dirname, 'html5', gamePath, 'index.html');
+    } 
+    // Not an HTML request, skip
+    else {
+        return next();
+    }
+    
+    // Check if file exists and is a file
+    fs.stat(filePath, (err, stats) => {
+        if (err || !stats.isFile()) {
+            // File doesn't exist or isn't a file, let static middleware handle it
+            return next();
         }
-    });
+        
+        // Read and inject panic button
+        fs.readFile(filePath, 'utf8', (err, data) => {
+            if (err) {
+                return next();
+            }
+                
+                // Inject panic button script before </body> or at the end
+                const panicButtonScript = `
+<!-- Panic Button Injection -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* Static background - no animations */
+body {
+   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+   background-attachment: fixed;
+   min-height: 100vh;
+}
+
+body::before {
+   content: '';
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background: 
+      radial-gradient(circle at 20% 50%, rgba(74, 158, 255, 0.1) 0%, transparent 60%),
+      radial-gradient(circle at 80% 80%, rgba(138, 43, 226, 0.1) 0%, transparent 60%),
+      radial-gradient(circle at 40% 20%, rgba(74, 158, 255, 0.08) 0%, transparent 60%);
+   opacity: 1;
+   pointer-events: none;
+   z-index: 0;
+}
+
+.panic-button {
+   position: fixed;
+   right: 16px;
+   bottom: 16px;
+   width: 60px;
+   height: 60px;
+   border-radius: 12px;
+   border: 3px solid #ff4444;
+   background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%);
+   color: #ffffff;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+   z-index: 99999;
+   box-shadow: 0 6px 20px rgba(255, 68, 68, 0.6), 0 0 20px rgba(255, 68, 68, 0.4);
+   transition: all 0.2s ease;
+   font-size: 24px;
+   font-weight: bold;
+}
+.panic-button:hover {
+   background: linear-gradient(135deg, #ff5555 0%, #dd1111 100%);
+   transform: translateY(-3px) scale(1.05);
+   box-shadow: 0 8px 25px rgba(255, 68, 68, 0.8), 0 0 30px rgba(255, 68, 68, 0.6);
+   border-color: #ff6666;
+}
+.panic-button:active {
+   transform: translateY(-1px) scale(0.98);
+}
+</style>
+<script>
+(function() {
+  function initPanicButton() {
+    try {
+      const panicEnabled = localStorage.getItem("panicButtonEnabled") === "true";
+      let panicUrl = localStorage.getItem("panicButtonUrl");
+
+      // Ensure URL has a protocol
+      if (panicUrl && !panicUrl.match(/^https?:\/\//i)) {
+        panicUrl = "https://" + panicUrl;
+        localStorage.setItem("panicButtonUrl", panicUrl);
+      }
+
+      if (panicEnabled && panicUrl) {
+        let existing = document.querySelector(".panic-button");
+        if (!existing) {
+          const btn = document.createElement("button");
+          btn.className = "panic-button";
+          btn.id = "panic-button";
+          btn.title = "Panic Button - Click to escape";
+          btn.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+          btn.addEventListener("click", () => {
+            window.location.href = panicUrl;
+          });
+          document.body.appendChild(btn);
+        } else {
+          // Update URL if button exists
+          existing.onclick = () => {
+            window.location.href = panicUrl;
+          };
+        }
+      } else {
+        const existing = document.querySelector(".panic-button");
+        if (existing) {
+          existing.remove();
+        }
+      }
+    } catch (e) {
+      console.error("Error initialising panic button", e);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPanicButton);
+  } else {
+    initPanicButton();
+  }
+
+  // Listen for storage changes to update instantly
+  window.addEventListener("storage", (e) => {
+    if (e.key === "panicButtonEnabled" || e.key === "panicButtonUrl") {
+      initPanicButton();
+    }
+  });
+
+  // Also listen for custom storage events (for same-tab updates)
+  window.addEventListener("panicButtonUpdate", () => {
+    initPanicButton();
+  });
+
+  setTimeout(initPanicButton, 500);
+  setTimeout(initPanicButton, 1000);
+  setTimeout(initPanicButton, 2000);
+})();
+</script>
+`;
+                
+                let modifiedData = data;
+                if (data.includes('</body>')) {
+                    modifiedData = data.replace('</body>', panicButtonScript + '</body>');
+                } else {
+                    modifiedData = data + panicButtonScript;
+                }
+                
+                res.set('Content-Type', 'text/html');
+                res.send(modifiedData);
+            });
+        });
 });
 
 // Serve local games from html5 directory at /e/ path
@@ -477,6 +634,10 @@ app.get('/play.html', (req, res) => {
 
 app.get('/c', (req, res) => {
     res.sendFile(path.join(__dirname, 'interstellar-static', 'settings.html'));
+});
+
+app.get('/updates.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'interstellar-static', 'updates.html'));
 });
 
 // Serve Nova Hub games at /games

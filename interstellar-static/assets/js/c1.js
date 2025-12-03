@@ -86,8 +86,13 @@ function Span(name) {
   });
 }
 
-// Generate unique description for games
-function getUniqueDescription(gameName) {
+// Generate unique description for games using name + simple keyword/category heuristics
+function getUniqueDescription(app) {
+  const gameName = app?.name || "this game";
+  const categories = Array.isArray(app?.categories)
+    ? app.categories.map(c => String(c).toLowerCase())
+    : [];
+
   const descriptions = {
     "99balls": "A challenging physics-based puzzle game where you strategically break numbered balls to clear the board.",
     "1v1lol": "Fast-paced multiplayer battle royale with building mechanics and intense combat.",
@@ -170,7 +175,7 @@ function getUniqueDescription(gameName) {
     "Zelda": "Action-adventure RPG with exploration, puzzles, and epic quests."
   };
   
-  // Check for exact match first
+  // Check for exact match first (exact known titles)
   if (descriptions[gameName]) {
     return descriptions[gameName];
   }
@@ -183,7 +188,7 @@ function getUniqueDescription(gameName) {
     }
   }
   
-  // Generate based on game name patterns
+  // Generate based on game name patterns (keywords in the title)
   if (lowerName.includes("ball") || lowerName.includes("balls")) {
     return "A ball-based game with physics and strategic gameplay mechanics.";
   }
@@ -211,9 +216,32 @@ function getUniqueDescription(gameName) {
   if (lowerName.includes("idle") || lowerName.includes("clicker")) {
     return "Idle game where progress continues even when you're away.";
   }
-  
-  // Default unique description
-  return `An engaging ${gameName} experience with unique gameplay mechanics and challenges.`;
+
+  // Generate based on category tags if name patterns didn't match
+  if (categories.includes("action")) {
+    return `${gameName} is a fast-paced action game with plenty of moment-to-moment decisions.`;
+  }
+  if (categories.includes("local")) {
+    return `${gameName} is a locally hosted game you can play right in your browser without external sites.`;
+  }
+  if (categories.includes("2p") || categories.includes("multiplayer")) {
+    return `${gameName} lets you challenge friends in competitive multiplayer matches.`;
+  }
+  if (categories.includes("puzzle")) {
+    return `${gameName} focuses on clever puzzles and logic-based challenges.`;
+  }
+  if (categories.includes("strategy")) {
+    return `${gameName} rewards careful planning and long-term strategy.`;
+  }
+  if (categories.includes("horror")) {
+    return `${gameName} is a horror experience built around tension, atmosphere, and jump scares.`;
+  }
+  if (categories.includes("platformer")) {
+    return `${gameName} is a platformer with tricky jumps and tight level design.`;
+  }
+
+  // Final fallback: still personalized by name so every line is at least slightly different
+  return `${gameName} is a browser game with its own mechanics and challenges to master.`;
 }
 
 function createGameCard(app, appIndex, pinList) {
@@ -238,7 +266,7 @@ function createGameCard(app, appIndex, pinList) {
   // Description placeholder (shown while loading/fallback)
   const descriptionPlaceholder = document.createElement("div");
   descriptionPlaceholder.className = "description-placeholder";
-  const uniqueDesc = getUniqueDescription(app.name);
+  const uniqueDesc = getUniqueDescription(app);
   descriptionPlaceholder.textContent = uniqueDesc;
   // Show description initially while loading
   descriptionPlaceholder.style.display = 'flex';
@@ -364,6 +392,7 @@ function handleClick(app) {
   }
 
   if (app.local) {
+    // Original behavior: instantly go through rx (fullscreen/local handler)
     saveToLocal(Selected);
     window.location.href = "rx";
     if (t) {
