@@ -161,23 +161,11 @@ app.get('/rx', (req, res) => {
 
 // Interstellar routes - must be before static middleware
 app.get('/d', (req, res) => {
-    const filePath = path.join(__dirname, 'interstellar-static', 'tabs.html');
-    res.sendFile(filePath, (err) => {
-        if (err) {
-            console.error('Error serving /d:', err);
-            res.status(404).send('File not found');
-        }
-    });
+    serveHTMLWithGA4(res, path.join(__dirname, 'interstellar-static', 'tabs.html'));
 });
 
 app.get('/d/', (req, res) => {
-    const filePath = path.join(__dirname, 'interstellar-static', 'tabs.html');
-    res.sendFile(filePath, (err) => {
-        if (err) {
-            console.error('Error serving /d/:', err);
-            res.status(404).send('File not found');
-        }
-    });
+    serveHTMLWithGA4(res, path.join(__dirname, 'interstellar-static', 'tabs.html'));
 });
 
 // Serve Interstellar static files (proxy UI)
@@ -538,6 +526,50 @@ app.get('/api/active-sessions', async (req, res) => {
     }
 });
 
+// Track visited URL
+app.post('/api/visited-url', async (req, res) => {
+    try {
+        const { sessionId, url, domain, timestamp } = req.body;
+        
+        if (!sessionId || !url || !domain || !timestamp) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        await db.recordVisitedUrl(sessionId, url, domain, timestamp);
+        
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error recording visited URL:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Get top visited domains
+app.get('/api/top-domains', async (req, res) => {
+    try {
+        const limit = parseInt(req.query.limit) || 20;
+        const timeframe = req.query.timeframe || 'total';
+        const topDomains = await db.getTopDomains(limit, timeframe);
+        res.json(topDomains);
+    } catch (error) {
+        console.error('Error getting top domains:', error);
+        res.json([]);
+    }
+});
+
+// Get visited URLs
+app.get('/api/visited-urls', async (req, res) => {
+    try {
+        const timeframe = req.query.timeframe || 'total';
+        const limit = parseInt(req.query.limit) || 100;
+        const visitedUrls = await db.getVisitedUrls(timeframe, limit);
+        res.json(visitedUrls);
+    } catch (error) {
+        console.error('Error getting visited URLs:', error);
+        res.json([]);
+    }
+});
+
 // Admin authentication
 app.post('/api/admin/login', async (req, res) => {
     try {
@@ -608,11 +640,54 @@ app.post('/api/admin/logout', (req, res) => {
     }
 });
 
+// Helper function to inject GA4 Measurement ID into HTML
+function injectGA4IntoHTML(htmlContent) {
+    const ga4Id = process.env.GA4_MEASUREMENT_ID || '';
+    if (!ga4Id) {
+        return htmlContent; // Return as-is if no GA4 ID configured
+    }
+    
+    // Replace empty meta tag with actual GA4 ID
+    let updated = htmlContent.replace(
+        /<meta name="ga4-measurement-id" content="" \/>/,
+        `<meta name="ga4-measurement-id" content="${ga4Id}" />`
+    );
+    
+    // Also inject as script variable before closing </head> tag
+    if (!updated.includes('window.GA4_MEASUREMENT_ID')) {
+        updated = updated.replace(
+            '</head>',
+            `<script>window.GA4_MEASUREMENT_ID = '${ga4Id}';</script>\n</head>`
+        );
+    }
+    
+    return updated;
+}
+
+// Helper function to serve HTML file with GA4 injection
+function serveHTMLWithGA4(res, filePath, additionalHeaders = {}) {
+    try {
+        let htmlContent = fs.readFileSync(filePath, 'utf8');
+        htmlContent = injectGA4IntoHTML(htmlContent);
+        
+        // Set headers
+        Object.keys(additionalHeaders).forEach(key => {
+            res.setHeader(key, additionalHeaders[key]);
+        });
+        
+        res.send(htmlContent);
+    } catch (error) {
+        console.error(`Error serving HTML file ${filePath}:`, error);
+        res.status(500).send('Error loading page');
+    }
+}
+
 // Serve Interstellar proxy at root
 app.get('/', (req, res) => {
-    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
-    res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-    res.sendFile(path.join(__dirname, 'interstellar-static', 'index.html'));
+    serveHTMLWithGA4(res, path.join(__dirname, 'interstellar-static', 'index.html'), {
+        'Cross-Origin-Opener-Policy': 'same-origin',
+        'Cross-Origin-Embedder-Policy': 'require-corp'
+    });
 });
 
 // Interstellar routes (apps, games, settings, tabs)

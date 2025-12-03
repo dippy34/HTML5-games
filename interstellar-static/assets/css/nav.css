@@ -40,7 +40,7 @@ img {
    position: fixed;
    display: flex;
    align-items: center;
-   justify-content: center;
+   justify-content: space-between;
    flex-wrap: wrap;
    gap: 15px;
    height: auto;
@@ -90,9 +90,21 @@ img {
    text-shadow: 0 0 15px rgba(74, 158, 255, 0.6);
 }
 
+#icon-container {
+   display: flex;
+   align-items: center;
+   margin-right: auto;
+   padding-right: 20px;
+}
+
 .f-nav .icon {
-   /* no longer used as a separate logo; kept for compatibility */
-   display: none;
+   display: inline-block !important;
+   font-size: 28px;
+   font-weight: 800;
+   color: #4a9eff;
+   text-decoration: none;
+   transition: all 0.3s ease;
+   font-family: "Inter", sans-serif;
 }
 
 .f-nav .icon:hover {
@@ -192,10 +204,22 @@ img {
    .f-nav {
       padding: 12px 15px;
       gap: 10px;
+      justify-content: space-between;
+   }
+   
+   #icon-container {
+      margin-right: 10px;
+      padding-right: 10px;
+   }
+   
+   .f-nav .icon {
+      font-size: 20px !important;
    }
    
    .f-nav-right {
-      gap: 10px;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
    }
    
    .f-nav-right .navbar-link an {
@@ -216,15 +240,28 @@ img {
       gap: 8px;
       margin: 10px;
       width: calc(100% - 20px);
+      justify-content: space-between;
+      flex-wrap: wrap;
+   }
+   
+   #icon-container {
+      margin-right: 5px;
+      padding-right: 5px;
+   }
+   
+   .f-nav .icon {
+      font-size: 18px !important;
    }
    
    .f-nav-right {
-      gap: 8px;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
    }
    
    .f-nav-right .navbar-link {
       padding: 6px 10px;
-      font-size: 16px;
+      font-size: 14px;
    }
 }
 

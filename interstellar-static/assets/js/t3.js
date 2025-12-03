@@ -12,6 +12,47 @@ window.addEventListener("load", () => {
       console.error('[Nova Hub] Cache service worker registration failed:', error);
     });
   }
+  // Generate or retrieve session ID (for other tracking features if needed)
+  function getSessionId() {
+    let sessionId = sessionStorage.getItem('session_id');
+    if (!sessionId) {
+      sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      sessionStorage.setItem('session_id', sessionId);
+    }
+    return sessionId;
+  }
+
+  // Extract domain from URL
+  function extractDomain(url) {
+    try {
+      if (!url) return null;
+      let cleanUrl = url.replace(/^https?:\/\//, '');
+      cleanUrl = cleanUrl.split('/')[0].split('?')[0].split('#')[0];
+      cleanUrl = cleanUrl.split(':')[0];
+      cleanUrl = cleanUrl.replace(/^www\./, '');
+      return cleanUrl || null;
+    } catch {
+      return null;
+    }
+  }
+
+  // Track visited URL (using Google Analytics if available)
+  async function trackVisitedUrl(finalUrl) {
+    try {
+      const domain = extractDomain(finalUrl);
+      if (!domain || domain === window.location.hostname) {
+        return;
+      }
+      
+      // Use Google Analytics tracking if available
+      if (window.trackVisitedUrl) {
+        window.trackVisitedUrl(finalUrl, domain);
+      }
+    } catch (e) {
+      // Silently fail
+    }
+  }
+
   const form = document.getElementById("fv");
   const input = document.getElementById("input");
   if (form && input) {
@@ -32,6 +73,9 @@ window.addEventListener("load", () => {
     });
   }
   function processUrl(url) {
+    // Track visited URL (non-blocking)
+    trackVisitedUrl(url);
+
     sessionStorage.setItem("GoUrl", __uv$config.encodeUrl(url));
     const iframeContainer = document.getElementById("frame-container");
     const activeIframe = Array.from(iframeContainer.querySelectorAll("iframe")).find(iframe => iframe.classList.contains("active"));

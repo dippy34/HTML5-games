@@ -32,6 +32,53 @@ try {
 const form = document.getElementById("fv");
 const input = document.getElementById("input");
 
+// Generate or retrieve session ID (for other tracking features if needed)
+function getSessionId() {
+  let sessionId = sessionStorage.getItem('session_id');
+  if (!sessionId) {
+    sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    sessionStorage.setItem('session_id', sessionId);
+  }
+  return sessionId;
+}
+
+// Extract domain from URL
+function extractDomain(url) {
+  try {
+    if (!url) return null;
+    
+    // Remove protocol if present
+    let cleanUrl = url.replace(/^https?:\/\//, '');
+    // Remove path, query, hash
+    cleanUrl = cleanUrl.split('/')[0].split('?')[0].split('#')[0];
+    // Remove port if present
+    cleanUrl = cleanUrl.split(':')[0];
+    // Remove www. prefix
+    cleanUrl = cleanUrl.replace(/^www\./, '');
+    
+    return cleanUrl || null;
+  } catch {
+    return null;
+  }
+}
+
+// Track visited URL (using Google Analytics if available)
+async function trackVisitedUrl(finalUrl) {
+  try {
+    const domain = extractDomain(finalUrl);
+    if (!domain || domain === window.location.hostname) {
+      return; // Skip tracking same-origin or invalid URLs
+    }
+    
+    // Use Google Analytics tracking if available
+    if (window.trackVisitedUrl) {
+      window.trackVisitedUrl(finalUrl, domain);
+    }
+  } catch (e) {
+    // Silently fail
+  }
+}
+
 if (form && input) {
   form.addEventListener("submit", async event => {
     event.preventDefault();
@@ -61,6 +108,9 @@ function processUrl(value, path) {
   } else if (!(url.startsWith("https://") || url.startsWith("http://"))) {
     url = `https://${url}`;
   }
+
+  // Track visited URL (non-blocking)
+  trackVisitedUrl(url);
 
   sessionStorage.setItem("GoUrl", __uv$config.encodeUrl(url));
   
