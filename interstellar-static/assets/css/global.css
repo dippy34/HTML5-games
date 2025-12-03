@@ -60,6 +60,38 @@ body {
    min-height: 100vh;
 }
 
+.panic-button {
+   position: fixed;
+   right: 16px;
+   bottom: 16px;
+   width: 60px;
+   height: 60px;
+   border-radius: 12px;
+   border: 3px solid #ff4444;
+   background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%);
+   color: #ffffff;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+   z-index: 9999;
+   box-shadow: 0 6px 20px rgba(255, 68, 68, 0.6), 0 0 20px rgba(255, 68, 68, 0.4);
+   transition: all 0.2s ease;
+   font-size: 24px;
+   font-weight: bold;
+}
+
+.panic-button:hover {
+   background: linear-gradient(135deg, #ff5555 0%, #dd1111 100%);
+   transform: translateY(-3px) scale(1.05);
+   box-shadow: 0 8px 25px rgba(255, 68, 68, 0.8), 0 0 30px rgba(255, 68, 68, 0.6);
+   border-color: #ff6666;
+}
+
+.panic-button:active {
+   transform: translateY(-1px) scale(0.98);
+}
+
 @keyframes gradientShift {
    0% { background-position: 0% 50%; }
    50% { background-position: 100% 50%; }

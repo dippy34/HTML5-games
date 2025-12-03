@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (themeId === "Inverted") {
       LogoUrl = "/assets/media/favicon/main-inverted.png";
     }
+<<<<<<< HEAD
     const html = `
       <div id="icon-container">
         <a class="icon" href="/./" style="font-size: 28px; font-weight: 800; color: #4a9eff; text-decoration: none;">Nova Hub</a>
@@ -36,7 +37,61 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="navbar-link" href="/./game-requests.html"><i class="fa-solid fa-plus-circle navbar-icon"></i><an>&#82;&#101;&#113;&#117;&#101;&#115;&#116;&#115;</an></a>
         <a class="navbar-link" href="/./c"><i class="fa-solid fa-gear navbar-icon settings-icon"></i><an>&#83;&#101;&#116;</an><an>&#116;&#105;&#110;&#103;</an></a>
       </div>`;
+=======
+           const html = `
+             <div class="f-nav-right">
+               <a class="navbar-link" href="/./"><i class="fa-solid fa-globe navbar-icon"></i><an>Un</an><an>blocker</an></a>
+               <a class="navbar-link" href="/./a"><i class="fa-solid fa-gamepad navbar-icon"></i><an>&#71;&#97;</an><an>&#109;&#101;&#115;</an></a>
+               <a class="navbar-link" href="/./updates.html"><i class="fa-solid fa-bullhorn navbar-icon"></i><an>U</an><an>pdates</an></a>
+               <a class="navbar-link" href="/./bug-reports.html"><i class="fa-solid fa-bug navbar-icon"></i><an>&#66;&#117;&#103;</an><an>&#32;&#82;&#101;&#112;&#111;&#114;&#116;&#115;</an></a>
+               <a class="navbar-link" href="/./game-requests.html"><i class="fa-solid fa-plus-circle navbar-icon"></i><an>&#82;&#101;&#113;&#117;&#101;&#115;&#116;&#115;</an></a>
+               <a class="navbar-link" href="/./c"><i class="fa-solid fa-gear navbar-icon settings-icon"></i><an>&#83;&#101;&#116;</an><an>&#116;&#105;&#110;&#103;</an></a>
+             </div>`;
+>>>>>>> 0212292 (Add panic button, clear data feature, navbar toggle, updates page, and UI improvements)
     nav.innerHTML = html;
+    
+    // Create toggle button outside navbar
+    let toggleBtn = document.getElementById('nav-toggle-btn');
+    if (!toggleBtn) {
+      toggleBtn = document.createElement('button');
+      toggleBtn.id = 'nav-toggle-btn';
+      toggleBtn.className = 'nav-toggle-btn';
+      toggleBtn.title = 'Toggle Navigation Bar';
+      toggleBtn.innerHTML = '<i class="fa-solid fa-chevron-up"></i>';
+      document.body.appendChild(toggleBtn);
+    }
+    
+    // Navbar toggle functionality
+    if (toggleBtn) {
+      // Check if navbar is hidden from localStorage
+      const isHidden = localStorage.getItem('navHidden') === 'true';
+      if (isHidden) {
+        nav.classList.add('nav-hidden');
+        toggleBtn.classList.add('nav-hidden');
+        toggleBtn.querySelector('i').classList.remove('fa-chevron-up');
+        toggleBtn.querySelector('i').classList.add('fa-chevron-down');
+      }
+      
+      toggleBtn.addEventListener('click', () => {
+        const isCurrentlyHidden = nav.classList.contains('nav-hidden');
+        
+        if (isCurrentlyHidden) {
+          // Show navbar
+          nav.classList.remove('nav-hidden');
+          toggleBtn.classList.remove('nav-hidden');
+          toggleBtn.querySelector('i').classList.remove('fa-chevron-down');
+          toggleBtn.querySelector('i').classList.add('fa-chevron-up');
+          localStorage.setItem('navHidden', 'false');
+        } else {
+          // Hide navbar
+          nav.classList.add('nav-hidden');
+          toggleBtn.classList.add('nav-hidden');
+          toggleBtn.querySelector('i').classList.remove('fa-chevron-up');
+          toggleBtn.querySelector('i').classList.add('fa-chevron-down');
+          localStorage.setItem('navHidden', 'true');
+        }
+      });
+    }
   }
 
   // LocalStorage Setup for 'dy'
@@ -289,6 +344,80 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (options[selectedValue]) {
     setCloak(options[selectedValue].name, options[selectedValue].icon);
+  }
+
+  // Floating Panic Button - ensure it's always visible
+  function initPanicButton() {
+    try {
+      const panicEnabled = localStorage.getItem("panicButtonEnabled") === "true";
+      let panicUrl = localStorage.getItem("panicButtonUrl");
+
+      // Ensure URL has a protocol
+      if (panicUrl && !panicUrl.match(/^https?:\/\//i)) {
+        panicUrl = "https://" + panicUrl;
+        localStorage.setItem("panicButtonUrl", panicUrl);
+      }
+
+      if (panicEnabled && panicUrl) {
+        let existing = document.querySelector(".panic-button");
+        if (!existing) {
+          const btn = document.createElement("button");
+          btn.className = "panic-button";
+          btn.id = "panic-button";
+          btn.title = "Panic Button - Click to escape";
+          btn.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+          btn.addEventListener("click", () => {
+            window.location.href = panicUrl;
+          });
+          document.body.appendChild(btn);
+        } else {
+          // Update URL if button exists
+          existing.onclick = () => {
+            window.location.href = panicUrl;
+          };
+        }
+      } else {
+        // Remove button if disabled
+        const existing = document.querySelector(".panic-button");
+        if (existing) {
+          existing.remove();
+        }
+      }
+    } catch (e) {
+      console.error("Error initialising panic button", e);
+    }
+  }
+
+  // Initialize immediately
+  initPanicButton();
+
+  // Listen for storage changes to update instantly
+  window.addEventListener("storage", (e) => {
+    if (e.key === "panicButtonEnabled" || e.key === "panicButtonUrl") {
+      initPanicButton();
+    }
+  });
+
+  // Also listen for custom storage events (for same-tab updates)
+  window.addEventListener("panicButtonUpdate", () => {
+    initPanicButton();
+  });
+
+  // Re-check after a short delay to ensure it's still there (games page loads content dynamically)
+  setTimeout(initPanicButton, 500);
+  setTimeout(initPanicButton, 1000);
+  setTimeout(initPanicButton, 2000);
+
+  // Also re-check when games finish loading (if on games page)
+  if (window.location.pathname === "/a" || window.location.pathname === "/games") {
+    // Watch for when games grid is populated
+    const gamesGrid = document.querySelector(".games-grid");
+    if (gamesGrid) {
+      const observer = new MutationObserver(() => {
+        setTimeout(initPanicButton, 100);
+      });
+      observer.observe(gamesGrid, { childList: true, subtree: true });
+    }
   }
 
   // Event Key Logic
