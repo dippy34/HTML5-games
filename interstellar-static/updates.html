@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" id="tab-favicon" href="favicon.png" />
+  <title id="t">Updates</title>
+  <link rel="stylesheet" id="global" href="/assets/css/global.css?v=6" />
+  <link rel="stylesheet" href="/assets/css/container.css?v=2" />
+  <link rel="stylesheet" href="/assets/css/nav.css?v=01" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .updates-container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    
+    .update-card {
+      background: rgba(30, 30, 40, 0.8);
+      border: 1px solid rgba(74, 158, 255, 0.2);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+    
+    .update-date {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    
+    .update-content {
+      color: var(--text-primary);
+      font-size: 16px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+    
+    .updates-placeholder {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="f-nav"></div>
+  
+  <div class="updates-container">
+    <h1 style="color: var(--text-primary); margin-bottom: 30px; text-align: center;">
+      <i class="fa-solid fa-bullhorn"></i> Updates
+    </h1>
+    
+    <div id="updates-content">
+      <div class="update-card">
+        <div class="update-date">
+          <i class="fa-solid fa-calendar"></i> December 2, 2025
+        </div>
+        <div class="update-content"><strong>🔧 Update Log – Bugs Fixed + New Stuff Added</strong>
+
+Quick heads-up on what's new:
+
+<strong>✅ Bug Fixes</strong>
+
+I fixed the formatting of the top bar so it fits a lot more devices now (including iPads)
+
+I fixed the issue where a lot of games weren't working — everything has been updated, replaced, or swapped so those games fully work now
+
+<strong>✨ Added the requested games/features:</strong>
+
+<strong>Retro Bowl</strong> — a super popular football management + arcade game where you build a team, play through seasons, and try to win championships
+
+<strong>Panic Button</strong> — you can enable it in Settings by typing in a URL and turning it on
+
+It shows up in the bottom-right corner
+
+If a teacher is heading your way, you can click it and instantly jump to whatever URL you set (examples: ixl.com, bigideasmath.com, etc.)
+
+<strong>🚀 All Good Now</strong>
+
+Everything should be running smoother.
+If anything else pops up, just send another report and I'll handle it.</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/m1.js?v=003"></script>
+  <script>
+    // Check if there are any update cards already in the HTML
+    function loadUpdates() {
+      const updatesContent = document.getElementById('updates-content');
+      const existingCards = updatesContent.querySelectorAll('.update-card');
+      
+      // If there are update cards in the HTML, remove the placeholder
+      if (existingCards.length > 0) {
+        const placeholder = updatesContent.querySelector('.updates-placeholder');
+        if (placeholder) {
+          placeholder.remove();
+        }
+      }
+      
+      // Also check localStorage for dynamically added updates
+      const savedUpdates = localStorage.getItem('siteUpdates');
+      if (savedUpdates) {
+        try {
+          const updates = JSON.parse(savedUpdates);
+          if (updates && updates.length > 0) {
+            // Remove placeholder if it exists
+            const placeholder = updatesContent.querySelector('.updates-placeholder');
+            if (placeholder) {
+              placeholder.remove();
+            }
+            
+            // Add updates from localStorage
+            updates.forEach(update => {
+              const updateCard = document.createElement('div');
+              updateCard.className = 'update-card';
+              updateCard.innerHTML = `
+                <div class="update-date">
+                  <i class="fa-solid fa-calendar"></i> ${update.date || 'No date'}
+                </div>
+                <div class="update-content">${update.content || ''}</div>
+              `;
+              updatesContent.appendChild(updateCard);
+            });
+          }
+        } catch (e) {
+          console.error('Error loading updates:', e);
+        }
+      }
+    }
+    
+    // Load updates on page load
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadUpdates);
+    } else {
+      loadUpdates();
+    }
+  </script>
+</body>
+
+</html>
+

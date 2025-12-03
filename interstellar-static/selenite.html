@@ -18,9 +18,38 @@
 </head>
 
 <body>
+  <script>
+    // Password protection for Test Tab
+    (function() {
+      const PASSWORD = 'Matusha2013';
+      const AUTH_KEY = 'testTabAuthenticated';
+      
+      // Check if already authenticated in this session
+      const isAuthenticated = sessionStorage.getItem(AUTH_KEY) === 'true';
+      
+      if (!isAuthenticated) {
+        // Hide body content
+        document.body.style.display = 'none';
+        
+        // Prompt for password
+        const enteredPassword = prompt('This page is password protected. Please enter the password:');
+        
+        if (enteredPassword === PASSWORD) {
+          // Correct password - authenticate and show page
+          sessionStorage.setItem(AUTH_KEY, 'true');
+          document.body.style.display = '';
+        } else {
+          // Wrong password - redirect to home
+          alert('Incorrect password. Redirecting to home page.');
+          window.location.href = '/';
+        }
+      }
+    })();
+  </script>
+  
   <div class="f-nav"></div>
   <div class="input-c">
-    <input type="text" id="search" onkeyup="bar()" placeholder="Search Selenite games..." />
+    <input type="text" id="search" onkeyup="bar()" placeholder="Search Test Tab games..." />
   </div>
   
   <div class="games-grid"></div>
@@ -90,34 +119,41 @@
       return columnDiv;
     }
 
-    // Load Polytrack game after scripts are loaded
-    function loadPolytrack() {
+    // Load Selenite games after scripts are loaded
+    let gamesLoaded = false;
+    function loadSeleniteGames() {
+      if (gamesLoaded) return; // Prevent duplicate loading
       const gamesGrid = document.querySelector('.games-grid');
       if (!gamesGrid) {
-        setTimeout(loadPolytrack, 100);
+        setTimeout(loadSeleniteGames, 100);
         return;
       }
+      gamesLoaded = true;
 
-      const polytrack = {
-        name: 'Polytrack',
-        link: '/e/polytrack/index.html',
-        local: true,
-        categories: ['all', 'action'],
-        image: '/e/polytrack/images/icon.svg'
-      };
+      const games = [
+        {
+          name: 'Bouncing DVD Logo',
+          link: '/e/dvdlogo2/index.html',
+          local: true,
+          categories: ['all', 'fun'],
+          image: '/assets/media/icons/custom.webp'
+        }
+      ];
 
-      // Create game card using our local function
-      const card = createGameCard(polytrack, 0, []);
-      gamesGrid.appendChild(card);
+      // Create game cards using our local function
+      games.forEach((game, index) => {
+        const card = createGameCard(game, index, []);
+        gamesGrid.appendChild(card);
+      });
     }
 
     // Wait for DOM and scripts to load
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(loadPolytrack, 100);
+        setTimeout(loadSeleniteGames, 100);
       });
     } else {
-      setTimeout(loadPolytrack, 100);
+      setTimeout(loadSeleniteGames, 100);
     }
   </script>
   <!-- Analytics removed for Nova Hub -->

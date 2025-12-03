@@ -30,17 +30,193 @@ document.addEventListener("DOMContentLoaded", () => {
       adTypeElement.value = "default";
     }
   }
-  // Makes the custom icon and name persistent
+  // Makes the custom icon and name persistent (only if inputs exist)
   const iconElement = document.getElementById("icon");
   const nameElement = document.getElementById("name");
   const customIcon = localStorage.getItem("CustomIcon");
   const customName = localStorage.getItem("CustomName");
-  iconElement.value = customIcon;
-  nameElement.value = customName;
+  if (iconElement && nameElement) {
+    iconElement.value = customIcon || "";
+    nameElement.value = customName || "";
+  }
 
   if (localStorage.getItem("ab") === "true") {
     document.getElementById("ab-settings-switch").checked = true;
   }
+
+  // Panic button settings initialisation
+  const panicToggle = document.getElementById("panic-button-toggle");
+  const panicUrlInput = document.getElementById("panic-button-url");
+
+  if (panicToggle && panicUrlInput) {
+    const storedEnabled = localStorage.getItem("panicButtonEnabled") === "true";
+    const storedUrl = localStorage.getItem("panicButtonUrl") || "";
+
+    panicToggle.checked = storedEnabled;
+    panicUrlInput.value = storedUrl;
+
+    // Auto-save function
+    function savePanicButtonSettings() {
+      const enabled = panicToggle.checked;
+      let url = panicUrlInput.value.trim();
+
+      // Ensure URL has a protocol
+      if (url && !url.match(/^https?:\/\//i)) {
+        url = "https://" + url;
+        panicUrlInput.value = url; // Update the input field
+      }
+
+      localStorage.setItem("panicButtonEnabled", enabled ? "true" : "false");
+      if (url) {
+        localStorage.setItem("panicButtonUrl", url);
+      } else {
+        localStorage.removeItem("panicButtonUrl");
+      }
+
+      // Trigger update event for same-tab updates
+      window.dispatchEvent(new Event("panicButtonUpdate"));
+      
+      // Also trigger storage event manually (for cross-tab updates)
+      window.dispatchEvent(new StorageEvent("storage", {
+        key: "panicButtonEnabled",
+        newValue: enabled ? "true" : "false"
+      }));
+    }
+
+    // Auto-save on toggle change
+    panicToggle.addEventListener("change", () => {
+      savePanicButtonSettings();
+    });
+
+    // Auto-save on URL input (with debounce)
+    let urlSaveTimeout;
+    panicUrlInput.addEventListener("input", () => {
+      clearTimeout(urlSaveTimeout);
+      urlSaveTimeout = setTimeout(() => {
+        savePanicButtonSettings();
+      }, 500); // Save 500ms after they stop typing
+    });
+  }
+
+  // Clear All Data & Caches function
+  window.clearGameProgress = async function() {
+    const warning = document.getElementById("clear-progress-warning");
+    const btn = document.getElementById("clear-game-progress-btn");
+    
+    // Show warning and confirm
+    if (!warning.style.display || warning.style.display === "none") {
+      warning.style.display = "block";
+      btn.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Confirm Clear All Data';
+      btn.style.background = "linear-gradient(135deg, #cc0000 0%, #990000 100%)";
+      btn.style.transform = "scale(1.05)";
+      return;
+    }
+    
+    // User confirmed - proceed with clearing
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Clearing...';
+    btn.disabled = true;
+    btn.style.opacity = "0.7";
+    
+    let clearedItems = {
+      localStorage: 0,
+      sessionStorage: 0,
+      indexedDB: 0,
+      caches: 0
+    };
+    
+    try {
+      // Clear all localStorage
+      const localStorageKeys = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key) localStorageKeys.push(key);
+      }
+      localStorageKeys.forEach(key => {
+        localStorage.removeItem(key);
+        clearedItems.localStorage++;
+      });
+      
+      // Clear all sessionStorage
+      const sessionStorageKeys = [];
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        if (key) sessionStorageKeys.push(key);
+      }
+      sessionStorageKeys.forEach(key => {
+        sessionStorage.removeItem(key);
+        clearedItems.sessionStorage++;
+      });
+      
+      // Clear IndexedDB databases
+      if ('indexedDB' in window) {
+        try {
+          const databases = await indexedDB.databases();
+          for (const db of databases) {
+            if (db.name) {
+              const deleteReq = indexedDB.deleteDatabase(db.name);
+              await new Promise((resolve, reject) => {
+                deleteReq.onsuccess = () => resolve();
+                deleteReq.onerror = () => reject(deleteReq.error);
+                deleteReq.onblocked = () => resolve(); // Continue even if blocked
+              });
+              clearedItems.indexedDB++;
+            }
+          }
+        } catch (e) {
+          console.warn("Error clearing IndexedDB:", e);
+        }
+      }
+      
+      // Clear Cache API caches
+      if ('caches' in window) {
+        try {
+          const cacheNames = await caches.keys();
+          for (const cacheName of cacheNames) {
+            await caches.delete(cacheName);
+            clearedItems.caches++;
+          }
+        } catch (e) {
+          console.warn("Error clearing caches:", e);
+        }
+      }
+      
+      // Calculate total
+      const total = clearedItems.localStorage + clearedItems.sessionStorage + clearedItems.indexedDB + clearedItems.caches;
+      
+      // Show success message
+      btn.innerHTML = '<i class="fa-solid fa-check-circle"></i> Cleared! (' + total + ' items)';
+      btn.style.background = "linear-gradient(135deg, #4a9eff 0%, #2d7acc 100%)";
+      btn.style.borderColor = "#4a9eff";
+      btn.style.transform = "scale(1)";
+      btn.disabled = false;
+      btn.style.opacity = "1";
+      warning.style.display = "none";
+      
+      // Reset button after 4 seconds
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fa-solid fa-broom"></i> Clear All Data & Caches';
+        btn.style.background = "linear-gradient(135deg, #ff5555 0%, #cc0000 100%)";
+        btn.style.borderColor = "#ff6666";
+        btn.style.transform = "scale(1)";
+      }, 4000);
+      
+    } catch (e) {
+      console.error("Error clearing data:", e);
+      btn.innerHTML = '<i class="fa-solid fa-xmark-circle"></i> Error - Try Again';
+      btn.style.background = "linear-gradient(135deg, #ff5555 0%, #cc0000 100%)";
+      btn.style.borderColor = "#ff6666";
+      btn.disabled = false;
+      btn.style.opacity = "1";
+      warning.style.display = "none";
+      
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fa-solid fa-broom"></i> Clear All Data & Caches';
+        btn.style.background = "linear-gradient(135deg, #ff5555 0%, #cc0000 100%)";
+        btn.style.borderColor = "#ff6666";
+        btn.style.transform = "scale(1)";
+      }, 3000);
+    }
+  };
 });
 
 // Dyn
