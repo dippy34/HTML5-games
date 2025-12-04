@@ -13,6 +13,14 @@ const ADMIN_ACCOUNTS = [
         role: 'super_admin', // super_admin, admin, moderator
         createdAt: new Date().toISOString(),
         active: true
+    },
+
+    {
+        email: 'bestboymg1@gmail.com',
+        passwordHash: '$2b$10$8Ne.hTeUhMAC8ir1Ti9NJ.gb6zmi/ntYmAD5RSQTfHkCGP97ueaqe', // Hashed password for 
+        role: 'super_admin', // super_admin, admin, moderator
+        createdAt: new Date().toISOString(),
+        active: true
     }
     // Add more admin accounts below:
     // {
