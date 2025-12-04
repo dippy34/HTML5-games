@@ -9,10 +9,10 @@ const path = require('path');
 
 // Configuration from environment variables
 const GA4_PROPERTY_ID = process.env.GA4_PROPERTY_ID || ''; // Format: properties/123456789
-const GA4_ACCESS_TOKEN = process.env.GA4_ACCESS_TOKEN || ''; // OAuth access token (expires after 1 hour)
-const GA4_SERVICE_ACCOUNT_KEY = process.env.GA4_SERVICE_ACCOUNT_KEY || ''; // Service account JSON key (base64 encoded or JSON string)
-const GA4_SERVICE_ACCOUNT_PATH = process.env.GA4_SERVICE_ACCOUNT_PATH || ''; // Path to service account JSON file (for local dev)
+const GA4_SERVICE_ACCOUNT_KEY = process.env.GA4_SERVICE_ACCOUNT_KEY || ''; // Service account JSON key (REQUIRED - JSON string or base64 encoded)
+const GA4_SERVICE_ACCOUNT_PATH = process.env.GA4_SERVICE_ACCOUNT_PATH || ''; // Path to service account JSON file (for local dev only)
 const GA4_MEASUREMENT_ID = process.env.GA4_MEASUREMENT_ID || 'G-GGK2QKXDXW';
+// Note: OAuth tokens (GA4_ACCESS_TOKEN) are no longer supported - use service account only
 
 // Google Auth client (for service account)
 let authClient = null;
@@ -32,10 +32,25 @@ async function initializeAuth() {
             // Try parsing as JSON string first
             try {
                 keyData = JSON.parse(GA4_SERVICE_ACCOUNT_KEY);
+                console.log('[GA4] Parsed service account key as JSON string');
             } catch (e) {
                 // If not JSON, try base64 decode
-                keyData = JSON.parse(Buffer.from(GA4_SERVICE_ACCOUNT_KEY, 'base64').toString());
+                try {
+                    keyData = JSON.parse(Buffer.from(GA4_SERVICE_ACCOUNT_KEY, 'base64').toString());
+                    console.log('[GA4] Parsed service account key as base64');
+                } catch (e2) {
+                    throw new Error(`Failed to parse service account key: ${e.message} (JSON) or ${e2.message} (base64)`);
+                }
             }
+            
+            // Validate key structure
+            if (!keyData.client_email || !keyData.private_key || !keyData.project_id) {
+                throw new Error('Service account key missing required fields (client_email, private_key, project_id)');
+            }
+            
+            console.log('[GA4] Service account email:', keyData.client_email);
+            console.log('[GA4] Service account project:', keyData.project_id);
+            
             authClient = new GoogleAuth({
                 credentials: keyData,
                 scopes: ['https://www.googleapis.com/auth/analytics.readonly']
@@ -43,8 +58,12 @@ async function initializeAuth() {
             console.log('[GA4] Initialized with service account from environment variable');
             return authClient;
         } catch (error) {
-            console.warn('[GA4] Failed to parse service account key from env:', error.message);
+            console.error('[GA4] Failed to parse service account key from env:', error.message);
+            console.error('[GA4] Key length:', GA4_SERVICE_ACCOUNT_KEY.length);
+            console.error('[GA4] Key starts with:', GA4_SERVICE_ACCOUNT_KEY.substring(0, 50));
         }
+    } else {
+        console.log('[GA4] GA4_SERVICE_ACCOUNT_KEY not set in environment');
     }
 
     // Try service account file path (for local development)
@@ -61,48 +80,33 @@ async function initializeAuth() {
         }
     }
 
-    // Service account not available - will fall back to OAuth if configured
-    if (GA4_ACCESS_TOKEN) {
-        console.log('[GA4] Service account not configured. Will use OAuth access token (expires after ~1 hour).');
-        console.log('[GA4] Recommendation: Set up service account (GA4_SERVICE_ACCOUNT_KEY) for permanent solution.');
-    }
+    // Service account not available
+    console.warn('[GA4] Service account not configured. GA4_SERVICE_ACCOUNT_KEY is required.');
+    console.warn('[GA4] OAuth tokens are no longer supported. Please set up service account authentication.');
 
     return null;
 }
 
 /**
- * Get access token (ALWAYS prefers service account over OAuth token)
+ * Get access token (ONLY uses service account - no OAuth fallback)
  */
 async function getAccessToken() {
-    // ALWAYS try service account first (preferred method - doesn't expire)
+    // ONLY use service account - no fallback to OAuth
     const auth = await initializeAuth();
-    if (auth) {
-        try {
-            const client = await auth.getClient();
-            const tokenResponse = await client.getAccessToken();
-            console.log('[GA4] Using service account token (auto-refreshing, never expires)');
-            return tokenResponse.token;
-        } catch (error) {
-            console.error('[GA4] Failed to get token from service account:', error.message);
-            // Don't fall back to OAuth if service account is configured but failing
-            // This ensures we always prefer service account when available
-            if (GA4_SERVICE_ACCOUNT_KEY || GA4_SERVICE_ACCOUNT_PATH) {
-                throw new Error(`Service account configured but failed: ${error.message}`);
-            }
-        }
+    if (!auth) {
+        throw new Error('Service account not configured. Set GA4_SERVICE_ACCOUNT_KEY in environment variables. OAuth tokens are no longer supported.');
     }
 
-    // Only fall back to OAuth token if service account is NOT configured
-    if (GA4_ACCESS_TOKEN) {
-        if (GA4_SERVICE_ACCOUNT_KEY || GA4_SERVICE_ACCOUNT_PATH) {
-            console.warn('[GA4] WARNING: Service account is configured but failed. Falling back to OAuth token (will expire).');
-        } else {
-            console.log('[GA4] Using OAuth access token (expires after ~1 hour). Consider setting up service account for permanent solution.');
-        }
-        return GA4_ACCESS_TOKEN;
+    try {
+        const client = await auth.getClient();
+        const tokenResponse = await client.getAccessToken();
+        console.log('[GA4] Using service account token (auto-refreshing, never expires)');
+        return tokenResponse.token;
+    } catch (error) {
+        console.error('[GA4] Failed to get token from service account:', error.message);
+        console.error('[GA4] Error details:', error);
+        throw new Error(`Service account authentication failed: ${error.message}. Make sure the service account has access to GA4 property and Google Analytics Data API is enabled.`);
     }
-
-    throw new Error('No valid authentication method configured. Set either GA4_SERVICE_ACCOUNT_KEY or GA4_ACCESS_TOKEN');
 }
 
 /**
@@ -153,7 +157,17 @@ async function makeGA4Request(endpoint, body = null) {
                         reject(new Error(`Failed to parse GA4 response: ${e.message}`));
                     }
                 } else {
-                    reject(new Error(`GA4 API error ${res.statusCode}: ${data.substring(0, 200)}`));
+                    // Enhanced error logging for 401 errors
+                    if (res.statusCode === 401) {
+                        console.error('[GA4] 401 Unauthorized - Authentication failed');
+                        console.error('[GA4] Response:', data.substring(0, 500));
+                        console.error('[GA4] Check:');
+                        console.error('[GA4]   1. Service account key is correctly formatted in Render');
+                        console.error('[GA4]   2. Service account email has Viewer access in GA4');
+                        console.error('[GA4]   3. Google Analytics Data API is enabled in Google Cloud');
+                        console.error('[GA4]   4. Property ID is correct:', GA4_PROPERTY_ID);
+                    }
+                    reject(new Error(`GA4 API error ${res.statusCode}: ${data.substring(0, 500)}`));
                 }
             });
         });
@@ -299,7 +313,18 @@ async function getGA4Stats(timeframe = 'total') {
                 uniqueUsers: 0,
                 totalSessions: 0,
                 configured: false,
-                error: 'GA4 API not configured. Set GA4_PROPERTY_ID and either GA4_ACCESS_TOKEN or GA4_SERVICE_ACCOUNT_KEY in .env.local'
+                error: 'GA4 API not configured. Set GA4_PROPERTY_ID and GA4_SERVICE_ACCOUNT_KEY in environment variables'
+            };
+        }
+
+        if (!GA4_SERVICE_ACCOUNT_KEY && !GA4_SERVICE_ACCOUNT_PATH) {
+            console.log('[GA4] Service account not configured');
+            return {
+                realtimeActiveUsers: 0,
+                uniqueUsers: 0,
+                totalSessions: 0,
+                configured: false,
+                error: 'Service account required. Set GA4_SERVICE_ACCOUNT_KEY in environment variables. OAuth tokens are no longer supported.'
             };
         }
 
