@@ -3,36 +3,139 @@
 
 const https = require('https');
 const http = require('http');
+const { GoogleAuth } = require('google-auth-library');
+const fs = require('fs');
+const path = require('path');
 
 // Configuration from environment variables
 const GA4_PROPERTY_ID = process.env.GA4_PROPERTY_ID || ''; // Format: properties/123456789
-const GA4_ACCESS_TOKEN = process.env.GA4_ACCESS_TOKEN || ''; // OAuth access token or service account token
+const GA4_ACCESS_TOKEN = process.env.GA4_ACCESS_TOKEN || ''; // OAuth access token (expires after 1 hour)
+const GA4_SERVICE_ACCOUNT_KEY = process.env.GA4_SERVICE_ACCOUNT_KEY || ''; // Service account JSON key (base64 encoded or JSON string)
+const GA4_SERVICE_ACCOUNT_PATH = process.env.GA4_SERVICE_ACCOUNT_PATH || ''; // Path to service account JSON file (for local dev)
 const GA4_MEASUREMENT_ID = process.env.GA4_MEASUREMENT_ID || 'G-GGK2QKXDXW';
+
+// Google Auth client (for service account)
+let authClient = null;
+
+/**
+ * Initialize Google Auth client with service account
+ */
+async function initializeAuth() {
+    if (authClient) {
+        return authClient;
+    }
+
+    // Try service account JSON from environment variable (base64 or JSON string)
+    if (GA4_SERVICE_ACCOUNT_KEY) {
+        try {
+            let keyData;
+            // Try parsing as JSON string first
+            try {
+                keyData = JSON.parse(GA4_SERVICE_ACCOUNT_KEY);
+            } catch (e) {
+                // If not JSON, try base64 decode
+                keyData = JSON.parse(Buffer.from(GA4_SERVICE_ACCOUNT_KEY, 'base64').toString());
+            }
+            authClient = new GoogleAuth({
+                credentials: keyData,
+                scopes: ['https://www.googleapis.com/auth/analytics.readonly']
+            });
+            console.log('[GA4] Initialized with service account from environment variable');
+            return authClient;
+        } catch (error) {
+            console.warn('[GA4] Failed to parse service account key from env:', error.message);
+        }
+    }
+
+    // Try service account file path (for local development)
+    if (GA4_SERVICE_ACCOUNT_PATH && fs.existsSync(GA4_SERVICE_ACCOUNT_PATH)) {
+        try {
+            authClient = new GoogleAuth({
+                keyFile: GA4_SERVICE_ACCOUNT_PATH,
+                scopes: ['https://www.googleapis.com/auth/analytics.readonly']
+            });
+            console.log('[GA4] Initialized with service account from file:', GA4_SERVICE_ACCOUNT_PATH);
+            return authClient;
+        } catch (error) {
+            console.warn('[GA4] Failed to load service account from file:', error.message);
+        }
+    }
+
+    // Service account not available - will fall back to OAuth if configured
+    if (GA4_ACCESS_TOKEN) {
+        console.log('[GA4] Service account not configured. Will use OAuth access token (expires after ~1 hour).');
+        console.log('[GA4] Recommendation: Set up service account (GA4_SERVICE_ACCOUNT_KEY) for permanent solution.');
+    }
+
+    return null;
+}
+
+/**
+ * Get access token (ALWAYS prefers service account over OAuth token)
+ */
+async function getAccessToken() {
+    // ALWAYS try service account first (preferred method - doesn't expire)
+    const auth = await initializeAuth();
+    if (auth) {
+        try {
+            const client = await auth.getClient();
+            const tokenResponse = await client.getAccessToken();
+            console.log('[GA4] Using service account token (auto-refreshing, never expires)');
+            return tokenResponse.token;
+        } catch (error) {
+            console.error('[GA4] Failed to get token from service account:', error.message);
+            // Don't fall back to OAuth if service account is configured but failing
+            // This ensures we always prefer service account when available
+            if (GA4_SERVICE_ACCOUNT_KEY || GA4_SERVICE_ACCOUNT_PATH) {
+                throw new Error(`Service account configured but failed: ${error.message}`);
+            }
+        }
+    }
+
+    // Only fall back to OAuth token if service account is NOT configured
+    if (GA4_ACCESS_TOKEN) {
+        if (GA4_SERVICE_ACCOUNT_KEY || GA4_SERVICE_ACCOUNT_PATH) {
+            console.warn('[GA4] WARNING: Service account is configured but failed. Falling back to OAuth token (will expire).');
+        } else {
+            console.log('[GA4] Using OAuth access token (expires after ~1 hour). Consider setting up service account for permanent solution.');
+        }
+        return GA4_ACCESS_TOKEN;
+    }
+
+    throw new Error('No valid authentication method configured. Set either GA4_SERVICE_ACCOUNT_KEY or GA4_ACCESS_TOKEN');
+}
 
 /**
  * Make a request to Google Analytics Data API
  */
-function makeGA4Request(endpoint, body = null) {
-    return new Promise((resolve, reject) => {
-        if (!GA4_PROPERTY_ID && !GA4_ACCESS_TOKEN) {
-            // Return empty data if not configured
-            resolve({});
-            return;
+async function makeGA4Request(endpoint, body = null) {
+    if (!GA4_PROPERTY_ID) {
+        // Return empty data if not configured
+        return Promise.resolve({});
+    }
+
+    try {
+        // Get access token (from service account or OAuth)
+        const accessToken = await getAccessToken();
+        
+        if (!accessToken) {
+            return Promise.reject(new Error('No access token available'));
         }
 
-        const url = `https://analyticsdata.googleapis.com/v1beta/${GA4_PROPERTY_ID}${endpoint}`;
-        const urlObj = new URL(url);
-        
-        const options = {
-            hostname: urlObj.hostname,
-            port: 443,
-            path: urlObj.pathname + urlObj.search,
-            method: body ? 'POST' : 'GET',
-            headers: {
-                'Authorization': `Bearer ${GA4_ACCESS_TOKEN}`,
-                'Content-Type': 'application/json'
-            }
-        };
+        return new Promise((resolve, reject) => {
+            const url = `https://analyticsdata.googleapis.com/v1beta/${GA4_PROPERTY_ID}${endpoint}`;
+            const urlObj = new URL(url);
+            
+            const options = {
+                hostname: urlObj.hostname,
+                port: 443,
+                path: urlObj.pathname + urlObj.search,
+                method: body ? 'POST' : 'GET',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                }
+            };
 
         const req = https.request(options, (res) => {
             let data = '';
@@ -63,13 +166,16 @@ function makeGA4Request(endpoint, body = null) {
             req.write(JSON.stringify(body));
         }
         
-        req.setTimeout(20000, () => {
-            req.destroy();
-            reject(new Error('GA4 API request timeout'));
+            req.setTimeout(20000, () => {
+                req.destroy();
+                reject(new Error('GA4 API request timeout'));
+            });
+            
+            req.end();
         });
-        
-        req.end();
-    });
+    } catch (error) {
+        return Promise.reject(error);
+    }
 }
 
 /**
@@ -77,7 +183,7 @@ function makeGA4Request(endpoint, body = null) {
  */
 async function getRealtimeUsers() {
     try {
-        if (!GA4_PROPERTY_ID || !GA4_ACCESS_TOKEN) {
+        if (!GA4_PROPERTY_ID) {
             return { activeUsers: 0, error: 'GA4 not configured' };
         }
 
@@ -109,7 +215,7 @@ async function getRealtimeUsers() {
  */
 async function getUniqueUsers(startDate, endDate = 'today') {
     try {
-        if (!GA4_PROPERTY_ID || !GA4_ACCESS_TOKEN) {
+        if (!GA4_PROPERTY_ID) {
             return { uniqueUsers: 0, error: 'GA4 not configured' };
         }
 
@@ -147,7 +253,7 @@ async function getUniqueUsers(startDate, endDate = 'today') {
  */
 async function getTotalSessions(startDate, endDate = 'today') {
     try {
-        if (!GA4_PROPERTY_ID || !GA4_ACCESS_TOKEN) {
+        if (!GA4_PROPERTY_ID) {
             return { totalSessions: 0, error: 'GA4 not configured' };
         }
 
@@ -186,14 +292,14 @@ async function getTotalSessions(startDate, endDate = 'today') {
 async function getGA4Stats(timeframe = 'total') {
     try {
         // Check configuration first
-        if (!GA4_PROPERTY_ID || !GA4_ACCESS_TOKEN) {
-            console.log('[GA4] Not configured - Property ID:', GA4_PROPERTY_ID ? 'Set' : 'Missing', 'Access Token:', GA4_ACCESS_TOKEN ? 'Set' : 'Missing');
+        if (!GA4_PROPERTY_ID) {
+            console.log('[GA4] Not configured - Property ID:', GA4_PROPERTY_ID ? 'Set' : 'Missing');
             return {
                 realtimeActiveUsers: 0,
                 uniqueUsers: 0,
                 totalSessions: 0,
                 configured: false,
-                error: 'GA4 API not configured. Set GA4_PROPERTY_ID and GA4_ACCESS_TOKEN in .env.local'
+                error: 'GA4 API not configured. Set GA4_PROPERTY_ID and either GA4_ACCESS_TOKEN or GA4_SERVICE_ACCOUNT_KEY in .env.local'
             };
         }
 
