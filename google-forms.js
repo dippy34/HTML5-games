@@ -71,7 +71,7 @@ function makeRequest(url, redirectCount = 0) {
             reject(error);
         });
         
-        req.setTimeout(10000, () => {
+        req.setTimeout(20000, () => {
             req.destroy();
             reject(new Error('Request timeout'));
         });
@@ -85,16 +85,21 @@ function makeRequest(url, redirectCount = 0) {
  * This requires you to deploy a Google Apps Script as a web app
  */
 async function fetchFromAppScript() {
-    if (!config.appScriptUrl) {
+    const appScriptUrl = config.appScriptUrl;
+    console.log('[Google Forms] Checking configuration...');
+    console.log('[Google Forms] GOOGLE_FORMS_APPSCRIPT_URL from env:', process.env.GOOGLE_FORMS_APPSCRIPT_URL ? 'Set' : 'Not set');
+    console.log('[Google Forms] appScriptUrl from config:', appScriptUrl ? 'Set' : 'Not set');
+    
+    if (!appScriptUrl) {
         // Return empty responses instead of throwing error
         console.warn('[Google Forms] Apps Script URL not configured. Set GOOGLE_FORMS_APPSCRIPT_URL in .env.local');
-        return getEmptyResponses();
+        return getEmptyResponses('GOOGLE_FORMS_APPSCRIPT_URL not set in .env.local');
     }
     
-    console.log('[Google Forms] Fetching from Apps Script:', config.appScriptUrl);
+    console.log('[Google Forms] Fetching from Apps Script:', appScriptUrl);
     
     try {
-        const data = await makeRequest(config.appScriptUrl);
+        const data = await makeRequest(appScriptUrl);
         console.log('[Google Forms] Received data:', JSON.stringify(data).substring(0, 200) + '...');
         
         // Validate response structure
@@ -128,14 +133,16 @@ async function fetchFromAppScript() {
  */
 function getEmptyResponses(errorMessage = null) {
     const results = {};
+    const isConfigured = !!(config.appScriptUrl || config.googleSheetsApiKey);
+    console.log('[Google Forms] getEmptyResponses - isConfigured:', isConfigured);
     for (const form of config.forms) {
         if (form.enabled) {
             results[form.name] = {
                 formName: form.name,
                 formUrl: form.formUrl,
                 responses: [],
-                error: errorMessage || 'Not configured - see setup instructions',
-                configured: false
+                error: errorMessage || (isConfigured ? 'No responses found' : 'Not configured - see setup instructions'),
+                configured: isConfigured
             };
         }
     }
@@ -213,7 +220,18 @@ async function fetchFormResponses() {
  */
 async function getFormResponses(formName) {
     const allResponses = await fetchFormResponses();
-    return allResponses[formName] || { formName, responses: [] };
+    const formData = allResponses[formName];
+    if (formData) {
+        return formData;
+    }
+    // Return structure even if form not found
+    const isConfigured = !!(config.appScriptUrl || config.googleSheetsApiKey);
+    return { 
+        formName, 
+        responses: [], 
+        configured: isConfigured,
+        error: isConfigured ? 'Form not found or no responses' : 'Not configured'
+    };
 }
 
 /**

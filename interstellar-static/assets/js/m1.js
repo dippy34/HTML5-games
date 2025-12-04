@@ -23,10 +23,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (themeId === "Inverted") {
       LogoUrl = "/assets/media/favicon/main-inverted.png";
     }
-<<<<<<< HEAD
     const html = `
       <div id="icon-container">
-        <a class="icon" href="/" style="font-size: 28px; font-weight: 800; color: #4a9eff; text-decoration: none;">NOVA HUB</a>
+        <a class="icon" href="/./" style="font-size: 28px; font-weight: 800; color: #4a9eff; text-decoration: none;">Nova Hub</a>
       </div>
       <div class="f-nav-right">
         <a class="navbar-link" href="/./a"><i class="fa-solid fa-gamepad navbar-icon"></i><an>&#71;&#97;</an><an>&#109;&#101;&#115;</an></a>
@@ -37,17 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="navbar-link" href="/./game-requests.html"><i class="fa-solid fa-plus-circle navbar-icon"></i><an>&#82;&#101;&#113;&#117;&#101;&#115;&#116;&#115;</an></a>
         <a class="navbar-link" href="/./c"><i class="fa-solid fa-gear navbar-icon settings-icon"></i><an>&#83;&#101;&#116;</an><an>&#116;&#105;&#110;&#103;</an></a>
       </div>`;
-=======
-           const html = `
-             <div class="f-nav-right">
-               <a class="navbar-link" href="/./"><i class="fa-solid fa-globe navbar-icon"></i><an>Un</an><an>blocker</an></a>
-               <a class="navbar-link" href="/./a"><i class="fa-solid fa-gamepad navbar-icon"></i><an>&#71;&#97;</an><an>&#109;&#101;&#115;</an></a>
-               <a class="navbar-link" href="/./updates.html"><i class="fa-solid fa-bullhorn navbar-icon"></i><an>U</an><an>pdates</an></a>
-               <a class="navbar-link" href="/./bug-reports.html"><i class="fa-solid fa-bug navbar-icon"></i><an>&#66;&#117;&#103;</an><an>&#32;&#82;&#101;&#112;&#111;&#114;&#116;&#115;</an></a>
-               <a class="navbar-link" href="/./game-requests.html"><i class="fa-solid fa-plus-circle navbar-icon"></i><an>&#82;&#101;&#113;&#117;&#101;&#115;&#116;&#115;</an></a>
-               <a class="navbar-link" href="/./c"><i class="fa-solid fa-gear navbar-icon settings-icon"></i><an>&#83;&#101;&#116;</an><an>&#116;&#105;&#110;&#103;</an></a>
-             </div>`;
->>>>>>> 0212292 (Add panic button, clear data feature, navbar toggle, updates page, and UI improvements)
     nav.innerHTML = html;
     
     // Create toggle button outside navbar

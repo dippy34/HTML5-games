@@ -526,6 +526,55 @@ app.get('/api/active-sessions', async (req, res) => {
     }
 });
 
+// Google Analytics 4 API integration
+let ga4;
+try {
+    ga4 = require('./google-analytics-api');
+    console.log('[Server] Google Analytics API module loaded successfully');
+} catch (error) {
+    console.error('[Server] Failed to load Google Analytics API module:', error);
+    // Create a dummy module that returns empty data
+    ga4 = {
+        getGA4Stats: async () => ({
+            realtimeActiveUsers: 0,
+            uniqueUsers: 0,
+            totalSessions: 0,
+            configured: false,
+            error: 'GA4 module failed to load: ' + error.message
+        })
+    };
+}
+
+// Test endpoint to verify GA4 route is accessible
+app.get('/api/ga4/test', (req, res) => {
+    console.log('[API] GA4 test endpoint hit');
+    res.json({ status: 'ok', message: 'GA4 API route is working' });
+});
+
+// Get GA4 statistics
+app.get('/api/ga4/stats/:timeframe?', async (req, res) => {
+    try {
+        const timeframe = req.params.timeframe || 'total';
+        console.log(`[API] GET /api/ga4/stats/${timeframe} - Request received`);
+        console.log(`[API] Request params:`, req.params);
+        console.log(`[API] Request query:`, req.query);
+        
+        const stats = await ga4.getGA4Stats(timeframe);
+        console.log(`[API] GA4 stats response:`, JSON.stringify(stats));
+        res.json(stats);
+    } catch (error) {
+        console.error('[API] Error getting GA4 stats:', error);
+        console.error('[API] Error stack:', error.stack);
+        res.json({
+            realtimeActiveUsers: 0,
+            uniqueUsers: 0,
+            totalSessions: 0,
+            configured: false,
+            error: error.message
+        });
+    }
+});
+
 // Track visited URL
 app.post('/api/visited-url', async (req, res) => {
     try {
@@ -801,14 +850,18 @@ app.get('/api/google-forms', async (req, res) => {
     try {
         const token = req.headers.authorization?.replace('Bearer ', '');
         if (!token || !auth.verifySession(token)) {
+            console.log('[API] Google Forms request unauthorized - missing or invalid token');
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
+        console.log('[API] Fetching all Google Forms responses');
         const responses = await googleForms.getAllFormResponses();
+        console.log(`[API] Google Forms response:`, JSON.stringify(responses).substring(0, 200));
         // Always return a response, even if empty/not configured
         res.json(responses || {});
     } catch (error) {
-        console.error('Error fetching Google Forms responses:', error);
+        console.error('[API] Error fetching Google Forms responses:', error);
+        console.error('[API] Error stack:', error.stack);
         // Return empty structure instead of error to allow admin panel to load
         res.json({});
     }
@@ -819,15 +872,19 @@ app.get('/api/google-forms/:formName', async (req, res) => {
     try {
         const token = req.headers.authorization?.replace('Bearer ', '');
         if (!token || !auth.verifySession(token)) {
+            console.log('[API] Google Forms request unauthorized - missing or invalid token');
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
         const { formName } = req.params;
+        console.log(`[API] Fetching Google Forms responses for: ${formName}`);
         const responses = await googleForms.getFormResponses(formName);
+        console.log(`[API] Google Forms response:`, JSON.stringify(responses).substring(0, 200));
         // Always return a response, even if empty/not configured
         res.json(responses || { formName, responses: [], configured: false });
     } catch (error) {
-        console.error(`Error fetching Google Forms responses for ${req.params.formName}:`, error);
+        console.error(`[API] Error fetching Google Forms responses for ${req.params.formName}:`, error);
+        console.error(`[API] Error stack:`, error.stack);
         // Return empty structure instead of error
         res.json({ 
             formName: req.params.formName, 
@@ -838,11 +895,19 @@ app.get('/api/google-forms/:formName', async (req, res) => {
     }
 });
 
+// Debug: Log all registered routes (for development)
+if (process.env.NODE_ENV !== 'production') {
+    console.log('[Server] Registered API routes:');
+    console.log('  - GET /api/ga4/test');
+    console.log('  - GET /api/ga4/stats/:timeframe?');
+}
+
 // Start server
 server.listen(PORT, () => {
     console.log(`Starting Nova Hub Server (v5) - Proxy Edition...`);
     console.log(`Server running on port ${PORT}`);
     console.log(`Nova Hub Proxy: http://localhost:${PORT}/`);
+    console.log(`GA4 API endpoint: http://localhost:${PORT}/api/ga4/stats/total`);
     // Games and Admin panel are hidden but code is preserved for future use
 });
 
