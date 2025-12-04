@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="/assets/css/h.css?v=01">
     <link rel="stylesheet" href="/assets/css/container.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="/assets/css/admin.css">
 </head>
 <!-- Google tag (gtag.js) -->
@@ -24,55 +23,58 @@
   gtag('config', 'G-GGK2QKXDXW');
 </script>
 <body class="center">
-    <!-- Navigation Bar (only shown when logged in) -->
-    <div class="f-nav" id="admin-nav" style="display: none;">
-        <div class="f-nav-right">
-            <a href="/" class="navbar-link">
-                <i class="navbar-icon fas fa-home"></i>
-                <span>Home</span>
-            </a>
-            <a href="/admin" class="navbar-link">
-                <i class="navbar-icon fas fa-chart-line"></i>
-                <span>Admin</span>
-            </a>
-            <a href="#" class="navbar-link" onclick="logout(); return false;">
-                <i class="navbar-icon fas fa-sign-out-alt"></i>
-                <span>Logout</span>
-            </a>
-        </div>
-    </div>
-
     <!-- Login Screen -->
     <div id="login-screen" class="login-container">
         <h2>🔐 Admin Login</h2>
         <input type="email" id="admin-email" placeholder="Enter email address" autocomplete="email">
         <input type="password" id="admin-password" placeholder="Enter password" autocomplete="current-password">
-        <button onclick="login()">Login</button>
+        <button type="button" onclick="login()">Login</button>
         <div class="error-message" id="login-error">Invalid email or password</div>
     </div>
 
     <!-- Dashboard -->
     <div id="dashboard" class="dashboard">
-        <div class="main" style="margin-top: 120px;">
+        <!-- Navigation Bar (only shown when logged in) -->
+        <div class="f-nav" id="admin-nav" style="display: none;">
+            <div class="f-nav-right">
+                <a href="/" class="navbar-link">
+                    <i class="navbar-icon fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="/admin" class="navbar-link">
+                    <i class="navbar-icon fas fa-chart-line"></i>
+                    <span>Admin</span>
+                </a>
+                <a href="#" class="navbar-link" onclick="logout(); return false;">
+                    <i class="navbar-icon fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+        <div class="main">
             <h1 class="title" style="margin-top: 0;">📊 Analytics Dashboard</h1>
             <p id="user-info" style="color: var(--text-secondary); margin-top: -30px; margin-bottom: 30px; font-family: 'Inter', sans-serif; text-align: center;"></p>
 
             <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>Total Visitors</h3>
-                    <div class="value" id="total-visitors">0</div>
+                <div class="stat-card" style="border-color: #4a9eff;">
+                    <h3>🟢 Realtime Active Users</h3>
+                    <div class="value" id="ga4-realtime" style="color: #4a9eff;">0</div>
+                    <div style="font-size: 0.8em; color: var(--text-secondary); margin-top: 5px;">From Google Analytics</div>
                 </div>
-                <div class="stat-card">
-                    <h3>Active Sessions</h3>
-                    <div class="value" id="active-sessions">0</div>
+                <div class="stat-card" style="border-color: #8a5cf6;">
+                    <h3>👥 Unique Users</h3>
+                    <div class="value" id="ga4-unique" style="color: #8a5cf6;">0</div>
+                    <div style="font-size: 0.8em; color: var(--text-secondary); margin-top: 5px;">From Google Analytics</div>
                 </div>
-                <div class="stat-card">
-                    <h3>Avg. Session Duration</h3>
-                    <div class="value" id="avg-duration">0s</div>
+                <div class="stat-card" style="border-color: #10b981;">
+                    <h3>📊 Total Visits</h3>
+                    <div class="value" id="ga4-total" style="color: #10b981;">0</div>
+                    <div style="font-size: 0.8em; color: var(--text-secondary); margin-top: 5px;">From Google Analytics</div>
                 </div>
-                <div class="stat-card">
-                    <h3>Total Game Plays</h3>
-                    <div class="value" id="total-plays">0</div>
+                <div class="stat-card" style="border-color: #f59e0b;">
+                    <h3>⚙️ GA4 Status</h3>
+                    <div class="value" id="ga4-status" style="font-size: 1.2em;">-</div>
+                    <div style="font-size: 0.8em; color: var(--text-secondary); margin-top: 5px;" id="ga4-status-text">Checking...</div>
                 </div>
             </div>
 
@@ -87,16 +89,6 @@
                 <button class="timeframe-btn" data-timeframe="6months" onclick="selectTimeframe('6months')">6 Months</button>
                 <button class="timeframe-btn" data-timeframe="year" onclick="selectTimeframe('year')">Year</button>
                 <button class="timeframe-btn active" data-timeframe="total" onclick="selectTimeframe('total')">Total</button>
-            </div>
-
-            <div class="chart-container">
-                <h3>Visitor Statistics</h3>
-                <canvas id="visitor-chart"></canvas>
-            </div>
-
-            <div class="top-games">
-                <h3>🎮 Top 10 Most Played Games</h3>
-                <div id="top-games-list" class="loading">Loading...</div>
             </div>
 
             <div class="google-forms-section">
@@ -116,7 +108,6 @@
         let authToken = localStorage.getItem('admin_token');
         let currentUser = null;
         let currentTimeframe = 'total';
-        let visitorChart = null;
 
         // Check if already logged in
         if (authToken) {
@@ -147,10 +138,16 @@
             }
         }
 
-        async function login() {
+        // Make login function globally accessible
+        window.login = async function() {
+            console.log('[Login] Login button clicked');
             const email = document.getElementById('admin-email').value.trim();
             const password = document.getElementById('admin-password').value;
             const errorDiv = document.getElementById('login-error');
+
+            console.log('[Login] Email:', email ? 'Provided' : 'Missing');
+            console.log('[Login] Password:', password ? 'Provided' : 'Missing');
+            console.log('[Login] API_URL:', API_URL);
 
             if (!email || !password) {
                 errorDiv.textContent = 'Please enter both email and password';
@@ -158,14 +155,24 @@
                 return;
             }
 
+            // Show loading state
+            const loginButton = document.querySelector('#login-screen button');
+            const originalText = loginButton.textContent;
+            loginButton.textContent = 'Logging in...';
+            loginButton.disabled = true;
+            errorDiv.style.display = 'none';
+
             try {
+                console.log('[Login] Sending request to:', `${API_URL}/api/admin/login`);
                 const response = await fetch(`${API_URL}/api/admin/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
                 });
 
+                console.log('[Login] Response status:', response.status);
                 const data = await response.json();
+                console.log('[Login] Response data:', data);
 
                 if (data.success && data.token) {
                     authToken = data.token;
@@ -179,9 +186,13 @@
                     document.getElementById('admin-password').value = '';
                 }
             } catch (error) {
-                console.error('Login error:', error);
-                errorDiv.textContent = 'Connection error. Is the server running?';
+                console.error('[Login] Error:', error);
+                errorDiv.textContent = 'Connection error. Is the server running? Error: ' + error.message;
                 errorDiv.style.display = 'block';
+            } finally {
+                // Restore button state
+                loginButton.textContent = originalText;
+                loginButton.disabled = false;
             }
         }
 
@@ -213,16 +224,31 @@
                 userInfo.textContent = `Logged in as: ${currentUser.name || currentUser.email} (${currentUser.role || 'admin'})`;
             }
             
+            // Load dashboard immediately on show
             loadDashboard();
             // Load Google Forms responses after a short delay to ensure everything is ready
             setTimeout(() => {
+                console.log('[Admin] Attempting to load Google Forms...');
                 if (window.loadFormResponses) {
+                    console.log('[Admin] loadFormResponses function found, calling...');
                     loadFormResponses('Bug Reports');
                 } else {
-                    console.error('loadFormResponses function not available');
+                    console.error('[Admin] loadFormResponses function not available');
+                    const formsList = document.getElementById('google-forms-list');
+                    if (formsList) {
+                        formsList.innerHTML = '<p style="color: #ef4444;">Error: Google Forms function not loaded. Please refresh the page.</p>';
+                    }
                 }
             }, 500);
         }
+        
+        // Refresh GA4 data on page load/refresh
+        window.addEventListener('load', () => {
+            if (authToken && document.getElementById('dashboard').classList.contains('active')) {
+                console.log('[Admin] Page loaded, refreshing GA4 data...');
+                loadDashboard();
+            }
+        });
 
         function selectTimeframe(timeframe) {
             currentTimeframe = timeframe;
@@ -241,46 +267,35 @@
 
         async function loadDashboard() {
             try {
-                // Show loading state
-                document.getElementById('top-games-list').innerHTML = '<p style="color: var(--text-secondary);">Loading...</p>';
+                // Load GA4 data
+                const ga4Response = await fetch(`${API_URL}/api/ga4/stats/${currentTimeframe}`);
+                const ga4Stats = await ga4Response.json();
+
+                // Update GA4 stats
+                console.log('[Admin] GA4 Stats received:', ga4Stats);
+                document.getElementById('ga4-realtime').textContent = ga4Stats.realtimeActiveUsers || 0;
+                document.getElementById('ga4-unique').textContent = ga4Stats.uniqueUsers || 0;
+                document.getElementById('ga4-total').textContent = ga4Stats.totalSessions || 0;
                 
-                // Load all data in parallel for better performance
-                const [statsResponse, activeResponse, chartResponse, gamesResponse] = await Promise.all([
-                    fetch(`${API_URL}/api/stats/${currentTimeframe}`),
-                    fetch(`${API_URL}/api/active-sessions`),
-                    fetch(`${API_URL}/api/chart/${currentTimeframe}`),
-                    fetch(`${API_URL}/api/top-games?limit=10`)
-                ]);
-
-                const stats = await statsResponse.json();
-                const activeData = await activeResponse.json();
-                const chartData = await chartResponse.json();
-                const topGames = await gamesResponse.json();
-
-                // Update stats
-                document.getElementById('total-visitors').textContent = stats.uniqueVisitors || 0;
-                document.getElementById('avg-duration').textContent = formatDuration(stats.avgDuration || 0);
-                document.getElementById('total-plays').textContent = stats.totalGamePlays || 0;
-                document.getElementById('active-sessions').textContent = activeData.activeSessions || 0;
-
-                // Update chart
-                updateChart(chartData);
-
-                // Update top games
-                const gamesList = document.getElementById('top-games-list');
-                if (topGames.length === 0) {
-                    gamesList.innerHTML = '<p style="color: var(--text-secondary);">No games played yet</p>';
+                // Update GA4 status
+                const statusEl = document.getElementById('ga4-status');
+                const statusTextEl = document.getElementById('ga4-status-text');
+                if (ga4Stats.configured && !ga4Stats.error) {
+                    statusEl.textContent = '✅';
+                    statusEl.style.color = '#10b981';
+                    statusTextEl.textContent = 'Connected';
+                    statusTextEl.style.color = '#10b981';
                 } else {
-                    gamesList.innerHTML = topGames.map((game, index) => `
-                        <div class="game-item">
-                            <span class="game-name">${index + 1}. ${game.game_name.replace(/-/g, ' ')}</span>
-                            <span class="game-count">${game.play_count} plays</span>
-                        </div>
-                    `).join('');
+                    statusEl.textContent = '⚠️';
+                    statusEl.style.color = '#f59e0b';
+                    const errorMsg = ga4Stats.error || 'Not configured';
+                    statusTextEl.textContent = errorMsg.length > 50 ? errorMsg.substring(0, 50) + '...' : errorMsg;
+                    statusTextEl.style.color = '#f59e0b';
+                    statusTextEl.title = errorMsg; // Show full error on hover
+                    console.warn('[Admin] GA4 Error:', errorMsg);
                 }
             } catch (error) {
                 console.error('Dashboard load error:', error);
-                document.getElementById('top-games-list').innerHTML = '<p style="color: #ef4444;">Error loading data. Please refresh.</p>';
             }
         }
 
@@ -392,22 +407,22 @@
                 
                 formsList.innerHTML = html;
             } catch (error) {
-                console.error('Error loading form responses:', error);
+                console.error('[Admin] Error loading form responses:', error);
+                console.error('[Admin] Error stack:', error.stack);
                 formsList.innerHTML = `
                     <div class="form-response-item" style="border-color: #ef4444;">
-                        <div class="form-response-label" style="color: #ef4444;">Configuration Required</div>
+                        <div class="form-response-label" style="color: #ef4444;">❌ Error Loading Forms</div>
                         <div class="form-response-value" style="margin-top: 10px;">
-                            <p>Google Forms integration is not configured yet.</p>
+                            <p style="color: #ef4444; font-weight: 600;">${error.message || 'Unknown error occurred'}</p>
                             <p style="margin-top: 10px; font-size: 0.9em; color: var(--text-secondary);">
-                                To set up Google Forms integration:
+                                Possible issues:
                             </p>
-                            <ol style="margin-top: 10px; padding-left: 20px; font-size: 0.9em; color: var(--text-secondary);">
-                                <li>Open your Google Forms and link them to Google Sheets</li>
-                                <li>Create a Google Apps Script (see <code>google-forms-appscript.js</code>)</li>
-                                <li>Deploy it as a web app</li>
-                                <li>Add <code>GOOGLE_FORMS_APPSCRIPT_URL</code> to your <code>.env.local</code> file</li>
-                                <li>Restart the server</li>
-                            </ol>
+                            <ul style="margin-top: 10px; padding-left: 20px; font-size: 0.9em; color: var(--text-secondary);">
+                                <li>Not logged in - try refreshing and logging in again</li>
+                                <li>Server not running or API endpoint not accessible</li>
+                                <li>Google Forms not configured - check <code>.env.local</code> for <code>GOOGLE_FORMS_APPSCRIPT_URL</code></li>
+                                <li>Check browser console (F12) for more details</li>
+                            </ul>
                             <p style="margin-top: 15px; font-size: 0.9em; color: var(--text-secondary);">
                                 See <code>GOOGLE_FORMS_SETUP.md</code> for detailed instructions.
                             </p>
@@ -517,8 +532,19 @@
                 
                 formsList.innerHTML = html;
             } catch (error) {
-                console.error('Error loading all form responses:', error);
-                formsList.innerHTML = `<p style="color: #ef4444;">Error loading form responses. ${error.message}</p><p style="color: var(--text-secondary); margin-top: 10px; font-size: 0.9em;">Make sure Google Forms integration is configured. See setup instructions.</p>`;
+                console.error('[Admin] Error loading all form responses:', error);
+                console.error('[Admin] Error stack:', error.stack);
+                formsList.innerHTML = `
+                    <div class="form-response-item" style="border-color: #ef4444;">
+                        <div class="form-response-label" style="color: #ef4444;">❌ Error Loading Forms</div>
+                        <div class="form-response-value" style="margin-top: 10px;">
+                            <p style="color: #ef4444; font-weight: 600;">${error.message || 'Unknown error occurred'}</p>
+                            <p style="margin-top: 10px; font-size: 0.9em; color: var(--text-secondary);">
+                                Check browser console (F12) for more details.
+                            </p>
+                        </div>
+                    </div>
+                `;
             }
         }
 
@@ -529,117 +555,6 @@
             return div.innerHTML;
         }
 
-        function updateChart(data) {
-            const ctx = document.getElementById('visitor-chart').getContext('2d');
-
-            if (visitorChart) {
-                visitorChart.destroy();
-            }
-
-            // Format labels based on timeframe
-            const labels = data.map(item => {
-                const date = new Date(item.time);
-                // Format based on timeframe
-                if (currentTimeframe === '1hour' || currentTimeframe === '12hours') {
-                    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-                } else if (currentTimeframe === 'day' || currentTimeframe === '3days') {
-                    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit' });
-                } else {
-                    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                }
-            });
-
-            visitorChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Unique Visitors',
-                            data: data.map(item => item.uniqueVisitors),
-                            borderColor: '#4a9eff',
-                            backgroundColor: 'rgba(74, 158, 255, 0.1)',
-                            tension: 0.4,
-                            fill: true,
-                            pointRadius: 2,
-                            pointHoverRadius: 4,
-                            pointHoverBorderWidth: 2
-                        },
-                        {
-                            label: 'Total Visits',
-                            data: data.map(item => item.totalVisits),
-                            borderColor: '#8a5cf6',
-                            backgroundColor: 'rgba(138, 92, 246, 0.1)',
-                            tension: 0.4,
-                            fill: true,
-                            pointRadius: 2,
-                            pointHoverRadius: 4,
-                            pointHoverBorderWidth: 2
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    animation: {
-                        duration: 750
-                    },
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: '#ffffff',
-                                font: {
-                                    family: 'Inter, sans-serif',
-                                    size: 12
-                                }
-                            }
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false,
-                            backgroundColor: 'rgba(42, 42, 42, 0.95)',
-                            titleColor: '#ffffff',
-                            bodyColor: '#ffffff',
-                            borderColor: '#4a9eff',
-                            borderWidth: 1
-                        }
-                    },
-                    scales: {
-                        x: {
-                            ticks: {
-                                color: '#888888',
-                                maxRotation: 45,
-                                minRotation: 0,
-                                font: {
-                                    family: 'Inter, sans-serif'
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(74, 158, 255, 0.1)'
-                            }
-                        },
-                        y: {
-                            ticks: {
-                                color: '#888888',
-                                precision: 0,
-                                font: {
-                                    family: 'Inter, sans-serif'
-                                }
-                            },
-                            grid: {
-                                color: 'rgba(74, 158, 255, 0.1)'
-                            },
-                            beginAtZero: true
-                        }
-                    },
-                    interaction: {
-                        mode: 'nearest',
-                        axis: 'x',
-                        intersect: false
-                    }
-                }
-            });
-        }
 
         // Auto-refresh every 60 seconds (reduced frequency for better performance)
         setInterval(() => {

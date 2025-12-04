@@ -40,7 +40,7 @@ img {
    position: fixed;
    display: flex;
    align-items: center;
-   justify-content: center;
+   justify-content: space-between;
    flex-wrap: wrap;
    gap: 15px;
    height: auto;
@@ -95,11 +95,34 @@ img {
    align-items: center;
    margin-right: auto;
    padding-right: 20px;
+   position: relative;
+}
+
+#icon-container .icon {
+   position: relative;
+   float: none;
+   top: auto;
+   margin-left: 0;
+   height: auto;
 }
 
 .f-nav .icon {
-   /* no longer used as a separate logo; kept for compatibility */
-   display: none;
+   position: absolute;
+   float: left;
+   text-transform: uppercase;
+   font-size: 32px;
+   font-family: "Inter", sans-serif;
+   cursor: pointer;
+   color: #4a9eff;
+   font-weight: 800;
+   margin-left: 5px;
+   font-style: normal;
+   text-decoration: none;
+   transition: all 0.3s ease;
+   height: 5vh;
+   top: 18%;
+   letter-spacing: 1px;
+   display: block;
 }
 
 .f-nav .icon:hover {
@@ -109,11 +132,12 @@ img {
 }
 
 .f-nav-right {
+   position: relative;
    display: flex;
    flex-wrap: wrap;
    align-items: center;
    gap: 15px;
-   margin: 0 auto;
+   margin-left: auto;
    text-transform: uppercase;
    font-size: 20px;
    color: var(--text-primary);

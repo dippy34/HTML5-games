@@ -1,6 +1,36 @@
 /* Admin Panel Specific Styles Only */
 /* All other styles come from global.css, nav.css, and container.css */
 
+/* Center the admin navbar at the top - override all positioning */
+#admin-nav {
+    justify-content: center !important;
+    position: relative !important;
+    z-index: 100;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    margin-bottom: 20px !important;
+    border-radius: 0 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    float: none !important;
+    clear: both !important;
+    min-height: auto !important;
+    padding: 15px 25px !important;
+}
+
+#admin-nav .f-nav-right {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    justify-content: center !important;
+    position: relative !important;
+    float: none !important;
+}
+
 .login-container {
     max-width: 400px;
     margin: 150px auto 100px;

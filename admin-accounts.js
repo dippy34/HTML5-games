@@ -9,8 +9,7 @@ const bcrypt = require('bcrypt');
 const ADMIN_ACCOUNTS = [
     {
         email: 'aaravharjani@icloud.com',
-        passwordHash: '$2b$10$visuuYLmZdccVuu/awavYOQL3gIDj42ZWbKDRNmiV7sFOGL7ov/Sq', // Hashed password for 'Aarav2014123!!!'
-        name: 'Aarav',
+        passwordHash: '$2b$10$visuuYLmZdccVuu/awavYOQL3gIDj42ZWbKDRNmiV7sFOGL7ov/Sq', // Hashed password for 
         role: 'super_admin', // super_admin, admin, moderator
         createdAt: new Date().toISOString(),
         active: true
