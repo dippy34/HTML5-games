@@ -66,3 +66,5 @@ coverage/
 
 # Misc
 .cache/
+
+ADD_SERVICE_ACCOUNT_TO_RENDER.md
