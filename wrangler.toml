@@ -1,34 +1,13 @@
-name = "buh-avon"
-main = "src/index.js"
-compatibility_date = "2024-01-01"
-
 # Cloudflare Pages configuration
+# For Pages projects, only pages_build_output_dir is needed
 pages_build_output_dir = "."
 
-# Your Cloudflare Workers domain (for Workers deployment)
+# Note: For Workers deployment, use a separate wrangler.toml or remove this file
+# Workers configuration (commented out for Pages):
+# name = "buh-avon"
+# main = "src/index.js"
+# compatibility_date = "2024-01-01"
 # routes = [
 #   { pattern = "buh-avon.bestboymg1.workers.dev", zone_name = "bestboymg1.workers.dev" }
 # ]
-
-
-# Workers KV namespaces (for static files and data storage)
-# [[kv_namespaces]]
-# binding = "STATIC_FILES"
-# id = "your-kv-namespace-id"
-# preview_id = "your-preview-kv-namespace-id"
-
-# D1 Database (for analytics - alternative to SQLite)
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "nova-hub-db"
-# database_id = "your-d1-database-id"
-
-# R2 Bucket (for large static files like games)
-# [[r2_buckets]]
-# binding = "GAMES_BUCKET"
-# bucket_name = "nova-hub-games"
-
-# Limits
-[limits]
-cpu_ms = 50
 
