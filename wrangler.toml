@@ -1,5 +1,5 @@
 # Cloudflare Pages configuration
-# For Pages projects, only pages_build_output_dir is needed
+name = "buh-avon"
 pages_build_output_dir = "."
 
 # Note: For Workers deployment, use a separate wrangler.toml or remove this file
