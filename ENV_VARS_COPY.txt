@@ -1,0 +1,111 @@
+================================================================================
+ENVIRONMENT VARIABLES - COPY READY FORMAT
+================================================================================
+
+Each variable is separated for easy copying.
+Copy the variable name, then copy its value separately.
+
+================================================================================
+VARIABLE 1: GA4_PROPERTY_ID
+================================================================================
+GA4_PROPERTY_ID
+
+================================================================================
+VALUE 1: GA4_PROPERTY_ID
+================================================================================
+properties/515011009
+
+================================================================================
+VARIABLE 2: GA4_SERVICE_ACCOUNT_KEY
+================================================================================
+GA4_SERVICE_ACCOUNT_KEY
+
+================================================================================
+VALUE 2: GA4_SERVICE_ACCOUNT_KEY
+================================================================================
+{"type":"service_account","project_id":"civic-rhythm-480112-q1","private_key_id":"fef72db0dfc04346997a2e03c4eed8068a5dbd97","private_key":"-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCVeXa8JgSKAZ07\nymp40hzd0mHqcmvNTWBNxd+xH1ndcbJbfWrCq3Jpjp9uyctyR/V8tg6lsbfNfRIV\nkCFIgsJ9CxMdNKTw+B438U+bfyrkXZjPXOerLTZhEfPUwFQZDFpCYtxhiv1EYC5A\noD8hxEjGA3kaeRh0SBdMPCiCgzvw8s5QZTnpxqBNkjnl/1JKtlKaCXVQNbjeupCk\nXbPhqJBnx+/reLyo3U5MJzvjFOY6+i4gIZSVrZL8+dOvVB6IGcHXs6QP8blMoFJO\nsref4+ioD631Q9/0+df4EHeJIOQl+vzYZyMNqYTo/oIsycKTy0sO0L8h/IzcqfpW\n/1zCXm1bAgMBAAECggEAKboBql5WkAwJT6Ke/GFzS30qdl9Atswt4Sgm3PQqiwXt\nS1sEjZl80/jLiwrsL1flMM5F4n1tGQEcJkbY87wE/RE1YcbLcLVjAizsEzV5zMxQ\nFzsRNRjnAEwZrD+QenmXTMb6TISXVRogb0wMs6luw1A+42QArp1dW5vDl0N5XTaN\nfMS5fF5avJAr9hAa3Dk74tqwolPFgPgTgGbHXBTbEh3aMesy/Y0L2rygJfuLHuHG\nZtgXFPerWi3mKiQbv5YbKEurlFRABwaHnM2gNv+I5nf5+6K5NgSRY1CIkCbc10qX\nnWy69o2f4DL56dP//aRUfdS6/qq/YXUyjrwXw3qR2QKBgQDO2Yd1msi1p3z1jA4U\npvusUHEGT6P8OThI+WZhDRu4o/SBt9gM1gr2N9G4URDRB68Y9NmWDI0/C8H5O4X6\n7lnFdLhZdZK19jzA+AuYRZloe7tvtEL4SXpBUd7SmYoGyLfvJqYPnrE93FnMgj9c\neZPbSTsL2Pt6xFGoR9iXrqsP3QKBgQC4/dpOmVoywVtEH8l1xkMifLeorkHlU9aY\nNEnXzoQmr2zi3RcRZkOnINnYqqloTFePdVMiN3sxetlI13yeNemldQjsGFLVkBZ8\nZoR2OdEn3SxJgndmIJgSAx8wejmWknT0Fk1kJ45NqBCF95Yyh5SdCVz9VHthxIwm\nZv1fM2A6lwKBgBALCRmS/rwwGF4HFdR+OwjbWFjP9n0KhxYJ2envFVZVyRICi0w7\nkbAVFjwAdZhwyyDZZMLhiFb6d3n4JuUWdXn+Goo9tzpLtdyVoHiX9VUIO7pnNcaC\nFGxaiDi3VeA+0x1GVxzhBwgwPfrBo15tw4z/egfqNV8JOPgfUmo5TuU1AoGAQVFA\nl6gF9Q3Yj8E5fOA4LCElJ+X/Vl23054CxLQibRZbt+6gioA1OvmacaowjqcF851V\ncStt0Ba0ScfsNGCM0uLz94jPFqD9j4cTFjtr4ktxq7LpPaIcj5+Sj6dYVhX4PYby\nZH6i/EBvNR4qZkUA8EGyF7CQsACaC6UpqUeWnpkCgYEAph1HmdKcZeOhFvQmlgHi\nLTVrNqYynmEI9ETad6kyQsbPhozNxFRkG+FOuC0vMcR3XZeZPcIS9i7ryv4yH8YD\n3J/MzwktxalpvLa4lfs2YDq7IMJNvvWNSrDklh1nzswqfuyBifgHmZM5fxg9MxWZ\nLMBY26JQpjSbAa4d1OpdLqY=\n-----END PRIVATE KEY-----\n","client_email":"nova-hub-service@civic-rhythm-480112-q1.iam.gserviceaccount.com","client_id":"106591600004869056270","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/nova-hub-service%40civic-rhythm-480112-q1.iam.gserviceaccount.com","universe_domain":"googleapis.com"}
+
+================================================================================
+VARIABLE 3: GA4_MEASUREMENT_ID
+================================================================================
+GA4_MEASUREMENT_ID
+
+================================================================================
+VALUE 3: GA4_MEASUREMENT_ID
+================================================================================
+G-GGK2QKXDXW
+
+================================================================================
+VARIABLE 4: GOOGLE_FORMS_APPSCRIPT_URL
+================================================================================
+GOOGLE_FORMS_APPSCRIPT_URL
+
+================================================================================
+VALUE 4: GOOGLE_FORMS_APPSCRIPT_URL
+================================================================================
+https://script.google.com/macros/s/AKfycbzfBeuMPu839ggHuPFR5y-NOdcYOiAoQpA1epliY3xP4B9zddZ_SW1c89NkUEjlD4tjPQ/exec
+
+================================================================================
+VARIABLE 5: LIGHTSAIL_HOST
+================================================================================
+LIGHTSAIL_HOST
+
+================================================================================
+VALUE 5: LIGHTSAIL_HOST
+================================================================================
+[Your Lightsail instance IP address - e.g., 54.123.45.67]
+
+================================================================================
+VARIABLE 6: LIGHTSAIL_USER
+================================================================================
+LIGHTSAIL_USER
+
+================================================================================
+VALUE 6: LIGHTSAIL_USER
+================================================================================
+[Your SSH username - usually 'bitnami' for Node.js instances]
+
+================================================================================
+VARIABLE 7: LIGHTSAIL_SSH_KEY
+================================================================================
+LIGHTSAIL_SSH_KEY
+
+================================================================================
+VALUE 7: LIGHTSAIL_SSH_KEY
+================================================================================
+[Your private SSH key content - entire key including -----BEGIN and -----END lines]
+
+================================================================================
+VARIABLE 8: PORT
+================================================================================
+PORT
+
+================================================================================
+VALUE 8: PORT
+================================================================================
+3000
+
+================================================================================
+VARIABLE 9: GOOGLE_SHEETS_API_KEY (Optional)
+================================================================================
+GOOGLE_SHEETS_API_KEY
+
+================================================================================
+VALUE 9: GOOGLE_SHEETS_API_KEY (Optional)
+================================================================================
+[Leave empty if using Apps Script method]
+
+================================================================================
+VARIABLE 10: NODE_ENV (Optional)
+================================================================================
+NODE_ENV
+
+================================================================================
+VALUE 10: NODE_ENV (Optional)
+================================================================================
+production
+
+================================================================================
+END OF ENVIRONMENT VARIABLES
+================================================================================
+
