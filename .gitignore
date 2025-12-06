@@ -9,6 +9,9 @@ pnpm-debug.log*
 .env
 .env.local
 .env.*.local
+ENV_VARS_COPY.txt
+*_COPY.txt
+*_copy.txt
 
 # Database
 *.db
