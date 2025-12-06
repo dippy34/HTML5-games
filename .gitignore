@@ -45,6 +45,13 @@ tmp/
 scramjet/
 html5/load/
 
+# Large files over Cloudflare Pages 25MB limit
+html5/1v1lol/rc.data.unityweb
+html5/adcap/Release/webgl.data
+html5/adcap/Release/webgl.js
+html5/funnyshooter2/Build/FunnyShooter2_Poki.data.unityweb
+html5/load/amazing-rope-police/spider.data.unityweb
+
 # Documentation (optional - can keep or remove)
 *.md
 !README.md

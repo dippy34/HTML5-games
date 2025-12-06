@@ -2,10 +2,13 @@ name = "buh-avon"
 main = "src/index.js"
 compatibility_date = "2024-01-01"
 
-# Your Cloudflare Workers domain
-routes = [
-  { pattern = "buh-avon.bestboymg1.workers.dev", zone_name = "bestboymg1.workers.dev" }
-]
+# Cloudflare Pages configuration
+pages_build_output_dir = "."
+
+# Your Cloudflare Workers domain (for Workers deployment)
+# routes = [
+#   { pattern = "buh-avon.bestboymg1.workers.dev", zone_name = "bestboymg1.workers.dev" }
+# ]
 
 # Environment variables (set these in Cloudflare Dashboard)
 # [vars]
