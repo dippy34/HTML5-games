@@ -40,7 +40,7 @@ export async function handleHTML(request, env, ctx, pathname) {
         }
 
         // Inject domain for API calls
-        const domain = 'https://buh-avon.bestboymg1.workers.dev';
+        const domain = 'https://novahub.pages.dev';
         html = html.replace(
           /window\.API_BASE_URL\s*=\s*['"][^'"]*['"]/,
           `window.API_BASE_URL = '${domain}'`

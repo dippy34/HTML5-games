@@ -1,6 +1,6 @@
 /**
  * Cloudflare Workers Entry Point for Nova Hub
- * Domain: buh-avon.bestboymg1.workers.dev
+ * Domain: novahub.pages.dev
  */
 
 // Import handlers
