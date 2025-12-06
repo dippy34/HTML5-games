@@ -3,7 +3,7 @@ services:
     name: nova-hub
     env: node
     rootDir: .
-    buildCommand: npm install
+    buildCommand: git config --global --add safe.directory '*' && npm install
     startCommand: npm start
     envVars:
       - key: NODE_ENV
