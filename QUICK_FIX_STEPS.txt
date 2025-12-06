@@ -1,0 +1,35 @@
+QUICK FIX STEPS - Execute in PowerShell
+
+Step 1: Check current branch and save fixes
+git status
+
+Step 2: Fetch latest from origin
+git fetch origin
+
+Step 3: Create clean branch from origin/main (before problematic commits)
+git checkout origin/main
+git checkout -b fix/workflow-and-secret-clean
+
+Step 4: Copy your fixed files to this clean branch
+- The yamllint.yml workflow file (already renamed)
+- The wrangler.toml without the secret (already fixed)
+
+Step 5: Check if origin/main has the problematic files
+- If origin/main has .yamllint.yml, rename it
+- If origin/main has secret in wrangler.toml, remove it
+
+Step 6: Stage changes
+git add .github/workflows/yamllint.yml
+git add wrangler.toml
+git rm .github/workflows/.yamllint.yml  (if it exists)
+
+Step 7: Commit
+git commit -m "fix: rename workflow file and remove secret from wrangler.toml"
+
+Step 8: Push clean branch
+git push -u origin fix/workflow-and-secret-clean
+
+Step 9: Create PR on GitHub
+Go to: https://github.com/dippy34/HTML5-games
+Create PR from fix/workflow-and-secret-clean to main
+
