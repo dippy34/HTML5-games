@@ -1,0 +1,25 @@
+name: YAML Lint
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run yamllint
+        uses: karancode/yamllint-github-action@v2.3.0
+        with:
+          file_or_dir: .
+          format: github
+          strict: false
+

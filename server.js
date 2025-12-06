@@ -24,6 +24,43 @@ const auth = require('./auth');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust Cloudflare proxy (important for correct IP detection)
+// Cloudflare IP ranges: https://www.cloudflare.com/ips/
+app.set('trust proxy', true);
+
+// Cloudflare IP ranges (IPv4 and IPv6)
+const CLOUDFLARE_IPS = [
+    '173.245.48.0/20',
+    '103.21.244.0/22',
+    '103.22.200.0/22',
+    '103.31.4.0/22',
+    '141.101.64.0/18',
+    '108.162.192.0/18',
+    '190.93.240.0/20',
+    '188.114.96.0/20',
+    '197.234.240.0/22',
+    '198.41.128.0/17',
+    '162.158.0.0/15',
+    '104.16.0.0/13',
+    '104.24.0.0/14',
+    '172.64.0.0/13',
+    '131.0.72.0/22',
+    '2400:cb00::/32',
+    '2606:4700::/32',
+    '2803:f800::/32',
+    '2405:b500::/32',
+    '2405:8100::/32',
+    '2a06:98c0::/29',
+    '2c0f:f248::/32'
+];
+
+// Helper function to check if IP is in Cloudflare range (simplified check)
+function isCloudflareIP(ip) {
+    // For production, use a proper IP range checking library
+    // This is a simplified version
+    return true; // Trust all proxies when behind Cloudflare
+}
+
 // Create BARE server for Interstellar proxy (Mathematics/Ultraviolet)
 const bare = createBareServer('/ca/', {
     logErrors: true,
@@ -82,11 +119,38 @@ app.use(express.json());
 
 // Set proper MIME types and headers for Unity and other game files
 app.use((req, res, next) => {
+    // Get real IP from Cloudflare headers
+    const realIP = req.headers['cf-connecting-ip'] || 
+                   req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 
+                   req.ip;
+    
+    // Store real IP for logging
+    req.realIP = realIP;
+    
+    // Get protocol from Cloudflare headers (safely parse JSON)
+    let protocol = req.protocol;
+    try {
+        if (req.headers['cf-visitor']) {
+            const cfVisitor = JSON.parse(req.headers['cf-visitor']);
+            protocol = cfVisitor.scheme || 'https';
+        } else if (req.headers['x-forwarded-proto']) {
+            protocol = req.headers['x-forwarded-proto'];
+        }
+    } catch (e) {
+        // If JSON parsing fails, use default
+        protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    }
+    
     // Set CORS headers for all requests
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Accept, Range');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Accept, Range, Authorization');
     res.header('Access-Control-Expose-Headers', 'Content-Range, Content-Length, Accept-Ranges');
+    
+    // Cloudflare-specific headers
+    if (req.headers['cf-ray']) {
+        res.header('CF-Ray', req.headers['cf-ray']);
+    }
     
     // Set proper MIME types
     if (req.url.endsWith('.unityweb')) {

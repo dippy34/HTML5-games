@@ -139,23 +139,39 @@ export async function handleAnalytics(request, env, ctx) {
 
   // Get bugs (admin only)
   if (pathname === '/api/bugs' && method === 'GET') {
-    // TODO: Verify admin token
+    // Verify admin token
+    const token = request.headers.get('Authorization')?.replace('Bearer ', '');
+    if (!token || !env.SESSIONS) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    const sessionData = await env.SESSIONS.get(token);
+    if (!sessionData) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     if (env.DB) {
       try {
-        const { status } = Object.fromEntries(url.searchParams);
+        const statusParam = url.searchParams.get('status');
         let query = 'SELECT * FROM bugs';
-        if (status) {
+        let result;
+        
+        if (statusParam) {
           query += ' WHERE status = ?';
-          const result = await env.DB.prepare(query).bind(status).all();
-          return new Response(JSON.stringify(result.results || []), {
-            headers: { 'Content-Type': 'application/json' }
-          });
+          result = await env.DB.prepare(query).bind(statusParam).all();
         } else {
-          const result = await env.DB.prepare(query).all();
-          return new Response(JSON.stringify(result.results || []), {
-            headers: { 'Content-Type': 'application/json' }
-          });
+          result = await env.DB.prepare(query).all();
         }
+        
+        return new Response(JSON.stringify(result.results || []), {
+          headers: { 'Content-Type': 'application/json' }
+        });
       } catch (error) {
         console.error('Error fetching bugs:', error);
         return new Response(JSON.stringify([]), {

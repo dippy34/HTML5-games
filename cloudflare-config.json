@@ -1,0 +1,43 @@
+{
+  "domain": "buh-avon.bestboymg1.workers.dev",
+  "lightsail_ip": "YOUR_LIGHTSAIL_STATIC_IP",
+  "dns_records": [
+    {
+      "type": "A",
+      "name": "@",
+      "content": "YOUR_LIGHTSAIL_STATIC_IP",
+      "proxied": true,
+      "comment": "Main domain pointing to Lightsail"
+    },
+    {
+      "type": "A",
+      "name": "www",
+      "content": "YOUR_LIGHTSAIL_STATIC_IP",
+      "proxied": true,
+      "comment": "WWW subdomain"
+    }
+  ],
+  "ssl_settings": {
+    "mode": "full",
+    "always_use_https": true,
+    "automatic_https_rewrites": true
+  },
+  "cache_settings": {
+    "level": "standard",
+    "browser_cache_ttl": 14400
+  },
+  "speed_settings": {
+    "auto_minify": {
+      "js": true,
+      "css": true,
+      "html": true
+    },
+    "brotli": true
+  },
+  "network_settings": {
+    "http2": true,
+    "http3": true,
+    "0rtt": true
+  }
+}
+

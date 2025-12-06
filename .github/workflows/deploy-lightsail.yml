@@ -1,0 +1,57 @@
+name: Deploy to AWS Lightsail
+
+# Note: Linter warnings about "context access might be invalid" for secrets are expected.
+# These warnings appear because the linter can't verify secrets exist during static analysis.
+# The workflow will function correctly once secrets are configured in repository settings.
+# See .github/workflows/README.md for setup instructions.
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Validate secrets are configured
+        id: validate-secrets
+        run: |
+          if [ -z "${{ secrets.LIGHTSAIL_HOST }}" ]; then
+            echo "error=Missing LIGHTSAIL_HOST secret" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          if [ -z "${{ secrets.LIGHTSAIL_USER }}" ]; then
+            echo "error=Missing LIGHTSAIL_USER secret" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          if [ -z "${{ secrets.LIGHTSAIL_SSH_KEY }}" ]; then
+            echo "error=Missing LIGHTSAIL_SSH_KEY secret" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          echo "All required secrets are configured"
+
+      - name: Deploy to Lightsail
+        if: steps.validate-secrets.outcome == 'success'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          # Required secrets (configure in GitHub: Settings → Secrets and variables → Actions)
+          # These warnings about "context access might be invalid" are expected and safe to ignore.
+          # The linter cannot verify secrets exist during static analysis, but the workflow
+          # will function correctly once secrets are configured in repository settings.
+          # See .github/workflows/README.md for detailed setup instructions
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ${{ secrets.LIGHTSAIL_USER }}
+          key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          script: |
+            cd /opt/nova-hub
+            git pull origin main || true
+            npm install --production
+            pm2 restart nova-hub || pm2 start ecosystem.config.js
+            pm2 save
+
