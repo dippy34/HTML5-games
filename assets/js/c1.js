@@ -611,12 +611,28 @@ function loadGames() {
     }
     
     fetch(path)
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          // If file doesn't exist, fallback to a.min.json
+          if (path.includes('t.min.json')) {
+            return fetch("/assets/json/a.min.json");
+          }
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
         processGamesList(data);
       })
       .catch(error => {
         console.error("Error fetching JSON data:", error);
+        // Fallback: try to load a.min.json if other files fail
+        if (path !== "/assets/json/a.min.json") {
+          fetch("/assets/json/a.min.json")
+            .then(response => response.json())
+            .then(data => processGamesList(data))
+            .catch(err => console.error("Fallback JSON load also failed:", err));
+        }
       });
     return;
   }
